@@ -69,20 +69,21 @@ def halving_analog(full, t, h, train_end):
 GENESIS = pd.Timestamp("2009-01-03")
 
 
-def powerlaw_fit(lp):
+def powerlaw_fit(lp, genesis=GENESIS):
     """log price = a + b*log(days since genesis); residual follows AR(1) at weekly steps."""
-    t = np.log(((lp.index - GENESIS).days).values.astype(float))
+    genesis = pd.Timestamp(genesis)
+    t = np.log(((lp.index - genesis).days).values.astype(float))
     A = np.vstack([np.ones_like(t), t]).T
     coef, *_ = np.linalg.lstsq(A, lp.values, rcond=None)
     res = lp.values - A @ coef
     phi = float(np.corrcoef(res[:-1], res[1:])[0, 1])
-    return coef, res, phi
+    return coef, res, phi, genesis
 
 
 def powerlaw_predict(fit, t, lp_t, h):
     """Quantiles (10/50/90) of the h-week log return from week t."""
-    coef, res, phi = fit
-    trend = lambda d: coef[0] + coef[1] * np.log((d - GENESIS).days)
+    coef, res, phi, genesis = fit
+    trend = lambda d: coef[0] + coef[1] * np.log((d - genesis).days)
     r0 = lp_t - trend(t)
     med = trend(t + pd.Timedelta(weeks=h)) + (phi ** h) * r0
     ch = res[h:] - (phi ** h) * res[:-h]

@@ -12,8 +12,11 @@ QS = [0.1, 0.5, 0.9]
 BT_H = [1, 4, 12, 26, 52, 104, 208]
 
 
+OUT = [SITE_DATA]
+
+
 def _dump(name, obj):
-    with open(SITE_DATA / f"{name}.json", "w") as f:
+    with open(OUT[0] / f"{name}.json", "w") as f:
         json.dump(obj, f, separators=(",", ":"), default=lambda o: None if (isinstance(o, float) and np.isnan(o)) else str(o))
 
 
@@ -29,7 +32,9 @@ def _pin(d):
     return s / 3
 
 
-def write(w, P, fc, track):
+def write(w, P, fc, track, asset=None):
+    if asset is not None:
+        OUT[0] = asset.site_dir
     info = fc["info"]
     scale = info["scale"]
     # history (weekly closes since 2024)
@@ -94,7 +99,9 @@ def write(w, P, fc, track):
     _dump("live", live)
 
     info = {k: v for k, v in info.items() if k not in ("scale", "cover_raw", "n_cal", "vol_z")}
-    meta = dict(info, band_cover=band_cover, generated_at=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+    extra = {} if asset is None else {"asset": asset.key, "name": asset.name, "card_level": asset.card_level,
+                                      "lede_level": asset.lede_level, "notes": asset.notes}
+    meta = dict(info, **extra, band_cover=band_cover, generated_at=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
                 live_scored=len(live), scale={str(k): v for k, v in scale.items()},
                 cover_raw={str(k): v for k, v in fc["info"]["cover_raw"].items()},
                 n_cal={str(k): v for k, v in fc["info"]["n_cal"].items()})

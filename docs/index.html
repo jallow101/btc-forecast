@@ -15,6 +15,11 @@ main { max-width: 1040px; margin: 0 auto; padding: 20px 14px 60px; display: flex
 h1 { font: 400 28px/1.2 Georgia, "Times New Roman", serif; margin: 0; }
 h2 { font-size: 17px; margin: 0 0 6px; }
 .muted { color: var(--muted); font-size: 13px; }
+.tabs { display: flex; gap: 6px; }
+.tabs a { padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; cursor: pointer; font-weight: 600; font-size: 14px; color: var(--fg); text-decoration: none; background: var(--panel); }
+.tabs a.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.hs { display: inline-block; padding: 2px 10px; border-radius: 999px; font-weight: 700; font-size: 13px; color: #fff; background: var(--c4); }
+.hs.OK { background: var(--ok); } .hs.WATCH { background: #c9962a; } .hs.WARNING { background: var(--bad); }
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
 .card, .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
 .card .lbl { color: var(--muted); font-size: 12px; }
@@ -46,14 +51,16 @@ ul { margin: 6px 0 0; padding-left: 1.2em; }
 </head>
 <body>
 <main>
+  <nav class="tabs" id="coins"><a href="?coin=btc" data-coin="btc">BTC</a><a href="?coin=eth" data-coin="eth">ETH</a><a href="?coin=sol" data-coin="sol">SOL</a></nav>
   <header>
-    <h1>Bitcoin weekly forecast</h1>
+    <h1 id="title">Bitcoin weekly forecast</h1>
+    <p class="muted" id="notes" hidden></p>
     <p id="lede" style="margin:6px 0 0">Loading…</p>
     <p class="muted" id="stamp"></p>
   </header>
 
   <section class="cards">
-    <div class="card"><div class="lbl" id="c-now-l">Latest close</div><div class="val" id="c-now">—</div><div class="muted">Bitstamp BTC/USD</div></div>
+    <div class="card"><div class="lbl" id="c-now-l">Latest close</div><div class="val" id="c-now">—</div><div class="muted">Daily close (UTC)</div></div>
     <div class="card"><div class="lbl" id="c-sel-l">Median at selected week</div><div class="val" id="c-sel">—</div><div class="muted" id="c-sel-r"></div><div class="muted" id="c-sel-2k" style="margin-top:4px"></div></div>
     <div class="card"><div class="lbl" id="c-low-l">Median lowest weekly close</div><div class="val" id="c-low">—</div><div class="muted" id="c-low10"></div></div>
     <div class="card"><div class="lbl" id="c-p50-l">Chance of a weekly close ≤ $50k</div><div class="val" id="c-p50">—</div><div class="muted">Intraday wicks can go lower</div></div>
@@ -72,10 +79,16 @@ ul { margin: 6px 0 0; padding-left: 1.2em; }
     <div class="row">
       <label class="muted" for="b-lo">From $</label><input type="number" id="b-lo" step="500" min="0" style="width:120px">
       <label class="muted" for="b-hi">to $</label><input type="number" id="b-hi" step="500" min="0" style="width:120px">
-      <select id="b-preset" aria-label="Quick ranges"><option value="">Quick ranges…</option><option value="2000">Median ± $2,000</option><option value="5000">Median ± $5,000</option><option value="10000">Median ± $10,000</option><option value="lt60">Below $60,000</option><option value="gt80">Above $80,000</option><option value="gt100">Above $100,000</option></select>
+      <select id="b-preset" aria-label="Quick ranges"><option value="">Quick ranges…</option><option value="p3">Median ± 3%</option><option value="p8">Median ± 8%</option><option value="p15">Median ± 15%</option><option value="lt90">Below 90% of today's price</option><option value="gt125">Above 125% of today's price</option><option value="gt150">Above 150% of today's price</option></select>
     </div>
     <div class="stats" id="b-out"></div>
     <p class="muted">Based on 20,000 simulated paths. Weekly close only: intraday prices can go outside the range and come back.</p>
+  </section>
+
+  <section class="panel">
+    <h2>Model health <span class="hs" id="hs">—</span></h2>
+    <p class="muted">Is the model still as accurate as its own long-run record? Recent weeks vs all weeks since 2017, from the walk-forward record that is extended every week. OK = normal; WATCH = drifting; WARNING = don't trust the ranges until it recovers.</p>
+    <div class="tw"><table><thead><tr><th>Forecast made</th><th>Recent window</th><th>In 80% range, recent</th><th>…all-time</th><th>Typical miss, recent</th><th>…all-time</th><th>Status</th></tr></thead><tbody id="health"></tbody></table></div>
   </section>
 
   <section class="panel">
@@ -128,7 +141,7 @@ ul { margin: 6px 0 0; padding-left: 1.2em; }
   <details class="panel">
     <summary>How it works, and its limits</summary>
     <ul>
-      <li>Runs every day on GitHub Actions: fetches Bitstamp daily prices, rebuilds weekly features, re-runs the full walk-forward backtest (retraining every model), forecasts the next 23 weeks and logs the forecast.</li>
+      <li>Runs every day on GitHub Actions for BTC, ETH and SOL: fetches daily prices (Bitstamp for BTC, Coinbase for ETH and SOL), rebuilds weekly features, re-runs the full walk-forward backtest (retraining every model), forecasts the next 23 weeks and logs the forecast.</li>
       <li>Models: last-6-years return history, gradient-boosted quantile regression on cycle/momentum signals, the 40 most similar past weeks, and a long-run power-law trend (Bitcoin's growth slowing each cycle). The first three drive the next few weeks; the trend model takes over from about 6 months out because it was far more accurate at long horizons in the backtest. The 80% range is sized by Bitcoin's volatility over the last 26 weeks, scaled so it caught 80% of outcomes in the backtest in both the wild 2017–2022 years and the calmer 2023–now years. Beyond 1 year it uses the wider of that and a fixed calibration.</li>
       <li>Long range warning: 3–4 year forecasts rest on very few independent cycles. In the 4-year backtest only about 38% of outcomes ended above the median, so treat the far end as optimistic.</li>
       <li>20,000 simulated paths (reshuffled 4-week blocks of real BTC moves) give the fan, the odds and the lowest-close estimates.</li>
@@ -138,9 +151,12 @@ ul { margin: 6px 0 0; padding-left: 1.2em; }
 </main>
 
 <script>
-const usd = d3.format('$,.0f'), pd = d3.utcParse('%Y-%m-%d'), fd = d3.utcFormat('%d %b %Y');
+let usd = d3.format('$,.0f'); const pd = d3.utcParse('%Y-%m-%d'), fd = d3.utcFormat('%d %b %Y');
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-const get = (n) => d3.json('data/' + n + '.json?v=' + Date.now());
+const COIN = (new URLSearchParams(location.search).get('coin') || 'btc').toLowerCase();
+const BASE = COIN === 'btc' ? 'data/' : 'data/' + COIN + '/';
+const get = (n) => d3.json(BASE + n + '.json?v=' + Date.now());
+const usdp = (v) => v >= 1000 ? d3.format('$,.0f')(v) : v >= 10 ? d3.format('$,.1f')(v) : d3.format('$,.2f')(v);
 const $ = (id) => document.getElementById(id);
 let D = {}, WK = null;
 
@@ -181,6 +197,12 @@ function rows(tb, data, cols) {
 
 function header() {
   const M = D.meta;
+  document.querySelectorAll('#coins a').forEach((a) => { a.classList.toggle('on', a.dataset.coin === COIN); a.href = '?coin=' + a.dataset.coin; });
+  $('title').textContent = (M.name || 'Bitcoin') + ' weekly forecast'; document.title = (M.name || 'Bitcoin') + ' weekly forecast';
+  if (M.notes) { $('notes').textContent = M.notes; $('notes').hidden = false; }
+  const H = D.health || { status: 'N/A', rows: [] };
+  $('hs').textContent = H.status; $('hs').className = 'hs ' + H.status;
+  rows($('health'), H.rows, [[(r) => r.h + (r.h === 1 ? ' week' : ' weeks') + ' before'], [(r) => 'last ' + r.window_weeks + ' wks (' + r.n + ')'], [(r) => r.cover_recent + '%'], [(r) => r.cover_all + '%'], [(r) => r.err_recent + '%'], [(r) => r.err_all + '%'], [(r) => r.status, (r) => r.status === 'OK']]);
   $('stamp').textContent = `Updated ${M.generated_at}. Forecasts run to ${fd(pd(M.end_week))}. Live forecasts scored so far: ${M.live_scored}. Not financial advice.`;
   $('c-now').textContent = usd(M.price); $('c-now-l').textContent = 'Latest close (' + fd(pd(M.last_day)) + ')';
 }
@@ -208,18 +230,21 @@ function band() {
 }
 function resetBand() {
   if (bandEdited) return band();
-  const m = D.forecast.find((f) => f.week_ending === WK).median;
-  $('b-lo').value = Math.round((m - 2000) / 100) * 100; $('b-hi').value = Math.round((m + 2000) / 100) * 100; band();
+  const m = D.forecast.find((f) => f.week_ending === WK).median, step = m > 10000 ? 100 : m > 500 ? 10 : 1;
+  const bw = COIN === 'btc' ? 2000 : m * 0.03;
+  $('b-lo').value = Math.round((m - bw) / step) * step; $('b-hi').value = Math.round((m + bw) / step) * step; band();
 }
 
 function selectedCard() {
   const M = D.meta, r = D.forecast.find((f) => f.week_ending === WK), when = fd(pd(WK));
-  $('c-sel-2k').textContent = `Chance it ends within ±$2,000 of the median: ${pctf(between(WK, r.median - 2000, r.median + 2000))}`;
-  const rk = (L) => D.risk.find((q) => q.week_ending === WK && q.level === L);
+  const bw = COIN === 'btc' ? 2000 : Math.round(r.median * 0.03 * 100) / 100;
+  $('c-sel-2k').textContent = `Chance it ends within ±${usd(bw)} of the median: ${pctf(between(WK, r.median - bw, r.median + bw))}`;
+  const rk = (L) => D.risk.find((q) => q.week_ending === WK && q.level === L) || { p_touch: '—' };
+  const CL = M.card_level || 50000, LL = M.lede_level || 55000;
   const lo = D.lowdist.find((q) => q.week_ending === WK);
-  $('lede').textContent = `Latest close ${usd(M.price)} (${fd(pd(M.last_day))}). The middle path reaches ${usd(r.median)} by ${when}, with an 80% range of ${usd(r.p10)}–${usd(r.p90)}. Chance of a weekly close at or below $55,000 before then: ${rk(55000).p_touch}%.`;
+  $('lede').textContent = `Latest close ${usd(M.price)} (${fd(pd(M.last_day))}). The middle path reaches ${usd(r.median)} by ${when}, with an 80% range of ${usd(r.p10)}–${usd(r.p90)}. Chance of a weekly close at or below ${usd(LL)} before then: ${rk(LL).p_touch}%.`;
   $('c-low-l').textContent = 'Median lowest weekly close by ' + when; $('c-low').textContent = usd(lo.low_p50); $('c-low10').textContent = '1-in-10 worst case: ' + usd(lo.low_p10);
-  $('c-p50-l').textContent = 'Chance of a weekly close ≤ $50k by ' + when; $('c-p50').textContent = rk(50000).p_touch + '%';
+  $('c-p50-l').textContent = 'Chance of a weekly close ≤ ' + usd(CL) + ' by ' + when; $('c-p50').textContent = rk(CL).p_touch + '%';
   $('risk-h').textContent = 'Odds by price level, up to ' + when; $('lowm-h').textContent = 'When the low lands, up to ' + when;
   $('c-sel-l').textContent = 'Median, week ending ' + fd(pd(r.week_ending));
   $('c-sel').textContent = usd(r.median);
@@ -330,9 +355,12 @@ function tables() {
 
 function drawAll() { header(); selectedCard(); fan(); live(); backtest(); tables(); resetBand(); }
 
-Promise.all(['meta', 'forecast', 'qgrid', 'history', 'risk', 'lowdist', 'lowmonth', 'components', 'bt_paths', 'bt_years', 'scorecard', 'live'].map((n) => get(n).then((v) => [n, v])))
+Promise.all(['meta', 'forecast', 'qgrid', 'history', 'risk', 'lowdist', 'lowmonth', 'components', 'bt_paths', 'bt_years', 'scorecard', 'live', 'health'].map((n) => get(n).then((v) => [n, v]).catch(() => [n, null])))
   .then((all) => {
     all.forEach(([n, v]) => D[n] = v);
+    if (!D.meta || !D.forecast) throw new Error('no data yet for ' + COIN.toUpperCase() + ', it appears after the next daily run');
+    if (D.meta.price < 1000) usd = usdp;
+    D.live = D.live || [];
     const wk = $('wk'), F = D.forecast;
     wk.min = F[0].week_ending; wk.max = F[F.length - 1].week_ending;
     // any day maps to the week that contains it (weeks end Saturday)
@@ -345,10 +373,11 @@ Promise.all(['meta', 'forecast', 'qgrid', 'history', 'risk', 'lowdist', 'lowmont
     ['b-lo', 'b-hi'].forEach((id) => $(id).addEventListener('input', () => { bandEdited = true; $('b-preset').value = ''; band(); }));
     $('b-preset').addEventListener('change', () => {
       const v = $('b-preset').value; if (!v) return;
-      const m = D.forecast.find((f) => f.week_ending === WK).median;
+      const m = D.forecast.find((f) => f.week_ending === WK).median, now = D.meta.price, step = m > 10000 ? 100 : m > 500 ? 10 : 1;
+      const rnd = (x) => Math.round(x / step) * step;
       const set = (lo, hi) => { $('b-lo').value = lo; $('b-hi').value = hi; };
-      if (v === 'lt60') set(0, 60000); else if (v === 'gt80') set(80000, 100000000); else if (v === 'gt100') set(100000, 100000000);
-      else set(Math.round((m - +v) / 100) * 100, Math.round((m + +v) / 100) * 100);
+      if (v === 'lt90') set(0, rnd(now * 0.9)); else if (v === 'gt125') set(rnd(now * 1.25), 1e8); else if (v === 'gt150') set(rnd(now * 1.5), 1e8);
+      else { const f = +v.slice(1) / 100; set(rnd(m * (1 - f)), rnd(m * (1 + f))); }
       bandEdited = v.startsWith('lt') || v.startsWith('gt'); band();
     });
     [...new Set(D.scorecard.map((r) => r.slice))].forEach((s) => $('sc-s').appendChild(new Option(s, s)));
@@ -357,7 +386,11 @@ Promise.all(['meta', 'forecast', 'qgrid', 'history', 'risk', 'lowdist', 'lowmont
     let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(drawAll, 150); });
     drawAll();
   })
-  .catch((e) => { $('lede').textContent = 'Failed to load data: ' + e; });
+  .catch((e) => {
+    document.querySelectorAll('#coins a').forEach((a) => a.classList.toggle('on', a.dataset.coin === COIN));
+    $('title').textContent = COIN.toUpperCase() + ' weekly forecast';
+    $('lede').textContent = 'Failed to load data: ' + e;
+  });
 </script>
 </body>
 </html>

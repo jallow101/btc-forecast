@@ -5,18 +5,18 @@ import pandas as pd
 from .paths import FORECAST_LOG
 
 
-def log_run(fc, run_date):
+def log_run(fc, run_date, path=FORECAST_LOG):
     info = fc["info"]
     rows = fc["weekly"].copy()
     rows = rows[(rows.h <= 26) | rows.h.isin([39, 52, 78, 104, 156, 208])]   # keep the log small
     rows.insert(0, "run_date", run_date)
     rows.insert(1, "base_week", info["as_of_week"])
     rows.insert(2, "price_at_run", info["price"])
-    old = pd.read_csv(FORECAST_LOG) if FORECAST_LOG.exists() else pd.DataFrame()
+    old = pd.read_csv(path) if path.exists() else pd.DataFrame()
     if not old.empty:
         old = old[old.run_date != run_date]               # re-runs on the same day replace that day
     log = pd.concat([old, rows], ignore_index=True)
-    log.to_csv(FORECAST_LOG, index=False)
+    log.to_csv(path, index=False)
     return log
 
 

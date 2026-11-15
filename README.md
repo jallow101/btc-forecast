@@ -1,6 +1,6 @@
 # btc-forecast
 
-Daily-retrained, backtested Bitcoin weekly price forecast (up to 4 years ahead), with live tracking of every forecast against what actually happened.
+Daily-retrained, backtested weekly price forecasts for BTC, ETH and SOL (up to 4 years ahead), with live tracking of every forecast against what actually happened.
 
 **Live page:** https://jallow101.github.io/btc-forecast/ (published by the workflow; Settings → Pages → Source: GitHub Actions). **Runs:** every day at 01:40 UTC via GitHub Actions (`.github/workflows/daily.yml`), or by hand from the Actions tab.
 
@@ -17,3 +17,12 @@ Only `data/btc-usd-daily.csv`, `data/forecast_log.csv` and `data/backtest_preds.
 Run locally: `pip install -r requirements.txt && python -m btcf.pipeline`
 
 Not financial advice.
+
+## Coins
+`btcf/assets.py` lists the coins (BTC, ETH, SOL): data source, price levels, and where each coin's files live
+(BTC in `data/`, others in `data/<coin>/`). The page switches coin with `?coin=eth` / `?coin=sol`.
+
+## Model health
+`btcf/health.py` compares the last 13–26 weeks of forecasts with each coin's long-run record (share of outcomes
+inside the 80% range, typical miss). Status OK / WATCH / WARNING is shown on the page, and a Telegram alert is
+sent when it changes.

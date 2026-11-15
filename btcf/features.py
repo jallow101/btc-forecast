@@ -22,11 +22,11 @@ def weekly(daily):
     return w
 
 
-def add_features(w):
+def add_features(w, sma_min=100):
     w = w.copy()
     w["lp"] = np.log(w["close"])
     w["r1"] = w["lp"].diff()
-    sma200 = w["close"].rolling(200, min_periods=100).mean()
+    sma200 = w["close"].rolling(200, min_periods=sma_min).mean()
     w["sma200"] = sma200
     w["d200"] = w["lp"] - np.log(sma200)
     w["ath"] = w["high"].cummax()
@@ -53,5 +53,7 @@ def add_features(w):
     return w
 
 
-def build():
-    return add_features(weekly(load_daily()))
+def build(asset=None):
+    if asset is None:
+        return add_features(weekly(load_daily()))
+    return add_features(weekly(load_daily(asset.daily_csv)), sma_min=asset.sma_min)

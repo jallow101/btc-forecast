@@ -128,6 +128,28 @@ def main():
         msgs.append("\n".join(lines))
         state["last_digest"] = now.date().isoformat()
 
+    # 5. model health per coin: alert when the status changes (and on the first non-OK reading)
+    from .assets import ASSETS
+    hstate = state.get("health", {})
+    hline = []
+    for key, a in ASSETS.items():
+        p = a.site_dir / "health.json"
+        if not p.exists():
+            continue
+        h = json.load(open(p))
+        st, old = h.get("status", "N/A"), hstate.get(key)
+        hline.append(f"{a.name}: {st}")
+        if st != old and not (old is None and st in ("OK", "N/A")):
+            worst = [r for r in h.get("rows", []) if r["status"] != "OK"]
+            detail = "; ".join(f"{r['h']}-week forecasts: {r['cover_recent']:.0f}% inside the 80% range (normal ~80%), "
+                               f"typical miss {r['err_recent']:.1f}% vs {r['err_all']:.1f}% usual" for r in worst)
+            icon = {"OK": "✅", "WATCH": "🟡", "WARNING": "🔴"}.get(st, "ℹ️")
+            msgs.append(f"{icon} Model health for {a.name}: {old or 'new'} → {st}." + (f" {detail}." if detail else ""))
+        hstate[key] = st
+    state["health"] = hstate
+    if hline and msgs and msgs[-1].startswith("📊"):
+        msgs[-1] += "\nModel health: " + ", ".join(hline)
+
     state.update(last_close=close, last_date=today)
     json.dump(state, open(STATE, "w"), indent=1)
     if msgs:

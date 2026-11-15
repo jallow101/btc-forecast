@@ -84,14 +84,15 @@ def band(q10, q50, q90, h, v, scale, z):
     return min(c10, v10), max(c90, v90)
 
 
-def run(w, P, n_paths=20000, seed=42):
+def run(w, P, n_paths=20000, seed=42, levels=None, genesis="2009-01-03"):
+    levels = levels or LEVELS
     scale, cover_raw, n_cal = conformal_scales(P)
     zv = vol_z(P, w)
     vnow = float(recent_vol(w).dropna().iloc[-1])
     now = w.index[-1]
     x = w.loc[[now]]
     p0 = float(w.loc[now, "close"])
-    plf = powerlaw_fit(w.loc[w["complete"], "lp"])
+    plf = powerlaw_fit(w.loc[w["complete"], "lp"], genesis)
     rows = []
     for h in HORIZONS:
         train = w[(w.index + pd.Timedelta(weeks=h) <= now) & w["complete"]]
@@ -135,7 +136,7 @@ def run(w, P, n_paths=20000, seed=42):
     lowdist = pd.DataFrame({"week_ending": wk,
                             **{f"low_p{q}": np.percentile(runmin, q, axis=0).round(0) for q in (10, 25, 50)}})
     risk = []
-    for L in LEVELS:
+    for L in levels:
         touch = (runmin <= L).mean(axis=0) * 100
         above = (paths >= L).mean(axis=0) * 100
         risk += [{"week_ending": wk[i], "level": L, "p_touch": round(float(touch[i]), 1),

@@ -17,9 +17,9 @@ MIN_TRAIN = 150
 
 def _block(args):
     """Forecasts for one block of forecast weeks, all sharing one model fit made at the block start."""
-    w, h, t0, idx = args
+    w, h, t0, idx, genesis = args
     known_prices = w[(w.index <= t0) & w["complete"]]
-    plf = powerlaw_fit(known_prices["lp"])
+    plf = powerlaw_fit(known_prices["lp"], genesis)
     train = w[(w.index + pd.Timedelta(weeks=h) <= t0) & w["complete"]]
     test = w.loc[idx]
     y = test[f"y{h}"].values
@@ -42,18 +42,18 @@ def _block(args):
     return pd.concat(out, ignore_index=True)
 
 
-def run(w, refit_weeks=REFIT_WEEKS, store=BACKTEST_CSV):
+def run(w, refit_weeks=REFIT_WEEKS, store=BACKTEST_CSV, genesis="2009-01-03", first=FIRST):
     old = pd.read_csv(store, parse_dates=["t"]) if os.path.exists(store) else pd.DataFrame(columns=["t", "h"])
     if len(old) and "refit" in old.columns and old["refit"].iloc[0] != refit_weeks:
         old = pd.DataFrame(columns=["t", "h"])               # stored with another cadence: rebuild
     done = set(zip(old["t"], old["h"])) if len(old) else set()
     tasks = []
     for h in HORIZONS:
-        ok = w[(w.index >= FIRST) & w["complete"]].dropna(subset=FEATS + [f"y{h}"])
+        ok = w[(w.index >= first) & w["complete"]].dropna(subset=FEATS + [f"y{h}"])
         todo = [t for t in ok.index if (t, h) not in done]
         for i in range(0, len(todo), refit_weeks):
             blk = todo[i:i + refit_weeks]
-            tasks.append((w, h, blk[0], blk))
+            tasks.append((w, h, blk[0], blk, genesis))
     if tasks:
         # sequential on purpose: the gradient-boosting fits already use every core, and worker
         # processes on top of that fight over threads and run many times slower
@@ -62,6 +62,8 @@ def run(w, refit_weeks=REFIT_WEEKS, store=BACKTEST_CSV):
         P = pd.concat([old, new], ignore_index=True) if len(old) else new
     else:
         P = old
+    if not len(P):
+        return pd.DataFrame(columns=["t", "h", "model", "y", "q10", "q50", "q90"])
     P = P.dropna(subset=["q50"]).sort_values(["h", "t", "model"]).reset_index(drop=True)
     P.to_csv(store, index=False, float_format="%.5f")
     print(f"backtest: {len(tasks)} new model fits, {len(P)} stored forecasts")
