@@ -8,6 +8,7 @@ from .paths import FORECAST_LOG
 def log_run(fc, run_date):
     info = fc["info"]
     rows = fc["weekly"].copy()
+    rows = rows[(rows.h <= 26) | rows.h.isin([39, 52, 78, 104, 156, 208])]   # keep the log small
     rows.insert(0, "run_date", run_date)
     rows.insert(1, "base_week", info["as_of_week"])
     rows.insert(2, "price_at_run", info["price"])

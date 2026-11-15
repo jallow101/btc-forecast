@@ -63,3 +63,33 @@ def halving_analog(full, t, h, train_end):
     rets = np.array(rets)
     med = np.median(rets)
     return med, rets
+
+
+# ---- Long-run power-law trend (diminishing returns), fit on prices only ----
+GENESIS = pd.Timestamp("2009-01-03")
+
+
+def powerlaw_fit(lp):
+    """log price = a + b*log(days since genesis); residual follows AR(1) at weekly steps."""
+    t = np.log(((lp.index - GENESIS).days).values.astype(float))
+    A = np.vstack([np.ones_like(t), t]).T
+    coef, *_ = np.linalg.lstsq(A, lp.values, rcond=None)
+    res = lp.values - A @ coef
+    phi = float(np.corrcoef(res[:-1], res[1:])[0, 1])
+    return coef, res, phi
+
+
+def powerlaw_predict(fit, t, lp_t, h):
+    """Quantiles (10/50/90) of the h-week log return from week t."""
+    coef, res, phi = fit
+    trend = lambda d: coef[0] + coef[1] * np.log((d - GENESIS).days)
+    r0 = lp_t - trend(t)
+    med = trend(t + pd.Timedelta(weeks=h)) + (phi ** h) * r0
+    ch = res[h:] - (phi ** h) * res[:-h]
+    q = np.quantile(ch, QS) if len(ch) > 20 else np.array([-1.0, 0.0, 1.0])
+    return med + q - q[1] - lp_t
+
+
+def pl_weight(h):
+    """Share of the power-law model in the final blend: 0 for the next weeks, all of it from 26 weeks."""
+    return float(np.interp(h, [4, 8, 12, 20, 26], [0.0, 0.25, 0.5, 0.85, 1.0]))

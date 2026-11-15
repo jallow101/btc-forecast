@@ -6,8 +6,9 @@ import numpy as np
 import pandas as pd
 from .paths import SITE_DATA
 
-NAMES = {"baseline": "Baseline", "gbm": "Gradient boosting", "knn": "Analogs", "ensemble": "Final ensemble"}
+NAMES = {"baseline": "Baseline", "gbm": "Gradient boosting", "knn": "Analogs", "powerlaw": "Power-law trend", "ensemble": "Final model"}
 QS = [0.1, 0.5, 0.9]
+BT_H = [1, 4, 12, 26, 52, 104, 208]
 
 
 def _dump(name, obj):
@@ -35,11 +36,12 @@ def write(w, P, fc, track):
     _dump("history", [{"week_ending": i.date().isoformat(), "close": round(r.close), "complete": bool(r.complete)} for i, r in h.iterrows()])
     _dump("forecast", _records(fc["weekly"]))
     _dump("risk", _records(fc["risk"]))
-    _dump("lowmonth", [{"month": k, "share_pct": round(v * 100, 1)} for k, v in fc["lowmonth"].items()])
+    _dump("lowmonth", _records(fc["lowmonth"]))
+    _dump("lowdist", _records(fc["lowdist"]))
     _dump("components", _records(fc["components"]))
 
     # backtest paths: forecast made h weeks earlier vs actual, as prices
-    B = P[P.model.isin(NAMES) & P.h.isin([1, 4, 12, 23])].copy()
+    B = P[P.model.isin(NAMES) & P.h.isin(BT_H)].copy()
     B["made_close"] = B.t.map(w.close)
     B["target"] = B.t + pd.to_timedelta(B.h * 7, unit="D")
     B["actual"] = B.target.map(w.close)
@@ -66,8 +68,8 @@ def write(w, P, fc, track):
     slices = {"Bear-market weeks (like now)": P.dd < np.log(0.6), "All weeks 2017–now": P.t.dt.year > 0, "Recent (2024–now)": P.t.dt.year >= 2024}
     score = []
     for sl, mask in slices.items():
-        for hz in [1, 4, 12, 23]:
-            for m in ["baseline", "gbm", "knn", "ensemble"]:
+        for hz in BT_H:
+            for m in ["baseline", "gbm", "knn", "powerlaw", "ensemble"]:
                 d = P[mask & (P.model == m) & (P.h == hz)].dropna(subset=["q50"])
                 if len(d) == 0:
                     continue
@@ -83,7 +85,9 @@ def write(w, P, fc, track):
          "lo": round(r.p10), "hi": round(r.p90), "err": round(r.err_pct, 1), "in80": bool(r.inside80)} for r in track.itertuples()]
     _dump("live", live)
 
+    info = {k: v for k, v in info.items() if k not in ("scale", "cover_raw", "n_cal")}
     meta = dict(info, generated_at=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
                 live_scored=len(live), scale={str(k): v for k, v in scale.items()},
-                cover_raw={str(k): v for k, v in info["cover_raw"].items()})
+                cover_raw={str(k): v for k, v in fc["info"]["cover_raw"].items()},
+                n_cal={str(k): v for k, v in fc["info"]["n_cal"].items()})
     _dump("meta", meta)

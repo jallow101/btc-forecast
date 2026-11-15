@@ -5,7 +5,7 @@ import pandas as pd
 from .paths import DAILY_CSV
 
 HALVINGS = pd.to_datetime(["2012-11-28", "2016-07-09", "2020-05-11", "2024-04-20"])
-HORIZONS = [1, 2, 4, 8, 12, 16, 20, 23]
+HORIZONS = [1, 2, 4, 8, 12, 16, 20, 26, 39, 52, 78, 104, 156, 208]
 FEATS = ["d200", "dd", "wk_since_ath", "ph_sin", "ph_cos", "wk_since_halv",
          "mom4", "mom13", "mom26", "mom52", "vol13"]
 

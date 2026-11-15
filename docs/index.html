@@ -20,6 +20,10 @@ h2 { font-size: 17px; margin: 0 0 6px; }
 .card .lbl { color: var(--muted); font-size: 12px; }
 .card .val { font: 400 26px/1.2 Georgia, serif; margin: 4px 0; font-variant-numeric: tabular-nums; }
 .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 6px 0 10px; }
+input[type=date] { font: inherit; font-size: 14px; padding: 5px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); color-scheme: light dark; }
+.scroll { max-height: 420px; overflow: auto; }
+.bars div { display: grid; grid-template-columns: 70px 1fr 44px; gap: 8px; align-items: center; font-size: 12px; margin: 3px 0; font-variant-numeric: tabular-nums; }
+.bars i { display: block; height: 12px; border-radius: 2px; background: var(--accent); }
 select { font: inherit; font-size: 14px; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); }
 .chart { position: relative; min-height: 300px; }
 .chart svg text { fill: var(--muted); font-size: 11px; }
@@ -50,13 +54,13 @@ ul { margin: 6px 0 0; padding-left: 1.2em; }
   <section class="cards">
     <div class="card"><div class="lbl" id="c-now-l">Latest close</div><div class="val" id="c-now">—</div><div class="muted">Bitstamp BTC/USD</div></div>
     <div class="card"><div class="lbl" id="c-sel-l">Median at selected week</div><div class="val" id="c-sel">—</div><div class="muted" id="c-sel-r"></div></div>
-    <div class="card"><div class="lbl">Median lowest weekly close (next 23 wks)</div><div class="val" id="c-low">—</div><div class="muted" id="c-low10"></div></div>
-    <div class="card"><div class="lbl">Chance of a weekly close ≤ $50k</div><div class="val" id="c-p50">—</div><div class="muted">within the next 23 weeks</div></div>
+    <div class="card"><div class="lbl" id="c-low-l">Median lowest weekly close</div><div class="val" id="c-low">—</div><div class="muted" id="c-low10"></div></div>
+    <div class="card"><div class="lbl" id="c-p50-l">Chance of a weekly close ≤ $50k</div><div class="val" id="c-p50">—</div><div class="muted">Intraday wicks can go lower</div></div>
   </section>
 
   <section class="panel">
     <h2>Forecast fan</h2>
-    <div class="row"><select id="wk" aria-label="Show forecast up to week"></select></div>
+    <div class="row"><label for="wk" class="muted">Forecast up to</label><input type="date" id="wk"><span class="muted" id="wk-note"></span></div>
     <div class="chart" id="fan"></div>
     <div class="legend"><span><i class="sw" style="background:var(--muted)"></i>Weekly close</span><span><i class="sw" style="background:var(--accent)"></i>Median forecast</span><span><i class="sw" style="background:var(--accent);opacity:.35"></i>50% range</span><span><i class="sw" style="background:var(--accent);opacity:.15"></i>80% range</span></div>
   </section>
@@ -64,7 +68,7 @@ ul { margin: 6px 0 0; padding-left: 1.2em; }
   <section class="panel">
     <h2>Live tracking: forecasts vs what actually happened</h2>
     <p class="muted">Every daily run saves its forecast. Once a forecast week closes, it is scored here. This only uses forecasts the model made in advance, never rewritten.</p>
-    <div class="row"><select id="lv-h" aria-label="Horizon"><option value="1">Made 1 week before</option><option value="4">Made 4 weeks before</option><option value="12">Made 12 weeks before</option><option value="all">All horizons</option></select></div>
+    <div class="row"><select id="lv-h" aria-label="Horizon"><option value="1">Made 1 week before</option><option value="4">Made 4 weeks before</option><option value="12">Made 12 weeks before</option><option value="26">Made 26 weeks before</option><option value="52">Made 52 weeks before</option><option value="all">All horizons</option></select></div>
     <div class="stats" id="lv-stats"></div>
     <div class="chart" id="live" style="min-height:240px"></div>
   </section>
@@ -73,8 +77,8 @@ ul { margin: 6px 0 0; padding-left: 1.2em; }
     <h2>Backtest: forecast vs actual, 2017 to now</h2>
     <p class="muted">Walk-forward test: each year forecast using only data known before it. Dark line = actual weekly close; colored = what the model predicted that many weeks earlier, with its 80% band.</p>
     <div class="row">
-      <select id="bt-m" aria-label="Model"><option>Final ensemble</option><option>Gradient boosting</option><option>Analogs</option><option>Baseline</option></select>
-      <select id="bt-h" aria-label="Horizon"><option value="12">Predicted 12 weeks earlier</option><option value="4">Predicted 4 weeks earlier</option><option value="1">Predicted 1 week earlier</option><option value="23">Predicted 23 weeks earlier</option></select>
+      <select id="bt-m" aria-label="Model"><option>Final model</option><option>Power-law trend</option><option>Gradient boosting</option><option>Analogs</option><option>Baseline</option></select>
+      <select id="bt-h" aria-label="Horizon"><option value="12">Predicted 12 weeks earlier</option><option value="1">Predicted 1 week earlier</option><option value="4">Predicted 4 weeks earlier</option><option value="26">Predicted 26 weeks earlier</option><option value="52">Predicted 1 year earlier</option><option value="104">Predicted 2 years earlier</option><option value="208">Predicted 4 years earlier</option></select>
     </div>
     <div class="chart" id="bt"></div>
     <div class="legend"><span><i class="sw" style="background:var(--fg)"></i>Actual</span><span><i class="sw" style="background:var(--accent)"></i>Forecast median</span><span><i class="sw" style="background:var(--accent);opacity:.18"></i>80% band</span></div>
@@ -88,25 +92,32 @@ ul { margin: 6px 0 0; padding-left: 1.2em; }
   </section>
 
   <section class="panel">
-    <h2>Odds by price level (next 23 weeks)</h2>
-    <div class="tw"><table><thead><tr><th>Level</th><th>Weekly close at/below it</th><th>Ends above it</th></tr></thead><tbody id="risk"></tbody></table></div>
+    <h2 id="risk-h">Odds by price level</h2>
+    <div class="tw"><table><thead><tr><th>Level</th><th>Weekly close at/below it before then</th><th>Ends above it</th></tr></thead><tbody id="risk"></tbody></table></div>
+  </section>
+
+  <section class="panel">
+    <h2 id="lowm-h">When the low lands</h2>
+    <p class="muted">Month of each simulated path's lowest weekly close, within the window you picked.</p>
+    <div class="bars scroll" id="lowm"></div>
   </section>
 
   <section class="panel">
     <h2>Weekly forecast table</h2>
-    <div class="tw"><table><thead><tr><th>Week ending</th><th>P10</th><th>P25</th><th>Median</th><th>P75</th><th>P90</th></tr></thead><tbody id="wt"></tbody></table></div>
+    <div class="tw scroll"><table><thead><tr><th>Week ending</th><th>P10</th><th>P25</th><th>Median</th><th>P75</th><th>P90</th></tr></thead><tbody id="wt"></tbody></table></div>
   </section>
 
   <section class="panel">
     <h2>What each model says (median price)</h2>
-    <div class="tw"><table><thead><tr><th>Weeks ahead</th><th>Baseline</th><th>Gradient boosting</th><th>Analogs</th><th>Halving cycle</th><th>Ensemble</th></tr></thead><tbody id="cmp"></tbody></table></div>
+    <div class="tw"><table><thead><tr><th>Week ending</th><th>Baseline</th><th>Gradient boosting</th><th>Analogs</th><th>Power-law trend</th><th>Trend weight</th><th>Final model</th></tr></thead><tbody id="cmp"></tbody></table></div>
   </section>
 
   <details class="panel">
     <summary>How it works, and its limits</summary>
     <ul>
       <li>Runs every day on GitHub Actions: fetches Bitstamp daily prices, rebuilds weekly features, re-runs the full walk-forward backtest (retraining every model), forecasts the next 23 weeks and logs the forecast.</li>
-      <li>Models: last-6-years return history, gradient-boosted quantile regression on cycle/momentum signals, and the 40 most similar past weeks. The ensemble averages them; its 80% range is widened until it held 80% of outcomes in the backtest.</li>
+      <li>Models: last-6-years return history, gradient-boosted quantile regression on cycle/momentum signals, the 40 most similar past weeks, and a long-run power-law trend (Bitcoin's growth slowing each cycle). The first three drive the next few weeks; the trend model takes over from about 6 months out because it was far more accurate at long horizons in the backtest. The 80% range is widened until it held 80% of outcomes in the backtest.</li>
+      <li>Long range warning: 3–4 year forecasts rest on very few independent cycles. In the 4-year backtest only about 38% of outcomes ended above the median, so treat the far end as optimistic.</li>
       <li>20,000 simulated paths (reshuffled 4-week blocks of real BTC moves) give the fan, the odds and the lowest-close estimates.</li>
       <li>Limits: no news, ETF flows, Fed or liquidation data; weekly closes only (intraday wicks go lower); about three full cycles of history. Not financial advice.</li>
     </ul>
@@ -156,17 +167,19 @@ function rows(tb, data, cols) {
 }
 
 function header() {
-  const M = D.meta, F = D.forecast, last = F[F.length - 1];
-  const r50 = D.risk.find((r) => r.level === 50000), r55 = D.risk.find((r) => r.level === 55000);
-  $('lede').textContent = `Latest close ${usd(M.price)} (${fd(pd(M.last_day))}). The middle path reaches ${usd(last.median)} by ${fd(pd(last.week_ending))}, with an 80% range of ${usd(last.p10)}–${usd(last.p90)}. Chance of a weekly close at or below $55,000 before then: ${r55 ? r55.p_touch : '—'}%.`;
-  $('stamp').textContent = `Updated ${M.generated_at}. Live forecasts scored so far: ${M.live_scored}. Not financial advice.`;
+  const M = D.meta;
+  $('stamp').textContent = `Updated ${M.generated_at}. Forecasts run to ${fd(pd(M.end_week))}. Live forecasts scored so far: ${M.live_scored}. Not financial advice.`;
   $('c-now').textContent = usd(M.price); $('c-now-l').textContent = 'Latest close (' + fd(pd(M.last_day)) + ')';
-  $('c-low').textContent = usd(M.min_q['50']); $('c-low10').textContent = '1-in-10 worst case: ' + usd(M.min_q['10']);
-  $('c-p50').textContent = r50 ? r50.p_touch + '%' : '—';
 }
 
 function selectedCard() {
-  const r = D.forecast.find((f) => f.week_ending === WK);
+  const M = D.meta, r = D.forecast.find((f) => f.week_ending === WK), when = fd(pd(WK));
+  const rk = (L) => D.risk.find((q) => q.week_ending === WK && q.level === L);
+  const lo = D.lowdist.find((q) => q.week_ending === WK);
+  $('lede').textContent = `Latest close ${usd(M.price)} (${fd(pd(M.last_day))}). The middle path reaches ${usd(r.median)} by ${when}, with an 80% range of ${usd(r.p10)}–${usd(r.p90)}. Chance of a weekly close at or below $55,000 before then: ${rk(55000).p_touch}%.`;
+  $('c-low-l').textContent = 'Median lowest weekly close by ' + when; $('c-low').textContent = usd(lo.low_p50); $('c-low10').textContent = '1-in-10 worst case: ' + usd(lo.low_p10);
+  $('c-p50-l').textContent = 'Chance of a weekly close ≤ $50k by ' + when; $('c-p50').textContent = rk(50000).p_touch + '%';
+  $('risk-h').textContent = 'Odds by price level, up to ' + when; $('lowm-h').textContent = 'When the low lands, up to ' + when;
   $('c-sel-l').textContent = 'Median, week ending ' + fd(pd(r.week_ending));
   $('c-sel').textContent = usd(r.median);
   $('c-sel-r').textContent = `50%: ${usd(r.p25)}–${usd(r.p75)} · 80%: ${usd(r.p10)}–${usd(r.p90)}`;
@@ -174,13 +187,14 @@ function selectedCard() {
 
 function fan() {
   const el = $('fan'), H = 330, m = { t: 10, r: 12, b: 26, l: 54 };
-  const hist = D.history.slice(-80).map((r) => ({ d: pd(r.week_ending), c: r.close }));
+  const hist = D.history.slice(-104).map((r) => ({ d: pd(r.week_ending), c: r.close }));
   const last = hist[hist.length - 1];
   const F = [{ d: last.d, p10: last.c, p25: last.c, median: last.c, p75: last.c, p90: last.c }]
     .concat(D.forecast.filter((r) => r.week_ending <= WK).map((r) => ({ d: pd(r.week_ending), ...r })));
   const { W, svg } = frame(el, H, m);
   const x = d3.scaleUtc().domain([hist[0].d, F[F.length - 1].d]).range([m.l, W - m.r]);
-  const y = d3.scaleLinear().domain([d3.min([...F.map((d) => d.p10), ...hist.map((d) => d.c)]) * 0.93, d3.max([...F.map((d) => d.p90), ...hist.map((d) => d.c)]) * 1.03]).nice().range([H - m.b, m.t]);
+  const ylo = d3.min([...F.map((d) => d.p10), ...hist.map((d) => d.c)]) * 0.93, yhi = d3.max([...F.map((d) => d.p90), ...hist.map((d) => d.c)]) * 1.03;
+  const y = (yhi / ylo > 5 ? d3.scaleLog() : d3.scaleLinear()).domain([ylo, yhi]).range([H - m.b, m.t]);
   axes(svg, x, y, W, H, m, (v) => '$' + d3.format('~s')(v), d3.utcFormat('%b %y'));
   const A = css('--accent');
   svg.append('path').datum(F).attr('d', d3.area().x((d) => x(d.d)).y0((d) => y(d.p10)).y1((d) => y(d.p90))).style('fill', A).style('opacity', .15);
@@ -234,8 +248,8 @@ function backtest() {
   actualVsPred($('bt'), R, 320, 'No data');
   // error by year
   const el = $('yrs'), H = 230, m = { t: 10, r: 12, b: 26, l: 40 };
-  const Y = D.bt_years.filter((r) => r.h === hz), models = ['Final ensemble', 'Gradient boosting', 'Analogs', 'Baseline'];
-  const cols = [css('--accent'), css('--c2'), css('--c3'), css('--c4')];
+  const Y = D.bt_years.filter((r) => r.h === hz), models = ['Final model', 'Power-law trend', 'Gradient boosting', 'Analogs', 'Baseline'];
+  const cols = [css('--accent'), css('--ok'), css('--c2'), css('--c3'), css('--c4')];
   const yrs = [...new Set(Y.map((r) => r.year))].sort();
   const { W, svg } = frame(el, H, m);
   const x = d3.scalePoint().domain(yrs).range([m.l, W - m.r]).padding(.3);
@@ -251,7 +265,7 @@ function backtest() {
   const lg = document.createElement('div'); lg.className = 'legend';
   models.forEach((md2, i) => { const s = document.createElement('span'); const sw = document.createElement('i'); sw.className = 'sw'; sw.style.background = cols[i]; s.append(sw, md2); lg.appendChild(s); });
   el.appendChild(lg);
-  hover(el, svg, W, H, m, (yr) => [x(yr), y((Y.find((r) => r.year === yr && r.model === 'Final ensemble') || { err: 0 }).err)],
+  hover(el, svg, W, H, m, (yr) => [x(yr), y((Y.find((r) => r.year === yr && r.model === 'Final model') || { err: 0 }).err)],
     (sx) => yrs.reduce((b, v) => Math.abs(x(v) - sx) < Math.abs(x(b) - sx) ? v : b, yrs[0]),
     (yr) => [yr + ' · ' + hz + ' weeks ahead'].concat(models.map((md2) => { const r = Y.find((q) => q.year === yr && q.model === md2); return md2 + ': ' + (r ? r.err + '%' : 'n/a'); })));
   // scorecard
@@ -262,20 +276,29 @@ function backtest() {
 }
 
 function tables() {
-  rows($('risk'), D.risk.slice().reverse(), [[(r) => usd(r.level)], [(r) => r.level < D.meta.price ? r.p_touch + '%' : '—'], [(r) => r.p_end_above + '%']]);
+  rows($('risk'), D.risk.filter((r) => r.week_ending === WK).reverse(), [[(r) => usd(r.level)], [(r) => r.level < D.meta.price ? r.p_touch + '%' : '—'], [(r) => r.p_end_above + '%']]);
+  const lm = D.lowmonth.filter((r) => r.week_ending === WK), mx = d3.max(lm, (r) => r.share_pct) || 1, el = $('lowm');
+  el.replaceChildren();
+  lm.forEach((r) => { const d = document.createElement('div'), a = document.createElement('span'), b = document.createElement('span'), i = document.createElement('i'), c = document.createElement('span');
+    a.textContent = d3.utcFormat('%b %Y')(d3.utcParse('%Y-%m')(r.month)); i.style.width = (100 * r.share_pct / mx) + '%'; b.appendChild(i); c.textContent = d3.format('.0f')(r.share_pct) + '%'; d.append(a, b, c); el.appendChild(d); });
   rows($('wt'), D.forecast.filter((r) => r.week_ending <= WK), [[(r) => fd(pd(r.week_ending))], [(r) => usd(r.p10)], [(r) => usd(r.p25)], [(r) => usd(r.median)], [(r) => usd(r.p75)], [(r) => usd(r.p90)]]);
-  rows($('cmp'), D.components, [[(r) => r.h], [(r) => usd(r.base)], [(r) => usd(r.gbm)], [(r) => usd(r.knn)], [(r) => r.halving == null ? 'n/a' : usd(r.halving)], [(r) => usd(r.q50)]]);
+  rows($('cmp'), D.components, [[(r) => fd(pd(r.week_ending))], [(r) => usd(r.base)], [(r) => usd(r.gbm)], [(r) => usd(r.knn)], [(r) => usd(r.powerlaw)], [(r) => d3.format('.0%')(r.pl_weight)], [(r) => usd(r.q50)]]);
 }
 
 function drawAll() { header(); selectedCard(); fan(); live(); backtest(); tables(); }
 
-Promise.all(['meta', 'forecast', 'history', 'risk', 'components', 'bt_paths', 'bt_years', 'scorecard', 'live'].map((n) => get(n).then((v) => [n, v])))
+Promise.all(['meta', 'forecast', 'history', 'risk', 'lowdist', 'lowmonth', 'components', 'bt_paths', 'bt_years', 'scorecard', 'live'].map((n) => get(n).then((v) => [n, v])))
   .then((all) => {
     all.forEach(([n, v]) => D[n] = v);
-    const wk = $('wk');
-    D.forecast.forEach((r) => wk.appendChild(new Option('Show forecast up to ' + fd(pd(r.week_ending)), r.week_ending)));
-    WK = D.forecast[D.forecast.length - 1].week_ending; wk.value = WK;
-    wk.addEventListener('change', () => { WK = wk.value; selectedCard(); fan(); tables(); });
+    const wk = $('wk'), F = D.forecast;
+    wk.min = F[0].week_ending; wk.max = F[F.length - 1].week_ending;
+    // any day maps to the week that contains it (weeks end Saturday)
+    const pickWeek = (day) => (F.find((r) => r.week_ending >= day) || F[F.length - 1]).week_ending;
+    const def = F.find((r) => r.week_ending >= '2027-04-24') || F[Math.min(22, F.length - 1)];
+    WK = def.week_ending; wk.value = WK;
+    const setNote = (day) => { $('wk-note').textContent = day && day !== WK ? '→ week ending ' + fd(pd(WK)) : 'week ending Saturday'; };
+    setNote(WK);
+    wk.addEventListener('change', () => { if (!wk.value) return; WK = pickWeek(wk.value < wk.min ? wk.min : wk.value); setNote(wk.value); selectedCard(); fan(); tables(); });
     [...new Set(D.scorecard.map((r) => r.slice))].forEach((s) => $('sc-s').appendChild(new Option(s, s)));
     ['bt-m', 'bt-h', 'sc-s'].forEach((id) => $(id).addEventListener('change', backtest));
     $('lv-h').addEventListener('change', live);
