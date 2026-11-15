@@ -8,6 +8,7 @@ Sends a message when:
 Needs repo secrets TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID; without them it prints and does nothing."""
 import json
 import os
+import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
@@ -24,10 +25,23 @@ def send(text):
     if not token or not chat:
         print("[alert not sent: no Telegram secrets]\n" + text)
         return False
+    chat = chat.strip().strip('"').strip("'")
     data = urllib.parse.urlencode({"chat_id": chat, "text": text, "disable_web_page_preview": "true"}).encode()
     try:
-        with urllib.request.urlopen(f"https://api.telegram.org/bot{token}/sendMessage", data=data, timeout=20) as r:
+        with urllib.request.urlopen(f"https://api.telegram.org/bot{token.strip()}/sendMessage", data=data, timeout=20) as r:
             return r.status == 200
+    except urllib.error.HTTPError as e:
+        try:
+            reason = json.loads(e.read().decode()).get("description", "")
+        except Exception:  # noqa: BLE001
+            reason = ""
+        print(f"Telegram send failed: HTTP {e.code} {reason}")
+        if "chat not found" in reason.lower():
+            print("-> TELEGRAM_CHAT_ID is wrong, or you have not sent your bot a message yet. Use the number after "
+                  '"chat":{"id": on the getUpdates page (not the "update_id" or "message_id").')
+        elif e.code == 401:
+            print("-> TELEGRAM_BOT_TOKEN is wrong. Copy it again from @BotFather.")
+        return False
     except Exception as e:  # noqa: BLE001
         print("Telegram send failed:", e)
         return False
