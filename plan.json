@@ -1,0 +1,12 @@
+{
+  "_about": "Your BTC buying plan. Edit the numbers here (on GitHub: open this file, click the pencil, commit). The daily run checks them and sends Telegram alerts.",
+  "plan_date": "2027-04-24",
+  "buy_ladder": [62000, 58000, 55000, 50000],
+  "reserve_weekly_close": [55000, 50000],
+  "take_profit": [100000, 120000, 150000],
+  "exit_weekly_close": 35000,
+  "odds_watch_levels": [55000, 50000],
+  "odds_jump_points": 10,
+  "weekly_digest_day": "Sunday",
+  "page_url": "https://jallow101.github.io/btc-forecast/"
+}

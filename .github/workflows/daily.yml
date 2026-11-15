@@ -4,9 +4,14 @@ on:
   schedule:
     - cron: "40 1 * * *"     # 01:40 UTC, after the previous UTC day has closed
   workflow_dispatch:          # run by hand from the Actions tab
+    inputs:
+      test_alert:
+        description: "Also send a Telegram test message"
+        type: boolean
+        default: false
 
 permissions:
-  contents: write             # commit the price history and forecast log
+  contents: write             # commit the price history, forecast log and backtest store
   pages: write                # publish the web page
   id-token: write
 
@@ -32,11 +37,18 @@ jobs:
       - name: Fetch prices, retrain, forecast, score, build page data
         run: python -m btcf.pipeline
 
-      - name: Commit price history, forecast log and backtest store
+      - name: Telegram alerts
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          ALERT_TEST: ${{ inputs.test_alert }}
+        run: python -m btcf.alerts
+
+      - name: Commit price history, forecast log, backtest store and alert state
         run: |
           git config user.name "btc-forecast-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/btc-usd-daily.csv data/forecast_log.csv data/backtest_preds.csv
+          git add data/btc-usd-daily.csv data/forecast_log.csv data/backtest_preds.csv data/alert_state.json
           if git diff --cached --quiet; then echo "No changes"; else
             git commit -m "Daily forecast $(date -u +%Y-%m-%d)" && git push
           fi
