@@ -20,11 +20,11 @@ GROUPS = {"fng": ["fng", "fng_chg4"], "funding": ["funding"], "dxy": ["dxy_chg13
           "ry10": ["ry10", "ry10_chg13"], "stable": ["stable_g13"]}
 
 
-def _get(url, tries=3):
+def _get(url, tries=3, timeout=120):
     for i in range(tries):
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": "btc-forecast/1.0"})
-            with urllib.request.urlopen(req, timeout=60) as r:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=timeout) as r:
                 return r.read()
         except Exception:  # noqa: BLE001
             if i == tries - 1:
@@ -38,7 +38,32 @@ def fetch_fng():
     return s.sort_index().rename("fng")
 
 
+def fetch_funding_deribit():
+    """Deribit BTC-PERPETUAL 8h funding, fetched in 30-day windows since May 2019."""
+    rows, t = [], pd.Timestamp("2019-05-01")
+    end = pd.Timestamp.now("UTC").tz_localize(None)
+    while t < end:
+        t1 = min(t + pd.Timedelta(days=30), end)
+        url = ("https://www.deribit.com/api/v2/public/get_funding_rate_history?instrument_name=BTC-PERPETUAL"
+               f"&start_timestamp={int(t.timestamp() * 1000)}&end_timestamp={int(t1.timestamp() * 1000)}")
+        res = json.loads(_get(url)).get("result", [])
+        rows += [(pd.to_datetime(r["timestamp"], unit="ms"), float(r["interest_8h"])) for r in res]
+        t = t1
+        time.sleep(0.3)
+    s = pd.Series(dict(rows), dtype=float).sort_index()
+    s.rename("funding").rename_axis("date").to_csv(DIR / "funding.csv")
+    return s.rename("funding")
+
+
 def fetch_funding():
+    try:
+        return fetch_funding_bitmex()
+    except Exception as e:  # noqa: BLE001
+        print("BitMEX funding failed, trying Deribit:", e)
+        return fetch_funding_deribit()
+
+
+def fetch_funding_bitmex():
     path = DIR / "funding.csv"
     old = pd.read_csv(path, parse_dates=["date"]).set_index("date")["funding"] if path.exists() else pd.Series(dtype=float)
     start = (old.index.max() + pd.Timedelta(hours=1)) if len(old) else pd.Timestamp("2016-05-14")
@@ -62,7 +87,8 @@ def fetch_funding():
 
 
 def fetch_fred(series):
-    df = pd.read_csv(io.BytesIO(_get(f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}")))
+    raw = _get(f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}&cosd=2014-01-01", timeout=180)
+    df = pd.read_csv(io.BytesIO(raw))
     df.columns = ["date", "v"]
     df["date"] = pd.to_datetime(df["date"])
     return pd.to_numeric(df.set_index("date")["v"], errors="coerce").dropna()
