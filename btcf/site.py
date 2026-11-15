@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 import numpy as np
 import pandas as pd
 from .paths import SITE_DATA
+from .forecast import band, recent_vol, vol_z
 
 NAMES = {"baseline": "Baseline", "gbm": "Gradient boosting", "knn": "Analogs", "powerlaw": "Power-law trend", "ensemble": "Final model"}
 QS = [0.1, 0.5, 0.9]
@@ -48,10 +49,16 @@ def write(w, P, fc, track):
     B["actual"] = B.target.map(w.close)
     B = B.dropna(subset=["actual", "made_close"])
     # calibrated bands for the ensemble (same widening as the live forecast)
-    lo_s = B.h.map(lambda k: scale[k][0]); hi_s = B.h.map(lambda k: scale[k][1])
+    zv = vol_z(P, w); vol = recent_vol(w)
+    B["v"] = B.t.map(vol)
     ens = B.model == "ensemble"
-    B["c10"] = np.where(ens, B.q50 - lo_s * (B.q50 - B.q10), B.q10)
-    B["c90"] = np.where(ens, B.q50 + hi_s * (B.q90 - B.q50), B.q90)
+    bands = [band(r.q10, r.q50, r.q90, int(r.h), r.v, scale, zv) if e else (r.q10, r.q90)
+             for r, e in zip(B.itertuples(), ens)]
+    B["c10"] = [b[0] for b in bands]; B["c90"] = [b[1] for b in bands]
+    # how often the final 80% band caught the outcome, by era
+    ec = B[ens].assign(inb=lambda d: (np.log(d.actual / d.made_close) >= d.c10) & (np.log(d.actual / d.made_close) <= d.c90))
+    band_cover = [{"h": int(h), "era": era, "cover": round(float(g.inb.mean()) * 100, 1), "n": len(g)}
+                  for (h, era), g in ec.assign(era=np.where(ec.t.dt.year <= 2022, "2017–2022", "2023–now")).groupby(["h", "era"])]
     bt = pd.DataFrame({"t": B.target.dt.strftime("%Y-%m-%d"), "h": B.h.astype(int), "m": B.model.map(NAMES),
                        "a": B.actual.round(0), "p": (B.made_close * np.exp(B.q50)).round(0),
                        "lo": (B.made_close * np.exp(B.c10)).round(0), "hi": (B.made_close * np.exp(B.c90)).round(0)})
@@ -86,8 +93,8 @@ def write(w, P, fc, track):
          "lo": round(r.p10), "hi": round(r.p90), "err": round(r.err_pct, 1), "in80": bool(r.inside80)} for r in track.itertuples()]
     _dump("live", live)
 
-    info = {k: v for k, v in info.items() if k not in ("scale", "cover_raw", "n_cal")}
-    meta = dict(info, generated_at=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+    info = {k: v for k, v in info.items() if k not in ("scale", "cover_raw", "n_cal", "vol_z")}
+    meta = dict(info, band_cover=band_cover, generated_at=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
                 live_scored=len(live), scale={str(k): v for k, v in scale.items()},
                 cover_raw={str(k): v for k, v in fc["info"]["cover_raw"].items()},
                 n_cal={str(k): v for k, v in fc["info"]["n_cal"].items()})

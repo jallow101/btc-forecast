@@ -13,6 +13,8 @@ LEVELS = [25000, 30000, 35000, 40000, 45000, 50000, 55000, 60000, 65000, 70000, 
 MIN_CAL = 40   # fewest backtest outcomes needed to calibrate a horizon on its own
 
 
+VOL_WIN = 26      # weeks of recent volatility used to size the bands
+VOL_MAX_H = 52    # up to 1 year: band = volatility-scaled; beyond: the wider of the two methods
 POOL_FROM = 104   # 2-4 year horizons have few independent test cycles: calibrate them together
 MAX_SCALE = 2.5
 
@@ -43,8 +45,49 @@ def conformal_scales(P):
     return scale, cover_raw, n
 
 
+def recent_vol(w):
+    """Std of weekly log returns over the last VOL_WIN complete weeks, at every week."""
+    r = w["r1"].where(w["complete"])
+    return r.rolling(VOL_WIN, min_periods=VOL_WIN // 2).std()
+
+
+def vol_z(P, w):
+    """Backtest misses measured in units of recent volatility: 10th/90th percentile per horizon.
+    Bitcoin's volatility halved after 2022, so bands sized by today's volatility stay ~80% calibrated
+    in both the wild and the calm years, where one fixed width was too narrow then and too wide now."""
+    vol = recent_vol(w)
+    E = P[P.model == "ensemble"].copy()
+    E["v"] = E.t.map(vol)
+    z = {}
+    for h in HORIZONS:
+        x = E[E.h == h].dropna(subset=["v"])
+        if len(x) < MIN_CAL:
+            continue
+        zz = (x.y - x.q50) / (x.v * np.sqrt(h))
+        z[h] = (float(np.quantile(zz, 0.1)), float(np.quantile(zz, 0.9)))
+    for h in HORIZONS:
+        if h not in z:
+            k = max(k for k in z if k < h) if any(k < h for k in z) else min(z)
+            z[h] = z[k]
+    return z
+
+
+def band(q10, q50, q90, h, v, scale, z):
+    """Final 10/90 band for one horizon: volatility-scaled up to VOL_MAX_H, else the wider of both methods."""
+    sl, sh = scale[h]
+    c10, c90 = q50 - sl * (q50 - q10), q50 + sh * (q90 - q50)
+    if not np.isfinite(v):
+        return c10, c90
+    v10, v90 = q50 + z[h][0] * v * np.sqrt(h), q50 + z[h][1] * v * np.sqrt(h)
+    if h <= VOL_MAX_H:
+        return v10, v90
+    return min(c10, v10), max(c90, v90)
+
+
 def run(w, P, n_paths=20000, seed=42):
     scale, cover_raw, n_cal = conformal_scales(P)
+    zv = vol_z(P, w)
+    vnow = float(recent_vol(w).dropna().iloc[-1])
     now = w.index[-1]
     x = w.loc[[now]]
     p0 = float(w.loc[now, "close"])
@@ -59,9 +102,9 @@ def run(w, P, n_paths=20000, seed=42):
         pl = powerlaw_predict(plf, now, float(w.loc[now, "lp"]), h)
         a = pl_weight(h)
         e = np.sort((1 - a) * (b + g + k) / 3 + a * pl)
-        sl, sh = scale[h]
+        lo, hi = band(e[0], e[1], e[2], h, vnow, scale, zv)
         rows.append(dict(h=h, base=b[1], gbm=g[1], knn=k[1], powerlaw=pl[1], pl_weight=a, halving=(hv[0] if hv else np.nan),
-                         q10=e[1] - sl * (e[1] - e[0]), q50=e[1], q90=e[1] + sh * (e[2] - e[1])))
+                         q10=lo, q50=e[1], q90=hi))
     F = pd.DataFrame(rows).set_index("h")
 
     H = np.arange(1, STEPS + 1)
@@ -115,5 +158,6 @@ def run(w, P, n_paths=20000, seed=42):
                           "pl_weight": F["pl_weight"].values})
     info = {"as_of_week": now.date().isoformat(), "week_complete": bool(w.loc[now, "complete"]),
             "last_day": pd.Timestamp(w.loc[now, "last_day"]).date().isoformat(), "price": round(p0),
-            "end_week": wk[-1], "cover_raw": cover_raw, "scale": scale, "n_cal": n_cal}
+            "end_week": wk[-1], "cover_raw": cover_raw, "scale": scale, "n_cal": n_cal,
+            "vol_now_ann": round(vnow * np.sqrt(52) * 100, 1), "vol_z": zv}
     return dict(weekly=weekly, qgrid=qgrid, risk=risk, lowdist=lowdist, lowmonth=lowmonth, components=comps, info=info)
