@@ -1,2 +1,5 @@
 __pycache__/
 *.pyc
+# regenerated on every run, published to Pages by the workflow
+docs/data/
+data/backtest_preds.csv
