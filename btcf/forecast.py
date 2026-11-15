@@ -84,6 +84,10 @@ def run(w, P, n_paths=20000, seed=42):
     weekly = pd.DataFrame({"week_ending": wk, "h": H, "p10": pct(10), "p25": pct(25), "median": pct(50),
                            "p75": pct(75), "p90": pct(90)})
 
+    # fine percentile grid (1..99) per week: lets the page compute the chance of any price band
+    qgrid = {"weeks": wk, "p": list(range(1, 100)),
+             "q": np.percentile(paths, np.arange(1, 100), axis=0).T.round(0).astype(int).tolist()}
+
     runmin = np.minimum.accumulate(paths, axis=1)                       # lowest close so far, per path
     lowdist = pd.DataFrame({"week_ending": wk,
                             **{f"low_p{q}": np.percentile(runmin, q, axis=0).round(0) for q in (10, 25, 50)}})
@@ -112,4 +116,4 @@ def run(w, P, n_paths=20000, seed=42):
     info = {"as_of_week": now.date().isoformat(), "week_complete": bool(w.loc[now, "complete"]),
             "last_day": pd.Timestamp(w.loc[now, "last_day"]).date().isoformat(), "price": round(p0),
             "end_week": wk[-1], "cover_raw": cover_raw, "scale": scale, "n_cal": n_cal}
-    return dict(weekly=weekly, risk=risk, lowdist=lowdist, lowmonth=lowmonth, components=comps, info=info)
+    return dict(weekly=weekly, qgrid=qgrid, risk=risk, lowdist=lowdist, lowmonth=lowmonth, components=comps, info=info)

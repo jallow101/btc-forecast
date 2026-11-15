@@ -35,6 +35,7 @@ def write(w, P, fc, track):
     h = w.loc["2024-01-01":, ["close", "complete"]]
     _dump("history", [{"week_ending": i.date().isoformat(), "close": round(r.close), "complete": bool(r.complete)} for i, r in h.iterrows()])
     _dump("forecast", _records(fc["weekly"]))
+    _dump("qgrid", fc["qgrid"])
     _dump("risk", _records(fc["risk"]))
     _dump("lowmonth", _records(fc["lowmonth"]))
     _dump("lowdist", _records(fc["lowdist"]))

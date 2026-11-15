@@ -24,6 +24,7 @@ input[type=date] { font: inherit; font-size: 14px; padding: 5px 8px; border-radi
 .scroll { max-height: 420px; overflow: auto; }
 .bars div { display: grid; grid-template-columns: 70px 1fr 44px; gap: 8px; align-items: center; font-size: 12px; margin: 3px 0; font-variant-numeric: tabular-nums; }
 .bars i { display: block; height: 12px; border-radius: 2px; background: var(--accent); }
+input[type=number] { font: inherit; font-size: 14px; padding: 5px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); }
 select { font: inherit; font-size: 14px; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); }
 .chart { position: relative; min-height: 300px; }
 .chart svg text { fill: var(--muted); font-size: 11px; }
@@ -53,7 +54,7 @@ ul { margin: 6px 0 0; padding-left: 1.2em; }
 
   <section class="cards">
     <div class="card"><div class="lbl" id="c-now-l">Latest close</div><div class="val" id="c-now">—</div><div class="muted">Bitstamp BTC/USD</div></div>
-    <div class="card"><div class="lbl" id="c-sel-l">Median at selected week</div><div class="val" id="c-sel">—</div><div class="muted" id="c-sel-r"></div></div>
+    <div class="card"><div class="lbl" id="c-sel-l">Median at selected week</div><div class="val" id="c-sel">—</div><div class="muted" id="c-sel-r"></div><div class="muted" id="c-sel-2k" style="margin-top:4px"></div></div>
     <div class="card"><div class="lbl" id="c-low-l">Median lowest weekly close</div><div class="val" id="c-low">—</div><div class="muted" id="c-low10"></div></div>
     <div class="card"><div class="lbl" id="c-p50-l">Chance of a weekly close ≤ $50k</div><div class="val" id="c-p50">—</div><div class="muted">Intraday wicks can go lower</div></div>
   </section>
@@ -63,6 +64,18 @@ ul { margin: 6px 0 0; padding-left: 1.2em; }
     <div class="row"><label for="wk" class="muted">Forecast up to</label><input type="date" id="wk"><span class="muted" id="wk-note"></span></div>
     <div class="chart" id="fan"></div>
     <div class="legend"><span><i class="sw" style="background:var(--muted)"></i>Weekly close</span><span><i class="sw" style="background:var(--accent)"></i>Median forecast</span><span><i class="sw" style="background:var(--accent);opacity:.35"></i>50% range</span><span><i class="sw" style="background:var(--accent);opacity:.15"></i>80% range</span></div>
+  </section>
+
+  <section class="panel">
+    <h2>Chance of a price range</h2>
+    <p class="muted">Type any range to see the chance that BTC's weekly close lands inside it in the week you picked above.</p>
+    <div class="row">
+      <label class="muted" for="b-lo">From $</label><input type="number" id="b-lo" step="500" min="0" style="width:120px">
+      <label class="muted" for="b-hi">to $</label><input type="number" id="b-hi" step="500" min="0" style="width:120px">
+      <select id="b-preset" aria-label="Quick ranges"><option value="">Quick ranges…</option><option value="2000">Median ± $2,000</option><option value="5000">Median ± $5,000</option><option value="10000">Median ± $10,000</option><option value="lt60">Below $60,000</option><option value="gt80">Above $80,000</option><option value="gt100">Above $100,000</option></select>
+    </div>
+    <div class="stats" id="b-out"></div>
+    <p class="muted">Based on 20,000 simulated paths. Weekly close only: intraday prices can go outside the range and come back.</p>
   </section>
 
   <section class="panel">
@@ -172,8 +185,36 @@ function header() {
   $('c-now').textContent = usd(M.price); $('c-now-l').textContent = 'Latest close (' + fd(pd(M.last_day)) + ')';
 }
 
+// chance the weekly close of week `wk` is <= x, from the 1..99 percentile grid
+function cdf(wk, x) {
+  const i = D.qgrid.weeks.indexOf(wk); if (i < 0) return NaN;
+  const q = D.qgrid.q[i], p = D.qgrid.p;
+  if (x <= q[0]) return 0.005 * Math.max(0, x / q[0]);          // below 1st percentile: tail, ~0.5% at most
+  if (x >= q[q.length - 1]) return 1 - 0.005 * Math.max(0, q[q.length - 1] / x);
+  return d3.scaleLinear().domain(q).range(p.map((v) => v / 100)).clamp(true)(x);
+}
+const between = (wk, lo, hi) => Math.max(0, cdf(wk, hi) - cdf(wk, lo));
+const pctf = (v) => isNaN(v) ? '—' : (v < 0.01 ? '<1%' : v > 0.99 ? '>99%' : d3.format('.0%')(v));
+let bandEdited = false;
+function band() {
+  const lo = +$('b-lo').value, hi = +$('b-hi').value, out = $('b-out'); out.replaceChildren();
+  const add = (v, t) => { const d = document.createElement('div'), b = document.createElement('b'); b.textContent = v; d.append(b, t); out.appendChild(d); };
+  if (!(hi > lo)) { add('—', 'enter a range where "to" is above "from"'); return; }
+  if (hi >= 1e7) { add(pctf(1 - cdf(WK, lo)), `chance the week ending ${fd(pd(WK))} closes above ${usd(lo)}`); return; }
+  if (lo <= 0) { add(pctf(cdf(WK, hi)), `chance the week ending ${fd(pd(WK))} closes below ${usd(hi)}`); return; }
+  add(pctf(between(WK, lo, hi)), `chance the week ending ${fd(pd(WK))} closes between ${usd(lo)} and ${usd(hi)}`);
+  add(pctf(cdf(WK, lo)), `chance it closes below ${usd(lo)}`);
+  add(pctf(1 - cdf(WK, hi)), `chance it closes above ${usd(hi)}`);
+}
+function resetBand() {
+  if (bandEdited) return band();
+  const m = D.forecast.find((f) => f.week_ending === WK).median;
+  $('b-lo').value = Math.round((m - 2000) / 100) * 100; $('b-hi').value = Math.round((m + 2000) / 100) * 100; band();
+}
+
 function selectedCard() {
   const M = D.meta, r = D.forecast.find((f) => f.week_ending === WK), when = fd(pd(WK));
+  $('c-sel-2k').textContent = `Chance it ends within ±$2,000 of the median: ${pctf(between(WK, r.median - 2000, r.median + 2000))}`;
   const rk = (L) => D.risk.find((q) => q.week_ending === WK && q.level === L);
   const lo = D.lowdist.find((q) => q.week_ending === WK);
   $('lede').textContent = `Latest close ${usd(M.price)} (${fd(pd(M.last_day))}). The middle path reaches ${usd(r.median)} by ${when}, with an 80% range of ${usd(r.p10)}–${usd(r.p90)}. Chance of a weekly close at or below $55,000 before then: ${rk(55000).p_touch}%.`;
@@ -235,6 +276,8 @@ function live() {
   const add = (v, t) => { const d = document.createElement('div'); const b = document.createElement('b'); b.textContent = v; d.append(b, t); st.appendChild(d); };
   add(String(L.length), 'forecasts scored');
   add(L.length ? d3.format('.1f')(d3.median(L, (r) => Math.abs(r.err))) + '%' : '—', 'typical error');
+  add(L.length ? usd(d3.median(L, (r) => Math.abs(r.p - r.a))) : '—', 'typical miss in $');
+  add(L.length ? d3.format('.0f')(100 * d3.mean(L, (r) => Math.abs(r.p - r.a) <= 2000 ? 1 : 0)) + '%' : '—', 'within ±$2,000');
   add(L.length ? d3.format('.0f')(100 * d3.mean(L, (r) => r.in80 ? 1 : 0)) + '%' : '—', 'inside 80% band (aim: 80%)');
   add(L.length ? d3.format('+.1f')(d3.median(L, (r) => r.err)) + '%' : '—', 'bias (+ = too high)');
   const first = D.forecast[0];
@@ -285,9 +328,9 @@ function tables() {
   rows($('cmp'), D.components, [[(r) => fd(pd(r.week_ending))], [(r) => usd(r.base)], [(r) => usd(r.gbm)], [(r) => usd(r.knn)], [(r) => usd(r.powerlaw)], [(r) => d3.format('.0%')(r.pl_weight)], [(r) => usd(r.q50)]]);
 }
 
-function drawAll() { header(); selectedCard(); fan(); live(); backtest(); tables(); }
+function drawAll() { header(); selectedCard(); fan(); live(); backtest(); tables(); resetBand(); }
 
-Promise.all(['meta', 'forecast', 'history', 'risk', 'lowdist', 'lowmonth', 'components', 'bt_paths', 'bt_years', 'scorecard', 'live'].map((n) => get(n).then((v) => [n, v])))
+Promise.all(['meta', 'forecast', 'qgrid', 'history', 'risk', 'lowdist', 'lowmonth', 'components', 'bt_paths', 'bt_years', 'scorecard', 'live'].map((n) => get(n).then((v) => [n, v])))
   .then((all) => {
     all.forEach(([n, v]) => D[n] = v);
     const wk = $('wk'), F = D.forecast;
@@ -298,7 +341,16 @@ Promise.all(['meta', 'forecast', 'history', 'risk', 'lowdist', 'lowmonth', 'comp
     WK = def.week_ending; wk.value = WK;
     const setNote = (day) => { $('wk-note').textContent = day && day !== WK ? '→ week ending ' + fd(pd(WK)) : 'week ending Saturday'; };
     setNote(WK);
-    wk.addEventListener('change', () => { if (!wk.value) return; WK = pickWeek(wk.value < wk.min ? wk.min : wk.value); setNote(wk.value); selectedCard(); fan(); tables(); });
+    wk.addEventListener('change', () => { if (!wk.value) return; WK = pickWeek(wk.value < wk.min ? wk.min : wk.value); setNote(wk.value); selectedCard(); fan(); tables(); resetBand(); });
+    ['b-lo', 'b-hi'].forEach((id) => $(id).addEventListener('input', () => { bandEdited = true; $('b-preset').value = ''; band(); }));
+    $('b-preset').addEventListener('change', () => {
+      const v = $('b-preset').value; if (!v) return;
+      const m = D.forecast.find((f) => f.week_ending === WK).median;
+      const set = (lo, hi) => { $('b-lo').value = lo; $('b-hi').value = hi; };
+      if (v === 'lt60') set(0, 60000); else if (v === 'gt80') set(80000, 100000000); else if (v === 'gt100') set(100000, 100000000);
+      else set(Math.round((m - +v) / 100) * 100, Math.round((m + +v) / 100) * 100);
+      bandEdited = v.startsWith('lt') || v.startsWith('gt'); band();
+    });
     [...new Set(D.scorecard.map((r) => r.slice))].forEach((s) => $('sc-s').appendChild(new Option(s, s)));
     ['bt-m', 'bt-h', 'sc-s'].forEach((id) => $(id).addEventListener('change', backtest));
     $('lv-h').addEventListener('change', live);
