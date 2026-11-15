@@ -6,5 +6,10 @@
  },
  "last_digest": "2026-11-15",
  "last_close": 64113.69,
- "last_date": "2026-11-14"
+ "last_date": "2026-11-14",
+ "health": {
+  "btc": "OK",
+  "eth": "WATCH",
+  "sol": "WARNING"
+ }
 }
