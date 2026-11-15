@@ -7,12 +7,12 @@ Daily-retrained, backtested Bitcoin weekly price forecast (up to 4 years ahead),
 ## What each run does
 1. `btcf/fetch.py` — adds new daily BTC/USD candles from the Bitstamp public API (fallback: github.com/rcaljouw/btc-price-history).
 2. `btcf/features.py` — weekly closes (weeks end Saturday) + signals: distance from 200-week MA, drawdown from ATH, weeks since ATH, halving-cycle phase, momentum, volatility.
-3. `btcf/backtest.py` — walk-forward backtest 2017→now; every model is retrained per test year using only data known before it.
+3. `btcf/backtest.py` — walk-forward backtest 2017→now that mirrors the live model: each week's forecast uses only data known that week (history refit every 4 weeks; new weeks are fit one at a time). Results are stored in `data/backtest_preds.csv` and only new weeks are added each run.
 4. `btcf/forecast.py` — ensemble of 6-yr return climatology + gradient-boosted quantile regression + nearest-neighbour analogs, 80% band calibrated on the backtest, 20,000 simulated paths.
 5. `btcf/track.py` — appends the forecast to `data/forecast_log.csv` and scores every past forecast whose week has closed.
 6. `btcf/site.py` — writes `docs/data/*.json` for the page (not committed; deployed with the page).
 
-Only `data/btc-usd-daily.csv` and `data/forecast_log.csv` are committed each day, so the forecast log is a permanent, versioned record of every forecast.
+Only `data/btc-usd-daily.csv`, `data/forecast_log.csv` and `data/backtest_preds.csv` are committed each day, so the forecast log is a permanent, versioned record of every forecast.
 
 Run locally: `pip install -r requirements.txt && python -m btcf.pipeline`
 

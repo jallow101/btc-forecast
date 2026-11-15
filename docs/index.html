@@ -88,7 +88,7 @@ ul { margin: 6px 0 0; padding-left: 1.2em; }
 
   <section class="panel">
     <h2>Backtest: forecast vs actual, 2017 to now</h2>
-    <p class="muted">Walk-forward test: each year forecast using only data known before it. Dark line = actual weekly close; colored = what the model predicted that many weeks earlier, with its 80% band.</p>
+    <p class="muted">Walk-forward test: every week's forecast uses only data known that week, like the live model. Dark line = actual weekly close; colored = what the model predicted that many weeks earlier, with its 80% band.</p>
     <div class="row">
       <select id="bt-m" aria-label="Model"><option>Final model</option><option>Power-law trend</option><option>Gradient boosting</option><option>Analogs</option><option>Baseline</option></select>
       <select id="bt-h" aria-label="Horizon"><option value="12">Predicted 12 weeks earlier</option><option value="1">Predicted 1 week earlier</option><option value="4">Predicted 4 weeks earlier</option><option value="26">Predicted 26 weeks earlier</option><option value="52">Predicted 1 year earlier</option><option value="104">Predicted 2 years earlier</option><option value="208">Predicted 4 years earlier</option></select>
