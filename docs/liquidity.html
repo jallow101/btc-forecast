@@ -159,7 +159,7 @@ function draw(d) {
   // price line + axis
   g.strokeStyle = css('--fg'); g.setLineDash([4, 3]); g.beginPath(); g.moveTo(padL, y(d.price)); g.lineTo(W - padR, y(d.price)); g.stroke(); g.setLineDash([]);
   g.fillStyle = css('--muted'); g.font = '11px sans-serif'; g.textAlign = 'left';
-  for (let k = 0; k <= 6; k++) { const p = pmin + (pmax - pmin) * k / 6; if (Math.abs(y(p) - y(d.price)) > 14) g.fillText(fmt(p), W - padR + 4, y(p) + 4); }
+  for (let k = 0; k <= 6; k++) { const p = pmin + (pmax - pmin) * k / 6; if (Math.abs(y(p) - y(d.price)) > 24) g.fillText(fmt(p), W - padR + 4, y(p) + 4); }
   g.fillStyle = css('--fg'); g.fillText(fmt(d.price), W - padR + 4, y(d.price) - 6);
   g.fillStyle = css('--muted'); g.textAlign = 'center';
   (W < 600 ? [0, n - 1] : [0, Math.floor(n / 2), n - 1]).forEach((i) => g.fillText(C[i][0].slice(5, 16).replace('T', ' '), Math.min(Math.max(x(i), 40), padL + plotW - 40), H - 6));
@@ -192,7 +192,7 @@ function table(d) {
 }
 
 function pts(x) { return (x * 100 >= 0 ? '+' : '') + (x * 100).toFixed(1) + ' pts'; }
-function verdict(lo, hi) { return lo > 0 ? '<span class="good">real edge</span>' : hi < 0 ? '<span class="neg">works against you</span>' : '<span class="weak">could be luck</span>'; }
+function verdict(lo, hi) { return lo > 0 ? '<span class="good">✓ edge</span>' : hi < 0 ? '<span class="neg">✗ hurts</span>' : '<span class="weak">luck?</span>'; }
 
 function backtest(all) {
   const p = all[TF]; if (!p) return; $('bt-tf').textContent = `${TF} (${p.period[0]} to ${p.period[1]})`;
