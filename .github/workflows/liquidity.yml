@@ -1,0 +1,39 @@
+name: Liquidity clusters
+on:
+  workflow_dispatch:
+    inputs:
+      backtest:
+        description: "Run the liquidity backtest too"
+        type: boolean
+        default: false
+permissions:
+  contents: write
+concurrency:
+  group: repo-writes
+  cancel-in-progress: false
+jobs:
+  liquidity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Fetch candles
+        run: python -m btcf.liq_fetch
+      - name: Probe open-interest endpoints
+        run: python experiments/oi_probe.py || true
+      - name: Clusters
+        run: if [ -f btcf/liquidity.py ]; then python -m btcf.liquidity; fi
+      - name: Backtest
+        if: ${{ inputs.backtest }}
+        run: python -m btcf.liq_backtest
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/liq reports || true
+          git commit -m "Liquidity data $(date -u +%F' '%H:%M)" || exit 0
+          git pull --rebase -q && git push
