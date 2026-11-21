@@ -185,7 +185,8 @@ def snapshot(coin, tf, heat_bars=240, every=2):
     n = len(df)
     start = n - heat_bars
     last = float(df.close.iat[-1])
-    rng = cfg["range"] * 1.5
+    seen = df.iloc[start:]
+    rng = max(cfg["range"] * 1.5, seen.high.max() / last - 1 + 0.05, 1 - seen.low.min() / last + 0.05)
     step = last * cfg["bin"]
     lo_edge = last * (1 - rng)
     nb = int(np.ceil(2 * rng / cfg["bin"]))
@@ -231,7 +232,7 @@ def write_site(out=None):
     for coin in COINS:
         for tf in TF_CFG:
             try:
-                s = snapshot(coin, tf)
+                s = snapshot(coin, tf, every=1 if tf == "15m" else 2)
             except FileNotFoundError:
                 continue
             (out / f"{coin}_{tf}.json").write_text(json.dumps(s, separators=(",", ":")))

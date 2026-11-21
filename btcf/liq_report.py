@@ -36,8 +36,7 @@ LOGS = {"BTC": DATA / "forecast_log.csv", "ETH": DATA / "eth" / "forecast_log.cs
         "SOL": DATA / "sol" / "forecast_log.csv"}
 PAGE = "https://jallow101.github.io/btc-forecast/liquidity.html"
 UA = {"User-Agent": "Mozilla/5.0 (btc-forecast bot)"}
-CAL_URLS = ["https://nfs.faireconomy.media/ff_calendar_thisweek.json",
-            "https://nfs.faireconomy.media/ff_calendar_nextweek.json"]
+CAL_URLS = ["https://nfs.faireconomy.media/ff_calendar_thisweek.json"]   # Sun-Sat; the weekly report runs Monday
 MAJOR = ["bitcoin", "btc", "ether", " eth ", "solana", " sol ", "worldcoin", "wld", "world network", "binance",
          "coinbase", "tether", "usdt", "usdc", "circle", "etf", " fed", "fomc", "powell", " sec ", "stablecoin",
          "crypto market", "liquidat", "hyperliquid", "okx", "bybit", "kraken", "saylor", "blackrock", "tariff",
@@ -283,53 +282,79 @@ def news_block(news):
 
 
 # ── chart ──────────────────────────────────────────────────────────────
-def chart(out, coin, path):
+def _smooth(W, k=(1, 3, 5, 3, 1)):
+    """Blur along price so clusters read as bands, like exchange heatmaps."""
+    k = np.array(k, float) / sum(k)
+    return np.apply_along_axis(lambda col: np.convolve(col, k, mode="same"), 0, W)
+
+
+def heat_png(out, coin, tf, path, title, last_bars=None):
+    """Single CoinGlass-style panel: viridis heat, candles, colour bar, price axis on the right."""
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    fig, axes = plt.subplots(1, 2, figsize=(13, 6.2), dpi=110, facecolor="#141414")
-    for ax, tf, name in ((axes[0], "1h", "7-day map (1h)"), (axes[1], "4h", "1-month map (4h)")):
-        s = snap(out, coin, tf)
-        ax.set_facecolor("#141414")
-        if not s:
-            continue
-        C = np.array([c[1:] for c in s["candles"]], float)
-        n = len(C)
-        W = np.array(s["heat"]["w"], float).T
-        lo, step, nb = s["grid"]["lo"], s["grid"]["step"], s["grid"]["n"]
-        vmax = np.percentile(W[W > 0], 99.5) if (W > 0).any() else 1
-        ax.imshow(np.sqrt(np.clip(W / vmax, 0, 1)), aspect="auto", origin="lower", cmap="inferno",
-                  extent=[0, n, lo, lo + nb * step], interpolation="nearest")
-        for i, (o, h, l, c) in enumerate(C):
-            col = "#5fd38d" if c >= o else "#ff6b6b"
-            ax.plot([i + .5, i + .5], [l, h], color=col, lw=.6)
-            ax.add_patch(plt.Rectangle((i + .2, min(o, c)), .6, max(abs(c - o), step * .05), color=col))
-        price = s["price"]
-        pmin = max(lo, min(C[:, 2].min(), price * (1 - 0.12)))
-        pmax = min(lo + nb * step, max(C[:, 1].max(), price * 1.12))
-        ax.set_ylim(pmin, pmax)
-        ax.set_xlim(0, n + 1)
-        ax.axhline(price, color="white", lw=.8, ls="--")
-        for side, col in (("above", "#ffd166"), ("below", "#8ecae6")):
-            for k, c in enumerate(s["majors"].get(side, [])[:2]):
-                if pmin < c["price"] < pmax:
-                    ax.axhline(c["price"], color=col, lw=.8, alpha=.8 if k == 0 else .45)
-                    ax.text(n + .5, c["price"], f" {fmt(c['price'])}", color=col, va="center", fontsize=8,
-                            ha="right", bbox=dict(fc="#141414", ec="none", alpha=.7))
-        ax.set_title(f"{coin} {name} · {fmt(price)} · {s['trend']}trend", color="white", fontsize=11)
-        ax.tick_params(colors="#bbbbbb", labelsize=8)
-        ticks = [0, n // 2, n - 1]
-        ax.set_xticks([t + .5 for t in ticks], [s["candles"][t][0][5:10] for t in ticks])
-        ax.yaxis.tick_right()
-        for sp in ax.spines.values():
-            sp.set_color("#333")
-    fig.text(.01, .01, "Brighter = more estimated liquidity (liquidations at 10-100x + swing stops). "
-             "Yellow = biggest above, blue = biggest below. Estimate from candles, not exchange data.",
-             color="#999", fontsize=8)
-    fig.tight_layout(rect=(0, .03, 1, 1))
-    fig.savefig(path, facecolor=fig.get_facecolor())
+    s = snap(out, coin, tf)
+    if not s:
+        return None
+    C = np.array([c[1:] for c in s["candles"]], float)
+    T = [c[0] for c in s["candles"]]
+    W = np.array(s["heat"]["w"], float)                  # frames x bins
+    ft = s["heat"]["t"]
+    # expand frames to one column per candle
+    idx = {t: i for i, t in enumerate(T)}
+    cols = np.zeros((len(T), W.shape[1]))
+    starts = [idx[t] for t in ft if t in idx]
+    for k, i0 in enumerate(starts):
+        i1 = starts[k + 1] if k + 1 < len(starts) else len(T)
+        cols[i0:i1] = W[k]
+    if last_bars:
+        C, T, cols = C[-last_bars:], T[-last_bars:], cols[-last_bars:]
+    n = len(C)
+    lo, step, nb = s["grid"]["lo"], s["grid"]["step"], s["grid"]["n"]
+    H = _smooth(cols.T)
+    price = s["price"]
+    ups = [c["price"] for c in s["majors"].get("above", [])[:2]] + [C[:, 1].max(), price * 1.03]
+    dns = [c["price"] for c in s["majors"].get("below", [])[:2]] + [C[:, 2].min(), price * 0.97]
+    pmin, pmax = max(lo, min(dns) * 0.985), min(lo + nb * step, max(ups) * 1.015)
+    vis = H[(np.arange(nb) * step + lo >= pmin) & (np.arange(nb) * step + lo <= pmax)]
+    vmax = np.percentile(vis[vis > 0], 99.5) if (vis > 0).any() else 1
+    fig = plt.figure(figsize=(11, 6), dpi=110, facecolor="white")
+    ax = fig.add_axes([0.07, 0.12, 0.82, 0.78])
+    cax = fig.add_axes([0.035, 0.12, 0.014, 0.78])
+    im = ax.imshow(np.clip(H / vmax, 0, 1) ** 1.15, aspect="auto", origin="lower", cmap="viridis",
+                   extent=[0, n, lo, lo + nb * step], interpolation="bilinear", vmin=0, vmax=1)
+    for i, (o, h, l, c) in enumerate(C):
+        col = "#26c281" if c >= o else "#ff4d5e"
+        ax.plot([i + .5, i + .5], [l, h], color=col, lw=.7)
+        ax.add_patch(plt.Rectangle((i + .15, min(o, c)), .7, max(abs(c - o), step * .04), color=col, lw=0))
+    ax.set_ylim(pmin, pmax)
+    ax.set_xlim(0, n)
+    ax.yaxis.tick_right()
+    ax.tick_params(labelsize=8, colors="#333")
+    ticks = np.linspace(0, n - 1, 8).astype(int)
+    ax.set_xticks(ticks + .5, [T[t][8:10] + ", " + T[t][11:16] for t in ticks])
+    for side, col in (("above", "#ffe600"), ("below", "#7df9ff")):
+        c = (s["majors"].get(side) or [None])[0]
+        if c and pmin < c["price"] < pmax:
+            ax.annotate(f"{fmt(c['price'])}", xy=(n, c["price"]), xytext=(n + n * .01, c["price"]),
+                        color="black", fontsize=8, va="center", annotation_clip=False,
+                        bbox=dict(fc=col, ec="none", boxstyle="round,pad=.2"))
+    cb = fig.colorbar(im, cax=cax)
+    cb.set_ticks([0, 1], labels=["low", "high"])
+    cb.ax.tick_params(labelsize=7)
+    cax.yaxis.set_ticks_position("left")
+    fig.suptitle(title, fontsize=13, y=.97)
+    fig.text(.07, .03, "Estimated liquidation (10-100x) + stop liquidity from Hyperliquid perp candles — "
+             "an estimate, not exchange data. jallow101.github.io/btc-forecast/liquidity.html",
+             fontsize=7.5, color="#777")
+    fig.savefig(path)
     plt.close(fig)
     return path
+
+
+def chart(out, coin, path):
+    """Back-compat: the 7-day map."""
+    return heat_png(out, coin, "1h", path, f"{coin} Liquidation Heatmap (7 day, estimated)")
 
 
 def send_photo(path, caption=""):
@@ -391,8 +416,10 @@ def weekly(out, title="📊 Weekly liquidity outlook", why=None):
     body += [cal_block(cal), news_block(news), DISCLAIMER]
     text = "\n\n".join(body)
     print(text)
-    img = chart(out, "BTC", out / "btc_weekly.png")
-    send_photo(img, f"{title}: BTC 7-day and 1-month liquidity maps")
+    img = heat_png(out, "BTC", "4h", out / "btc_weekly.png", "BTC Liquidation Heatmap (1 month, estimated)")
+    img2 = heat_png(out, "BTC", "1h", out / "btc_7d.png", "BTC Liquidation Heatmap (7 day, estimated)")
+    send_photo(img, f"{title}: BTC 1-month map")
+    send_photo(img2, "BTC 7-day map")
     send_long(text)
     (out / "weekly_plan.json").write_text(json.dumps({
         "made": now.isoformat(), "revised": bool(why),
@@ -423,8 +450,10 @@ def daily(out):
     body += [cal_block(cal, 1), news_block(news), PAGE]
     text = "\n\n".join(body)
     print(text)
-    img = chart(out, "BTC", out / "btc_daily.png")
-    send_photo(img, "Daily: BTC liquidity maps")
+    img = heat_png(out, "BTC", "15m", out / "btc_24h.png", "BTC Liquidation Heatmap (24 hour, estimated)", last_bars=96)
+    img2 = heat_png(out, "BTC", "1h", out / "btc_7d.png", "BTC Liquidation Heatmap (7 day, estimated)")
+    send_photo(img, "Daily: BTC 24-hour map")
+    send_photo(img2, "BTC 7-day map")
     send_long(text)
     return text
 
