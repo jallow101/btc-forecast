@@ -11,7 +11,7 @@ on:
       report:
         description: "Telegram report to send now"
         type: choice
-        options: [auto, weekly, daily, check]
+        options: [auto, weekly, daily, check, preview]
         default: auto
 permissions:
   contents: write

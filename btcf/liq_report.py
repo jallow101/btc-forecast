@@ -36,7 +36,12 @@ LOGS = {"BTC": DATA / "forecast_log.csv", "ETH": DATA / "eth" / "forecast_log.cs
         "SOL": DATA / "sol" / "forecast_log.csv"}
 PAGE = "https://jallow101.github.io/btc-forecast/liquidity.html"
 UA = {"User-Agent": "Mozilla/5.0 (btc-forecast bot)"}
-CAL_URL = "https://nfs.faireconomy.media/ff_calendar_thisweek.json"
+CAL_URLS = ["https://nfs.faireconomy.media/ff_calendar_thisweek.json",
+            "https://nfs.faireconomy.media/ff_calendar_nextweek.json"]
+MAJOR = ["bitcoin", "btc", "ether", " eth ", "solana", " sol ", "worldcoin", "wld", "world network", "binance",
+         "coinbase", "tether", "usdt", "usdc", "circle", "etf", " fed", "fomc", "powell", " sec ", "stablecoin",
+         "crypto market", "liquidat", "hyperliquid", "okx", "bybit", "kraken", "saylor", "blackrock", "tariff",
+         " cpi", "inflation", "payroll", "jobs report", "treasury yields", "rate cut", "rate hike"]
 FEEDS = {"CoinDesk": "https://www.coindesk.com/arc/outboundfeeds/rss/",
          "Cointelegraph": "https://cointelegraph.com/rss",
          "Decrypt": "https://decrypt.co/feed"}
@@ -97,10 +102,14 @@ def _get(url, timeout=20):
 
 def calendar(days_ahead=7):
     """High-impact USD events from the Forex Factory weekly feed."""
-    try:
-        ev = json.loads(_get(CAL_URL))
-    except Exception as e:  # noqa: BLE001
-        print("calendar unavailable:", e)
+    ev, ok = [], False
+    for u in CAL_URLS:
+        try:
+            ev += json.loads(_get(u))
+            ok = True
+        except Exception as e:  # noqa: BLE001
+            print("calendar feed unavailable:", u, e)
+    if not ok:
         return None
     now = datetime.now(timezone.utc)
     out = []
@@ -134,19 +143,23 @@ def headlines(hours=48, n=6):
                 continue
             if datetime.now(timezone.utc) - t > timedelta(hours=hours):
                 continue
-            low = " " + title.lower() + " "
+            low = " " + re.sub(r"[^a-z0-9$ ]", " ", title.lower()) + " "
+            if not any(k in low for k in MAJOR):
+                continue                      # not about crypto markets or US macro
             score = sum(w for k, w in KEYS.items() if k in low)
             severe = any(k in low for k in SEVERE)
             if score >= 3 or severe:
                 items.append({"src": src, "title": title, "link": link, "t": t, "score": score + 5 * severe,
                               "severe": severe})
     # drop near-duplicate titles
-    seen, out = set(), []
+    out = []
     for x in sorted(items, key=lambda x: (-x["score"], -x["t"].timestamp())):
-        key = re.sub(r"[^a-z]", "", x["title"].lower())[:40]
-        if key not in seen:
-            seen.add(key)
+        words = set(re.findall(r"[a-z0-9]{4,}", x["title"].lower()))
+        if all(len(words & y) / max(1, len(words | y)) < 0.35 for y in (o["_w"] for o in out)):
+            x["_w"] = words
             out.append(x)
+    for x in out:
+        x.pop("_w", None)
     return out[:n]
 
 
@@ -468,6 +481,11 @@ def main():
     if mode == "auto":
         now = datetime.now(timezone.utc)
         mode = "weekly" if now.weekday() == 0 and now.hour == 7 else "daily" if now.hour == 7 else "check"
+    if mode == "preview":                 # print everything, send nothing
+        os.environ.pop("TELEGRAM_BOT_TOKEN", None)
+        print(cal_block(calendar(7)))
+        print(news_block(headlines(72)))
+        return
     {"weekly": weekly, "daily": daily, "check": check}[mode](out)
 
 
