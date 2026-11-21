@@ -8,6 +8,11 @@ on:
         description: "Re-run the liquidity backtest (commits reports/)"
         type: boolean
         default: false
+      report:
+        description: "Telegram report to send now"
+        type: choice
+        options: [auto, weekly, daily, check]
+        default: auto
 permissions:
   contents: write
 concurrency:
@@ -32,7 +37,9 @@ jobs:
       - name: Previous alert state
         run: |
           mkdir -p out
-          git fetch -q origin liq-data && git show origin/liq-data:alert_state.json > out/alert_state.json || true
+          git fetch -q origin liq-data && for f in alert_state.json weekly_plan.json report_state.json; do
+            git show origin/liq-data:$f > out/$f 2>/dev/null || rm -f out/$f
+          done
       - name: Clusters and heatmap
         run: python -m btcf.liquidity out
       - name: Telegram alerts
@@ -40,6 +47,12 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python -m btcf.liq_alerts out
+      - name: Weekly outlook / daily brief / mid-week check
+        continue-on-error: true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m btcf.liq_report "${{ inputs.report || 'auto' }}" out
       - name: Publish to the liq-data branch (history not kept)
         run: |
           cd out

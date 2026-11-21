@@ -45,6 +45,13 @@ ul { margin: 6px 0 0; padding-left: 1.2em; }
   <nav class="tabs" id="coins"></nav>
   <nav class="tabs" id="tfs"></nav>
 
+  <section class="panel" id="wk" hidden>
+    <h2 id="wk-h">This week's outlook</h2>
+    <p class="muted" id="wk-s"></p>
+    <img id="wk-img" alt="BTC 7-day and 1-month liquidity maps" style="width:100%;border-radius:8px;margin:6px 0">
+    <pre id="wk-t" style="white-space:pre-wrap;font:13px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;margin:0"></pre>
+  </section>
+
   <section class="panel">
     <h2><span id="ttl">—</span> <span class="badge" id="trend">—</span></h2>
     <p class="muted" id="stamp"></p>
@@ -218,6 +225,14 @@ function backtest(all) {
     draw(d); table(d); addEventListener('resize', () => draw(d));
   } catch (e) { $('ttl').textContent = 'Data not available yet'; }
   try { backtest(await get('backtest.json')); } catch (e) { /* none yet */ }
+  try {
+    const w = await get('weekly_plan.json');
+    $('wk').hidden = false;
+    $('wk-h').textContent = w.revised ? 'This week\'s outlook (revised mid-week)' : 'This week\'s outlook';
+    $('wk-s').textContent = 'Made ' + w.made.replace('T', ' ').slice(0, 16) + ' UTC';
+    $('wk-img').src = RAW + 'btc_weekly.png?v=' + Date.now();
+    $('wk-t').textContent = w.text.split('\n\n').slice(1).join('\n\n');
+  } catch (e) { /* no weekly plan yet */ }
 })();
 </script>
 </body>
