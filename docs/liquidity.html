@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Liquidity map — estimated liquidation & stop clusters</title>
+<style>
+:root { --bg:#fafaf7; --panel:#fff; --fg:#1d1d1b; --muted:#6b6b66; --line:#e4e2dc; --accent:#c96442; --ok:#2f7d4f; --bad:#b3412e; --grid:#eeece6; --up:#2f7d4f; --dn:#b3412e; --heat:201,100,66; }
+@media (prefers-color-scheme: dark) { :root { --bg:#1b1b19; --panel:#242421; --fg:#ecebe6; --muted:#a3a29b; --line:#3a3935; --accent:#e08a69; --ok:#6cc08b; --bad:#e3795f; --grid:#2f2e2a; --up:#6cc08b; --dn:#e3795f; --heat:240,150,110; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 1040px; margin: 0 auto; padding: 20px 14px 60px; display: flex; flex-direction: column; gap: 18px; }
+h1 { font: 400 28px/1.2 Georgia, "Times New Roman", serif; margin: 0; }
+h2 { font-size: 17px; margin: 0 0 6px; }
+.muted { color: var(--muted); font-size: 13px; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tabs a { padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; cursor: pointer; font-weight: 600; font-size: 14px; color: var(--fg); text-decoration: none; background: var(--panel); }
+.tabs a.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+.badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-weight: 700; font-size: 13px; color: #fff; background: #9a9a92; }
+.badge.up { background: var(--up); } .badge.down { background: var(--dn); }
+.wrap { position: relative; }
+canvas { width: 100%; display: block; }
+.tip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.12); white-space: nowrap; font-variant-numeric: tabular-nums; z-index: 3; display: none; }
+.tw { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
+th, td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--muted); font-weight: 600; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--muted); margin-top: 6px; }
+.sw { display: inline-block; width: 14px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
+ul { margin: 6px 0 0; padding-left: 1.2em; }
+@media (max-width: 600px) { th, td { padding: 5px 4px; font-size: 12px; } td:first-child { white-space: normal; min-width: 110px; } }
+.good { color: var(--ok); font-weight: 600; } .weak { color: var(--muted); } .neg { color: var(--bad); font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+  <nav class="tabs"><a href="./">← Weekly forecast</a></nav>
+  <header>
+    <h1>Liquidity map</h1>
+    <p class="muted" style="margin:6px 0 0">Where stops and leveraged positions are likely resting, estimated from candles (free; same logic as the TradingView script). Updated every hour.</p>
+  </header>
+  <nav class="tabs" id="coins"></nav>
+  <nav class="tabs" id="tfs"></nav>
+
+  <section class="panel">
+    <h2><span id="ttl">—</span> <span class="badge" id="trend">—</span></h2>
+    <p class="muted" id="stamp"></p>
+    <div class="wrap"><canvas id="cv" height="460"></canvas><div class="tip" id="tip"></div></div>
+    <div class="legend">
+      <span><i class="sw" style="background:rgba(var(--heat),.85)"></i>Resting liquidity (brighter = more)</span>
+      <span><i class="sw" style="background:var(--up)"></i>Up candle</span>
+      <span><i class="sw" style="background:var(--dn)"></i>Down candle</span>
+      <span>Right edge: today's levels — liquidation estimates (solid) and swing stops (light)</span>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Biggest clusters now</h2>
+    <div class="tw"><table><thead><tr><th>Side</th><th>Price</th><th>Distance</th><th>Strength</th><th>Mostly</th></tr></thead><tbody id="mj"></tbody></table></div>
+    <p class="muted" id="hint"></p>
+  </section>
+
+  <section class="panel">
+    <h2>Does it work? Backtest for <span id="bt-tf">—</span></h2>
+    <div class="tw"><table><thead><tr><th>Test</th><th>Result</th><th>90% range</th><th></th></tr></thead><tbody id="bt"></tbody></table></div>
+    <details style="margin-top:10px"><summary>How to read this</summary>
+      <ul class="muted">
+        <li><b>Points</b> are percentage points above what distance alone predicts. Under pure randomness, a cluster twice as close is hit first about twice as often, so "price taps clusters" is true of any level. The map only helps if it beats that.</li>
+        <li><b>With the trend</b>: price above a rising 50-bar average (or below a falling one) and the heavy cluster lies in that direction. Part of this is plain momentum.</li>
+        <li><b>Sweep & reclaim</b>: a candle wicks through a large amount of resting liquidity and closes back. Result is the move in the reversal direction afterwards, before fees (~0.1% round trip).</li>
+        <li>A 90% range that includes 0 means the result could be luck.</li>
+      </ul>
+    </details>
+  </section>
+
+  <section class="panel">
+    <h2>Method</h2>
+    <ul class="muted">
+      <li>Candles: Hyperliquid perpetual futures (perp volume tracks leveraged trading).</li>
+      <li>High-volume candle (over 1.5× its 50-bar average) → new leveraged positions assumed at its close. Liquidation prices added at 10×, 25×, 50×, 100× for longs (below) and shorts (above), weighted by volume.</li>
+      <li>Swing highs/lows (5 bars each side) → stop-loss liquidity just beyond them.</li>
+      <li>A level disappears once price trades through it; its weight halves every 250 bars.</li>
+      <li>This is an estimate, not exchange liquidation data. Treat clusters as likely targets, not certainties.</li>
+    </ul>
+  </section>
+</main>
+<script>
+const RAW = 'https://raw.githubusercontent.com/jallow101/btc-forecast/liq-data/';
+const q = new URLSearchParams(location.search);
+const COIN = (q.get('coin') || 'btc').toUpperCase(), TF = q.get('tf') || '1h';
+const $ = (id) => document.getElementById(id);
+const fmt = (v) => v >= 1000 ? '$' + Math.round(v).toLocaleString('en-US') : v >= 10 ? '$' + v.toFixed(2) : '$' + v.toFixed(4);
+const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+function tabs(el, items, key) {
+  $(el).innerHTML = items.map((x) => {
+    const p = new URLSearchParams(location.search); p.set(key, x.toLowerCase ? x.toLowerCase() : x);
+    const on = (key === 'coin' ? COIN === x : TF === x) ? ' class="on"' : '';
+    return `<a href="?${p}"${on}>${x}</a>`;
+  }).join('');
+}
+tabs('coins', ['BTC', 'ETH', 'SOL', 'WLD'], 'coin');
+tabs('tfs', ['15m', '1h', '4h'], 'tf');
+
+async function get(name) {
+  for (const base of [RAW, 'data/liquidity/']) {
+    try { const r = await fetch(base + name + '?v=' + Date.now()); if (r.ok) return r.json(); } catch (e) { /* try next */ }
+  }
+  throw new Error('no data for ' + name);
+}
+
+function draw(d) {
+  const cv = $('cv'), dpr = window.devicePixelRatio || 1;
+  const W = cv.clientWidth, H = 460;
+  cv.width = W * dpr; cv.height = H * dpr; const g = cv.getContext('2d'); g.scale(dpr, dpr);
+  const padL = 6, padR = 70, side = 90, top = 8, bot = 22;
+  const plotW = W - padL - padR - side, plotH = H - top - bot;
+  const C = d.candles, n = C.length;
+  const lo = d.grid.lo, step = d.grid.step, nb = d.grid.n, hi = lo + nb * step;
+  let pmin = Math.min(...C.map((c) => c[3])), pmax = Math.max(...C.map((c) => c[2]));
+  pmin = Math.max(lo, Math.min(pmin, d.price * (1 - d.bin * 40)));
+  pmax = Math.min(hi, Math.max(pmax, d.price * (1 + d.bin * 40)));
+  const pad = (pmax - pmin) * 0.04; pmin -= pad; pmax += pad;
+  const y = (p) => top + (1 - (p - pmin) / (pmax - pmin)) * plotH;
+  const x = (i) => padL + (i + 0.5) * plotW / n;
+  const tIndex = new Map(C.map((c, i) => [c[0], i]));
+  // heat
+  const all = d.heat.w.flat(); const vmax = Math.max(1e-9, all.sort((a, b) => a - b)[Math.floor(all.length * 0.995)] || 1);
+  const heat = css('--heat');
+  d.heat.t.forEach((t, k) => {
+    const i0 = tIndex.get(t); if (i0 === undefined) return;
+    const i1 = k + 1 < d.heat.t.length ? (tIndex.get(d.heat.t[k + 1]) ?? n) : n;
+    const x0 = padL + i0 * plotW / n, x1 = padL + i1 * plotW / n;
+    d.heat.w[k].forEach((w, b) => {
+      if (w <= 0) return; const p0 = lo + b * step, p1 = p0 + step; if (p1 < pmin || p0 > pmax) return;
+      const a = Math.min(1, Math.sqrt(w / vmax)) * 0.9;
+      g.fillStyle = `rgba(${heat},${a.toFixed(3)})`; g.fillRect(x0, y(p1), x1 - x0 + 0.5, Math.max(1, y(p0) - y(p1)));
+    });
+  });
+  // candles
+  const up = css('--up'), dn = css('--dn'), cw = Math.max(1, plotW / n * 0.6);
+  C.forEach((c, i) => {
+    const col = c[4] >= c[1] ? up : dn; g.strokeStyle = col; g.fillStyle = col;
+    g.beginPath(); g.moveTo(x(i), y(c[2])); g.lineTo(x(i), y(c[3])); g.stroke();
+    const yo = y(c[1]), yc = y(c[4]); g.fillRect(x(i) - cw / 2, Math.min(yo, yc), cw, Math.max(1, Math.abs(yo - yc)));
+  });
+  // current levels histogram on the right
+  const sx = padL + plotW + 6, lv = d.levels.filter((r) => r[0] >= pmin && r[0] <= pmax);
+  const lmax = Math.max(1e-9, ...lv.map((r) => r[1]));
+  const bh = Math.max(1, (y(pmin) - y(pmin + d.price * d.bin)));
+  lv.forEach((r) => {
+    const yy = y(r[0]) - bh / 2, wl = (r[2] / lmax) * (side - 10), ws = (r[3] / lmax) * (side - 10);
+    g.fillStyle = `rgba(${heat},.95)`; g.fillRect(sx, yy, wl, bh);
+    g.fillStyle = `rgba(${heat},.4)`; g.fillRect(sx + wl, yy, ws, bh);
+  });
+  // price line + axis
+  g.strokeStyle = css('--fg'); g.setLineDash([4, 3]); g.beginPath(); g.moveTo(padL, y(d.price)); g.lineTo(W - padR, y(d.price)); g.stroke(); g.setLineDash([]);
+  g.fillStyle = css('--muted'); g.font = '11px sans-serif'; g.textAlign = 'left';
+  for (let k = 0; k <= 6; k++) { const p = pmin + (pmax - pmin) * k / 6; if (Math.abs(y(p) - y(d.price)) > 14) g.fillText(fmt(p), W - padR + 4, y(p) + 4); }
+  g.fillStyle = css('--fg'); g.fillText(fmt(d.price), W - padR + 4, y(d.price) - 6);
+  g.fillStyle = css('--muted'); g.textAlign = 'center';
+  (W < 600 ? [0, n - 1] : [0, Math.floor(n / 2), n - 1]).forEach((i) => g.fillText(C[i][0].slice(5, 16).replace('T', ' '), Math.min(Math.max(x(i), 40), padL + plotW - 40), H - 6));
+  // hover
+  cv.onmousemove = (e) => {
+    const r = cv.getBoundingClientRect(), my = e.clientY - r.top, p = pmin + (1 - (my - top) / plotH) * (pmax - pmin);
+    const near = d.levels.reduce((a, l) => Math.abs(l[0] - p) < Math.abs(a[0] - p) ? l : a, [Infinity, 0, 0, 0]);
+    const t = $('tip'); t.style.display = 'block'; t.style.left = Math.min(e.clientX - r.left + 12, W - 180) + 'px'; t.style.top = (my + 12) + 'px';
+    t.innerHTML = `${fmt(p)} (${((p / d.price - 1) * 100).toFixed(2)}%)<br>Nearest level ${fmt(near[0])}: strength ${near[1].toFixed(1)}`;
+  };
+  cv.onmouseleave = () => { $('tip').style.display = 'none'; };
+}
+
+function table(d) {
+  const rows = [];
+  for (const [side, name] of [['above', 'Above (shorts / buy stops)'], ['below', 'Below (longs / sell stops)']]) {
+    (d.majors[side] || []).forEach((c, k) => rows.push(`<tr><td>${k ? '' : name}</td><td>${fmt(c.price)}</td><td>${c.dist_pct > 0 ? '+' : ''}${c.dist_pct.toFixed(2)}%</td><td>${c.weight.toFixed(1)}</td><td>${c.liq_share > 0.5 ? 'Liquidations' : 'Swing stops'}</td></tr>`));
+  }
+  $('mj').innerHTML = rows.join('') || '<tr><td colspan=5 class="muted">No clusters in range</td></tr>';
+  const A = (d.majors.above || [])[0], B = (d.majors.below || [])[0];
+  let h = '';
+  if (A && B) {
+    const heavier = A.weight > B.weight * 1.5 ? 'above' : B.weight > A.weight * 1.5 ? 'below' : null;
+    h = heavier ? `Heavier side: <b>${heavier}</b>. ` : 'Both sides similar. ';
+    if (!heavier) h += 'The map gives no lean here: the nearer cluster is usually hit first.';
+    else if (d.trend === 'none') h += 'No clear trend, so the lean is weak: the nearer cluster is usually hit first.';
+    else h += (heavier === 'above') === (d.trend === 'up') ? 'It agrees with the trend: the case where the backtest found an edge.' : 'It is against the trend: the backtest found little edge there.';
+  }
+  $('hint').innerHTML = h;
+}
+
+function pts(x) { return (x * 100 >= 0 ? '+' : '') + (x * 100).toFixed(1) + ' pts'; }
+function verdict(lo, hi) { return lo > 0 ? '<span class="good">real edge</span>' : hi < 0 ? '<span class="neg">works against you</span>' : '<span class="weak">could be luck</span>'; }
+
+function backtest(all) {
+  const p = all[TF]; if (!p) return; $('bt-tf').textContent = `${TF} (${p.period[0]} to ${p.period[1]})`;
+  const D = p.direction, T = p.trend, S = p.sweeps, k = Object.keys(S.event).filter((z) => z !== 'n')[0];
+  const r = [
+    ['Heavier cluster hit first, beyond distance', pts(D.edge), D.edge_ci90, verdict(...D.edge_ci90)],
+    ['Heavy cluster <b>with</b> the trend', pts(T.with_trend.excess), T.with_trend.ci90, verdict(...T.with_trend.ci90)],
+    ['Heavy cluster against the trend', pts(T.against_trend.excess), T.against_trend.ci90, verdict(...T.against_trend.ci90)],
+    [`Sweep & reclaim, ${k} bars later (${S.event.n} cases)`, `${S.event[k].mean_pct >= 0 ? '+' : ''}${S.event[k].mean_pct.toFixed(2)}%, win ${(S.event[k].win * 100).toFixed(0)}%`, S.event[k].ci90.map((v) => v / 100), verdict(...S.event[k].ci90)],
+    [`Control: any wick & reclaim (${S.control.n})`, `${S.control[k].mean_pct >= 0 ? '+' : ''}${S.control[k].mean_pct.toFixed(2)}%, win ${(S.control[k].win * 100).toFixed(0)}%`, S.control[k].ci90.map((v) => v / 100), ''],
+  ];
+  $('bt').innerHTML = r.map((x) => `<tr><td>${x[0]}</td><td>${x[1]}</td><td>${x[2][0] * 100 >= 0 ? '+' : ''}${(x[2][0] * 100).toFixed(1)} to ${x[2][1] * 100 >= 0 ? '+' : ''}${(x[2][1] * 100).toFixed(1)}</td><td>${x[3]}</td></tr>`).join('')
+    + `<tr><td>Accuracy: "nearest cluster first" vs map rule</td><td>${(D.nearest_side_accuracy * 100).toFixed(0)}% vs ${(D.rule_accuracy * 100).toFixed(0)}%</td><td></td><td></td></tr>`;
+}
+
+(async () => {
+  try {
+    const d = await get(`${COIN}_${TF}.json`);
+    $('ttl').textContent = `${COIN} · ${TF} · ${fmt(d.price)}`;
+    $('trend').textContent = d.trend === 'none' ? 'No clear trend' : d.trend === 'up' ? 'Uptrend' : 'Downtrend';
+    $('trend').className = 'badge ' + d.trend;
+    $('stamp').textContent = 'Last candle ' + d.asof.replace('T', ' ').slice(0, 16) + ' UTC';
+    draw(d); table(d); addEventListener('resize', () => draw(d));
+  } catch (e) { $('ttl').textContent = 'Data not available yet'; }
+  try { backtest(await get('backtest.json')); } catch (e) { /* none yet */ }
+})();
+</script>
+</body>
+</html>

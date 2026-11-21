@@ -44,6 +44,9 @@ jobs:
           ALERT_TEST: ${{ inputs.test_alert }}
         run: python -m btcf.alerts
 
+      - name: Store liquidity candles (history grows past the API's 5000-bar window)
+        run: python -m btcf.liq_fetch || true
+
       - name: Commit price history, forecast log, backtest store and alert state
         run: |
           git config user.name "btc-forecast-bot"

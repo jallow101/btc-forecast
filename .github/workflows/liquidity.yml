@@ -1,39 +1,58 @@
-name: Liquidity clusters
+name: Liquidity map
 on:
+  schedule:
+    - cron: "12 * * * *"      # hourly, a few minutes after each candle closes
   workflow_dispatch:
     inputs:
       backtest:
-        description: "Run the liquidity backtest too"
+        description: "Re-run the liquidity backtest (commits reports/)"
         type: boolean
         default: false
 permissions:
   contents: write
 concurrency:
-  group: repo-writes
+  group: liquidity
   cancel-in-progress: false
 jobs:
   liquidity:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: pip
       - run: pip install -r requirements.txt
       - name: Fetch candles
         run: python -m btcf.liq_fetch
-      - name: Probe open-interest endpoints
-        run: python experiments/oi_probe.py || true
-      - name: Clusters
-        run: if [ -f btcf/liquidity.py ]; then python -m btcf.liquidity; fi
       - name: Backtest
         if: ${{ inputs.backtest }}
         run: python -m btcf.liq_backtest
-      - name: Commit
+      - name: Previous alert state
+        run: |
+          mkdir -p out
+          git fetch -q origin liq-data && git show origin/liq-data:alert_state.json > out/alert_state.json || true
+      - name: Clusters and heatmap
+        run: python -m btcf.liquidity out
+      - name: Telegram alerts
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m btcf.liq_alerts out
+      - name: Publish to the liq-data branch (history not kept)
+        run: |
+          cd out
+          git init -q -b liq-data
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -qm "Liquidity map $(date -u +%F' '%H:%M)"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" liq-data
+      - name: Commit backtest report
+        if: ${{ inputs.backtest }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/liq reports || true
-          git commit -m "Liquidity data $(date -u +%F' '%H:%M)" || exit 0
+          git add reports
+          git commit -m "Liquidity backtest $(date -u +%F)" || exit 0
           git pull --rebase -q && git push
