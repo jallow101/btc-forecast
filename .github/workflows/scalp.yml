@@ -1,0 +1,27 @@
+name: 1% long setups
+on:
+  schedule:
+    - cron: "2,17,32,47 * * * *"     # just after each 15-minute candle closes
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: scalp
+  cancel-in-progress: true
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m btcf.liq_fetch
+      - name: Check setups (alerts only fire if the backtest gate is open)
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m btcf.scalp

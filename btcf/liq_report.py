@@ -429,7 +429,13 @@ def weekly(out, title="📊 Weekly liquidity outlook", why=None):
         if plans[c]:
             body.append(coin_block(plans[c], full=True))
     rb = range_block(2)
-    body += ([rb] if rb else []) + [cal_block(cal), news_block(news), DISCLAIMER]
+    try:
+        from .scalp import gate
+        ok, why = gate()
+        sb = ("1% long setup: LIVE — alerts on. " if ok else "1% long setup: paper only, alerts off. ") + why
+    except Exception:  # noqa: BLE001
+        sb = None
+    body += ([rb] if rb else []) + ([sb] if sb else []) + [cal_block(cal), news_block(news), DISCLAIMER]
     text = "\n\n".join(body)
     print(text)
     img = heat_png(out, "BTC", "4h", out / "btc_weekly.png", "BTC Liquidation Heatmap (1 month, estimated)")
