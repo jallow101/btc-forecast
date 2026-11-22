@@ -37,6 +37,11 @@ def main():
             traceback.print_exc()
             failed.append(key)
     json.dump({"assets": done, "failed": failed}, open(SITE_DATA / "assets.json", "w"), indent=1)
+    try:                            # daily highs / lows, 1-7 days ahead
+        from . import daily_range
+        daily_range.run_live()
+    except Exception:  # noqa: BLE001
+        traceback.print_exc()
     if "btc" in failed:
         sys.exit(1)                 # BTC is the core: fail the run so it shows red on GitHub
 

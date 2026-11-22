@@ -264,6 +264,21 @@ def coin_block(p, full=True):
     return "\n".join(r)
 
 
+def range_block(days=1):
+    """Daily high/low model output (written by the daily forecast run)."""
+    p = DATA / "daily_range_latest.json"
+    if not p.exists():
+        return None
+    R = json.loads(p.read_text())
+    out = ["Expected daily ranges (model, UTC days; 80% range in brackets):"]
+    for key in ("btc", "eth", "sol"):
+        for r in R.get(key, [])[:days]:
+            d = datetime.fromisoformat(r["target_date"]).strftime("%a")
+            out.append(f"• {key.upper()} {d}: low {fmt(r['lo_q50'])} ({fmt(r['lo_q10'])}–{fmt(r['lo_q90'])}) · "
+                       f"high {fmt(r['hi_q50'])} ({fmt(r['hi_q10'])}–{fmt(r['hi_q90'])})")
+    return "\n".join(out)
+
+
 def cal_block(cal, days=7):
     if cal is None:
         return "Calendar: unavailable this run"
@@ -413,7 +428,8 @@ def weekly(out, title="📊 Weekly liquidity outlook", why=None):
     for c in COINS:
         if plans[c]:
             body.append(coin_block(plans[c], full=True))
-    body += [cal_block(cal), news_block(news), DISCLAIMER]
+    rb = range_block(2)
+    body += ([rb] if rb else []) + [cal_block(cal), news_block(news), DISCLAIMER]
     text = "\n\n".join(body)
     print(text)
     img = heat_png(out, "BTC", "4h", out / "btc_weekly.png", "BTC Liquidation Heatmap (1 month, estimated)")
@@ -447,7 +463,8 @@ def daily(out):
             w = wk["plans"][c]
             txt += f"\n• vs weekly plan: price {pct(p['price'], w['price'])}, trend {w['trend']}→{p['trend']}"
         body.append(txt)
-    body += [cal_block(cal, 1), news_block(news), PAGE]
+    rb = range_block(1)
+    body += ([rb] if rb else []) + [cal_block(cal, 1), news_block(news), PAGE]
     text = "\n\n".join(body)
     print(text)
     img = heat_png(out, "BTC", "15m", out / "btc_24h.png", "BTC Liquidation Heatmap (24 hour, estimated)", last_bars=96)

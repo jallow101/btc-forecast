@@ -67,6 +67,19 @@ ul { margin: 6px 0 0; padding-left: 1.2em; }
     <div class="card"><div class="lbl" id="c-p50-l">Chance of a weekly close ≤ $50k</div><div class="val" id="c-p50">—</div><div class="muted">Intraday wicks can go lower</div></div>
   </section>
 
+
+  <section class="panel" id="dr-panel">
+    <h2>Daily highs &amp; lows — next 7 days</h2>
+    <p class="muted" id="dr-sub">Predicted high and low of each UTC day, with an 80% range. Range size is fairly predictable; direction on a given day is close to a coin flip.</p>
+    <div class="chart" id="dr-chart" style="min-height:260px"></div>
+    <div class="legend"><span><i class="sw" style="background:var(--muted)"></i>Daily candles</span><span><i class="sw" style="background:var(--accent);opacity:.35"></i>80% range for the day's high / low</span><span><i class="sw" style="background:var(--accent)"></i>Most likely high / low</span></div>
+    <div class="tw"><table><thead><tr><th>Day (UTC)</th><th>Low</th><th>Low 80% range</th><th>High</th><th>High 80% range</th><th>Expected swing</th></tr></thead><tbody id="dr-t"></tbody></table></div>
+    <h2 style="margin-top:14px">Scored so far (tomorrow's forecast vs what happened)</h2>
+    <div class="stats" id="dr-live"></div>
+    <div class="tw"><table><thead><tr><th>Day</th><th>Pred. low</th><th>Actual low</th><th></th><th>Pred. high</th><th>Actual high</th><th></th></tr></thead><tbody id="dr-s"></tbody></table></div>
+    <p class="muted" id="dr-bt"></p>
+  </section>
+
   <section class="panel">
     <h2>Forecast fan</h2>
     <div class="row"><label for="wk" class="muted">Forecast up to</label><input type="date" id="wk"><span class="muted" id="wk-note"></span></div>
@@ -354,9 +367,51 @@ function tables() {
   rows($('cmp'), D.components, [[(r) => fd(pd(r.week_ending))], [(r) => usd(r.base)], [(r) => usd(r.gbm)], [(r) => usd(r.knn)], [(r) => usd(r.powerlaw)], [(r) => d3.format('.0%')(r.pl_weight)], [(r) => usd(r.q50)]]);
 }
 
-function drawAll() { header(); selectedCard(); fan(); live(); backtest(); tables(); resetBand(); }
 
-Promise.all(['meta', 'forecast', 'qgrid', 'history', 'risk', 'lowdist', 'lowmonth', 'components', 'bt_paths', 'bt_years', 'scorecard', 'live', 'health'].map((n) => get(n).then((v) => [n, v]).catch(() => [n, null])))
+function dailyRange(R) {
+  if (!R || !R.pred) { $('dr-panel').hidden = true; return; }
+  const f = (v) => usdp(v), fmt = usdp;
+  const P = R.pred;
+  $('dr-sub').textContent = `From the ${R.pred[0].run_date} daily close (${f(R.pred[0].close)}). Predicted high and low of each UTC day with an 80% range. Range size is fairly predictable; direction on a given day is close to a coin flip.`;
+  $('dr-t').innerHTML = P.map((r) => `<tr><td>${new Date(r.target_date + 'T00:00:00Z').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' })}</td><td>${f(r.lo_q50)}</td><td>${f(r.lo_q10)} – ${f(r.lo_q90)}</td><td>${f(r.hi_q50)}</td><td>${f(r.hi_q10)} – ${f(r.hi_q90)}</td><td>${((r.hi_q50 / r.lo_q50 - 1) * 100).toFixed(1)}%</td></tr>`).join('');
+  // chart: last 30 daily candles + 7 predicted days
+  const el = $('dr-chart'); el.innerHTML = '';
+  const W = el.clientWidth || 700, H = 260, m = { l: 8, r: 64, t: 8, b: 22 };
+  const C = R.recent.map((c) => ({ d: new Date(c[0] + 'T00:00:00Z'), o: c[1], h: c[2], l: c[3], c: c[4] }));
+  const Q = P.map((r) => ({ d: new Date(r.target_date + 'T00:00:00Z'), ...r }));
+  const days = C.map((c) => c.d).concat(Q.map((q) => q.d));
+  const x = d3.scaleBand().domain(days.map((d) => +d)).range([m.l, W - m.r]).padding(0.25);
+  const lo = d3.min([...C.map((c) => c.l), ...Q.map((q) => q.lo_q10)]), hi = d3.max([...C.map((c) => c.h), ...Q.map((q) => q.hi_q90)]);
+  const y = d3.scaleLinear().domain([lo * 0.99, hi * 1.01]).range([H - m.b, m.t]);
+  const svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+  svg.append('g').attr('transform', `translate(${W - m.r},0)`).call(d3.axisRight(y).ticks(5).tickFormat((v) => fmt(v))).call((g) => g.select('.domain').remove());
+  svg.append('g').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickValues(x.domain().filter((_, i) => i % 6 === 0 || i === days.length - 1)).tickFormat((v) => d3.utcFormat('%d %b')(new Date(+v)))).call((g) => g.select('.domain').remove());
+  const cs = getComputedStyle(document.documentElement), acc = cs.getPropertyValue('--accent').trim(), mut = cs.getPropertyValue('--muted').trim();
+  C.forEach((c) => {
+    const cx = x(+c.d) + x.bandwidth() / 2;
+    svg.append('line').attr('x1', cx).attr('x2', cx).attr('y1', y(c.h)).attr('y2', y(c.l)).attr('stroke', mut);
+    svg.append('rect').attr('x', x(+c.d)).attr('width', x.bandwidth()).attr('y', y(Math.max(c.o, c.c))).attr('height', Math.max(1, Math.abs(y(c.o) - y(c.c)))).attr('fill', c.c >= c.o ? mut : 'none').attr('stroke', mut);
+  });
+  Q.forEach((q) => {
+    const x0 = x(+q.d), bw = x.bandwidth();
+    for (const [a, b] of [[q.hi_q10, q.hi_q90], [q.lo_q10, q.lo_q90]]) svg.append('rect').attr('x', x0).attr('width', bw).attr('y', y(b)).attr('height', Math.max(1, y(a) - y(b))).attr('fill', acc).attr('opacity', 0.25);
+    for (const v of [q.hi_q50, q.lo_q50]) svg.append('line').attr('x1', x0).attr('x2', x0 + bw).attr('y1', y(v)).attr('y2', y(v)).attr('stroke', acc).attr('stroke-width', 2);
+  });
+  // live scoring
+  const S = R.scored || [], L = R.live || {};
+  $('dr-live').innerHTML = L.n ? `<div><b>${L.n}</b> days scored</div><div>High inside 80% range: <b>${L.hi_cover.toFixed(0)}%</b></div><div>Low inside 80% range: <b>${L.lo_cover.toFixed(0)}%</b></div><div>Typical miss: high <b>${L.hi_mae.toFixed(2)}%</b>, low <b>${L.lo_mae.toFixed(2)}%</b></div>` : '<div class="muted">First score appears after tomorrow\'s close.</div>';
+  const ok = (b) => b ? '✅' : '❌';
+  $('dr-s').innerHTML = S.slice(-14).reverse().map((r) => `<tr><td>${r.target_date}</td><td>${f(r.lo_q50)}</td><td>${f(r.act_lo)}</td><td>${ok(r.lo_in)}</td><td>${f(r.hi_q50)}</td><td>${f(r.act_hi)}</td><td>${ok(r.hi_in)}</td></tr>`).join('');
+  const B = R.backtest;
+  if (B) {
+    const k1 = B.by_k['1'], m1 = k1.model, b1 = k1.baseline_60d, yr = B.yesterday_range_mae;
+    $('dr-bt').innerHTML = `Backtest ${B.period[0]} to ${B.period[1]}, tomorrow's forecast: typical miss on the high <b>${m1.hi.mae_pct.toFixed(2)}%</b> (simple 60-day rule ${b1.hi.mae_pct.toFixed(2)}%, "yesterday's range" ${yr.hi.toFixed(2)}%), on the low <b>${m1.lo.mae_pct.toFixed(2)}%</b> (${b1.lo.mae_pct.toFixed(2)}%, ${yr.lo.toFixed(2)}%). The 80% ranges held ${m1.hi.cover80.toFixed(0)}% / ${m1.lo.cover80.toFixed(0)}% of the time.`;
+  }
+}
+
+function drawAll() { header(); selectedCard(); dailyRange(D.daily_range); fan(); live(); backtest(); tables(); resetBand(); }
+
+Promise.all(['meta', 'forecast', 'qgrid', 'history', 'risk', 'lowdist', 'lowmonth', 'components', 'bt_paths', 'bt_years', 'scorecard', 'live', 'health', 'daily_range'].map((n) => get(n).then((v) => [n, v]).catch(() => [n, null])))
   .then((all) => {
     all.forEach(([n, v]) => D[n] = v);
     if (!D.meta || !D.forecast) throw new Error('no data yet for ' + COIN.toUpperCase() + ', it appears after the next daily run');
