@@ -1,5 +1,5 @@
 {
- "made": "2026-11-23T08:50+00:00",
+ "made": "2026-11-23T09:46+00:00",
  "rules": {
   "tp_pct": 1.0,
   "sl": "below support, 0.8-2.0%",
@@ -352,15 +352,15 @@
      {
       "coin": "BTC",
       "t": "2026-11-23 03:15",
-      "exit_t": "2026-11-23 08:45",
+      "exit_t": "2026-11-23 09:45",
       "ret_pct": -0.14,
       "why": "time"
      },
      {
       "coin": "ETH",
       "t": "2026-11-23 03:15",
-      "exit_t": "2026-11-23 08:45",
-      "ret_pct": -0.69,
+      "exit_t": "2026-11-23 09:45",
+      "ret_pct": -0.71,
       "why": "time"
      },
      {
@@ -2417,8 +2417,8 @@
       "per_day": 1.73,
       "win": 58.0,
       "avg_net_pct": -0.202,
-      "total_net_pct": -136.8,
-      "max_dd_pct": 139.2,
+      "total_net_pct": -136.9,
+      "max_dd_pct": 139.3,
       "avg_sl_pct": 1.5
      },
      "Europe": {
@@ -2464,7 +2464,7 @@
       "per_day": 1.93,
       "win": 56.3,
       "avg_net_pct": -0.225,
-      "total_net_pct": -169.5,
+      "total_net_pct": -169.6,
       "max_dd_pct": 171.7,
       "avg_sl_pct": 1.5
      },
@@ -2481,7 +2481,7 @@
     "portfolio": {
      "days": 391,
      "trades": 1064,
-     "usd_total": -5304.0,
+     "usd_total": -5305.0,
      "usd_per_day": -13.5,
      "goal_per_day": 50,
      "days_goal_met": 10.9,
@@ -3247,49 +3247,49 @@
   "all": {
    "n": 9000,
    "per_day": 23.02,
-   "win": 54.1,
-   "avg_net_pct": -0.217,
-   "total_net_pct": -1954.3,
-   "max_dd_pct": 1961.9,
+   "win": 53.0,
+   "avg_net_pct": -0.239,
+   "total_net_pct": -2154.3,
+   "max_dd_pct": 2161.5,
    "avg_sl_pct": 1.5
   },
   "Asia": {
-   "n": 3013,
-   "per_day": 7.71,
-   "win": 55.2,
-   "avg_net_pct": -0.2,
-   "total_net_pct": -603.1,
-   "max_dd_pct": 606.3,
+   "n": 3032,
+   "per_day": 7.75,
+   "win": 54.3,
+   "avg_net_pct": -0.221,
+   "total_net_pct": -669.7,
+   "max_dd_pct": 672.4,
    "avg_sl_pct": 1.5
   },
   "Europe": {
-   "n": 1855,
-   "per_day": 4.74,
-   "win": 53.8,
-   "avg_net_pct": -0.228,
-   "total_net_pct": -422.9,
-   "max_dd_pct": 425.2,
+   "n": 1857,
+   "per_day": 4.75,
+   "win": 52.5,
+   "avg_net_pct": -0.246,
+   "total_net_pct": -457.6,
+   "max_dd_pct": 463.1,
    "avg_sl_pct": 1.5
   },
   "US": {
-   "n": 3040,
-   "per_day": 7.77,
-   "win": 53.4,
-   "avg_net_pct": -0.227,
-   "total_net_pct": -688.6,
-   "max_dd_pct": 690.8,
+   "n": 3048,
+   "per_day": 7.8,
+   "win": 51.7,
+   "avg_net_pct": -0.261,
+   "total_net_pct": -794.1,
+   "max_dd_pct": 800.9,
    "avg_sl_pct": 1.5
   },
   "Late": {
-   "n": 1092,
-   "per_day": 2.79,
-   "win": 53.3,
-   "avg_net_pct": -0.22,
-   "total_net_pct": -239.7,
-   "max_dd_pct": 242.1,
+   "n": 1063,
+   "per_day": 2.72,
+   "win": 54.2,
+   "avg_net_pct": -0.219,
+   "total_net_pct": -232.8,
+   "max_dd_pct": 236.9,
    "avg_sl_pct": 1.5
   }
  },
  "pick": "I_C+asia+capitulation",
- "gate": "I_C+asia+capitulation: 57 trades in 391 days, 66.7% hit +1%, +0.22% per trade after fees (random -0.22%)"
+ "gate": "I_C+asia+capitulation: 57 trades in 391 days, 66.7% hit +1%, +0.22% per trade after fees (random -0.24%)"
 }
