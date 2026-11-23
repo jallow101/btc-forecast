@@ -1,10 +1,10 @@
-name: 1% long setups
+name: 1% and 1.5% long setups
 on:
   schedule:
     - cron: "2,17,32,47 * * * *"     # just after each 15-minute candle closes
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 concurrency:
   group: scalp
   cancel-in-progress: true
@@ -25,3 +25,18 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python -m btcf.scalp
+      - name: Daily 1.5% trades — paper log (restore, update, publish to trades-data)
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DAYTRADE_TELEGRAM: ${{ vars.DAYTRADE_TELEGRAM || 'gated' }}
+        run: |
+          mkdir -p out/trades
+          git fetch -q origin trades-data && git show origin/trades-data:trades.json > out/trades/trades.json 2>/dev/null || rm -f out/trades/trades.json
+          python -m btcf.daytrade
+          cd out/trades
+          git init -q -b trades-data
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -qm "Trades $(date -u +%F' '%H:%M)"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" trades-data

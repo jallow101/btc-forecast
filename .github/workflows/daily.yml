@@ -50,6 +50,11 @@ jobs:
       - name: Re-test the 1% long setup on fresh data
         run: python -m btcf.scalp backtest || true
 
+      - name: Long 15m history (OKX) and re-test the 1.5% day-trade rules
+        run: |
+          python -m btcf.hist_fetch || true
+          python -m btcf.daytrade backtest || true
+
       - name: Commit price history, forecast log, backtest store and alert state
         run: |
           git config user.name "btc-forecast-bot"

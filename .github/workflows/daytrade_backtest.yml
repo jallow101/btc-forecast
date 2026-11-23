@@ -1,0 +1,31 @@
+name: Day-trade backtest (1 year of 15m)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "25 3 * * 1"     # Mondays; the daily run also re-tests
+permissions:
+  contents: write
+concurrency:
+  group: daytrade-bt
+  cancel-in-progress: true
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m btcf.liq_fetch
+      - run: python -m btcf.hist_fetch
+      - run: python -m btcf.daytrade backtest
+      - name: Commit history and report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/hist data/daytrade_backtest.json
+          git commit -m "Day-trade backtest $(date -u +%F)" || exit 0
+          git pull --rebase -q && git push

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Daily 1.5% trades — $5k, goal $50/day</title>
+<style>
+:root { --bg:#fafaf7; --panel:#fff; --fg:#1d1d1b; --muted:#6b6b66; --line:#e4e2dc; --accent:#c96442; --ok:#2f7d4f; --bad:#b3412e; --grid:#eeece6; }
+@media (prefers-color-scheme: dark) { :root { --bg:#1b1b19; --panel:#242421; --fg:#ecebe6; --muted:#a3a29b; --line:#3a3935; --accent:#e08a69; --ok:#6cc08b; --bad:#e3795f; --grid:#2f2e2a; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 1040px; margin: 0 auto; padding: 20px 14px 60px; display: flex; flex-direction: column; gap: 18px; }
+h1 { font: 400 28px/1.2 Georgia, "Times New Roman", serif; margin: 0; }
+h2 { font-size: 17px; margin: 0 0 6px; }
+.muted { color: var(--muted); font-size: 13px; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tabs a { padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; font-weight: 600; font-size: 14px; color: var(--fg); text-decoration: none; background: var(--panel); }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.kpi { border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+.kpi b { display: block; font-size: 22px; font-variant-numeric: tabular-nums; }
+.kpi span { color: var(--muted); font-size: 12px; }
+.bar { height: 8px; background: var(--grid); border-radius: 99px; overflow: hidden; margin-top: 6px; }
+.bar i { display: block; height: 100%; background: var(--ok); }
+.badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-weight: 700; font-size: 12px; color: #fff; background: #9a9a92; }
+.badge.ok { background: var(--ok); } .badge.bad { background: var(--bad); } .badge.paper { background: var(--accent); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; }
+.card { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.card h3 { margin: 0 0 4px; font-size: 15px; display: flex; justify-content: space-between; gap: 8px; }
+.conds { list-style: none; padding: 0; margin: 6px 0 0; font-size: 13px; }
+.conds li { padding: 1px 0; } .conds .y::before { content: "✓ "; color: var(--ok); font-weight: 700; } .conds .n::before { content: "✗ "; color: var(--bad); font-weight: 700; } .conds .x { color: var(--muted); } .conds .x::before { content: "+ "; }
+.tw { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
+th, td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--muted); font-weight: 600; }
+.good { color: var(--ok); font-weight: 600; } .neg { color: var(--bad); font-weight: 600; } .weak { color: var(--muted); }
+ul { margin: 6px 0 0; padding-left: 1.2em; }
+canvas { width: 100%; display: block; }
+@media (max-width: 600px) { th, td { padding: 5px 4px; font-size: 12px; } }
+</style>
+</head>
+<body>
+<main>
+  <nav class="tabs"><a href="./">← Weekly forecast</a><a href="liquidity.html">Liquidity map</a></nav>
+  <header>
+    <h1>Daily 1.5% trades</h1>
+    <p class="muted" style="margin:6px 0 0">$5,000 budget · $2,500 per position · max 2 open · max 7 proposals a day · stop after 2 losses · goal ≈ $50/day. Checked every 15 minutes on closed 15m candles.</p>
+  </header>
+
+  <section class="panel" id="status"><p class="muted">Loading…</p></section>
+
+  <section class="panel">
+    <h2>Today</h2>
+    <div class="kpis" id="kpis"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Proposals today <span class="muted" id="cnt"></span></h2>
+    <div class="cards" id="today"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Right now — how close each coin is</h2>
+    <p class="muted" id="wstamp"></p>
+    <div class="cards" id="watch"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Paper results</h2>
+    <canvas id="eq" height="180"></canvas>
+    <div class="tw"><table id="hist"></table></div>
+  </section>
+
+  <section class="panel">
+    <h2>Backtest — does it beat random entries?</h2>
+    <p class="muted" id="bperiod"></p>
+    <div class="tw"><table id="bt"></table></div>
+    <h2 style="margin-top:14px">By session (rule C)</h2>
+    <div class="tw"><table id="sess"></table></div>
+    <p class="muted" id="bnote"></p>
+  </section>
+
+  <section class="panel">
+    <h2>The rules</h2>
+    <ul id="rules"></ul>
+    <p class="muted">Why these: intraday BTC returns tend to mean-revert over 1–4 hours, and bigger drops bounce harder (De Nicola, 2021). Daily lows often print in the Asian or European session (Bloomberg, 2021). The "not falling" checks stop you buying a dip that is still dumping.</p>
+  </section>
+</main>
+<script>
+const RAW = "https://raw.githubusercontent.com/jallow101/btc-forecast/trades-data/";
+const $ = id => document.getElementById(id);
+const usd = v => (v < 0 ? "−$" : "$") + Math.abs(v).toLocaleString(undefined, {maximumFractionDigits: 0});
+const px = p => p == null ? "—" : p >= 1000 ? "$" + p.toLocaleString(undefined, {maximumFractionDigits: 0}) : p >= 10 ? "$" + p.toFixed(2) : "$" + p.toFixed(4);
+const pct = v => v == null ? "—" : (v > 0 ? "+" : "") + v.toFixed(2) + "%";
+const cls = v => v > 0 ? "good" : v < 0 ? "neg" : "weak";
+
+async function get(f) { const r = await fetch(RAW + f + "?t=" + Date.now()); if (!r.ok) throw new Error(f); return r.json(); }
+
+function condList(ok, need, labels, extras) {
+  const li = need.map(n => `<li class="${ok[n] ? "y" : "n"}">${labels[n] || n}</li>`);
+  (extras || []).filter(x => !need.includes(x) && ok[x]).forEach(x => li.push(`<li class="x">${labels[x]}</li>`));
+  return `<ul class="conds">${li.join("")}</ul>`;
+}
+
+function render(log, bt) {
+  const labels = bt.labels || {};
+  const L = log.limits || {size: 2500, goal: 50, max_per_day: 7};
+  const gated = log.gated;
+  $("status").innerHTML = `<h2>${gated ? '<span class="badge ok">LIVE</span>' : '<span class="badge paper">PAPER ONLY</span>'} Rule: ${log.rule}</h2>
+    <p class="muted" style="margin:0">${gated ? "Telegram alerts are on. " : "No Telegram alerts until the backtest beats random entries after fees. Proposals are logged here so we can see how they would have done. "}${log.gate || ""}</p>
+    <p class="muted" style="margin:4px 0 0">Updated ${log.made ? log.made.replace("T", " ").slice(0, 16) + " UTC" : "—"}</p>`;
+
+  const today = new Date().toISOString().slice(0, 10);
+  const all = log.trades || [];
+  const tday = all.filter(t => t.time.slice(0, 10) === today);
+  const taken = tday.filter(t => t.status !== "skipped");
+  const closedP = taken.filter(t => t.pnl_usd != null).reduce((a, t) => a + t.pnl_usd, 0);
+  const openP = taken.filter(t => t.status === "open" && t.last).reduce((a, t) => a + (t.last / t.entry - 1 - 0.002) * t.size, 0);
+  const prog = Math.max(0, Math.min(100, closedP / L.goal * 100));
+  $("kpis").innerHTML = `
+    <div class="kpi"><span>Banked today</span><b class="${cls(closedP)}">${usd(closedP)}</b><div class="bar"><i style="width:${prog}%"></i></div><span>of ${usd(L.goal)} goal</span></div>
+    <div class="kpi"><span>Open P&L</span><b class="${cls(openP)}">${usd(openP)}</b><span>${taken.filter(t => t.status === "open").length} open</span></div>
+    <div class="kpi"><span>Proposals</span><b>${taken.length} / ${L.max_per_day}</b><span>${tday.length - taken.length} skipped by limits</span></div>
+    <div class="kpi"><span>Wins / losses</span><b>${taken.filter(t => t.status === "TP").length} / ${taken.filter(t => t.status === "SL").length}</b><span>stop after ${L.max_losses || 2} losses</span></div>`;
+  $("cnt").textContent = `(${taken.length}/${L.max_per_day})`;
+  $("today").innerHTML = tday.length ? tday.slice().reverse().map(t => {
+    const st = t.status === "TP" ? '<span class="badge ok">TP hit</span>' : t.status === "SL" ? '<span class="badge bad">Stopped</span>'
+      : t.status === "skipped" ? `<span class="badge">skipped</span>` : t.status === "time" ? '<span class="badge">24h exit</span>' : '<span class="badge paper">open</span>';
+    const res = t.pnl_usd != null ? `<b class="${cls(t.pnl_usd)}">${usd(t.pnl_usd)} (${pct(t.ret_pct)})</b>` : t.last ? `now ${px(t.last)} (${pct((t.last / t.entry - 1) * 100)})` : "";
+    return `<div class="card"><h3><span>${t.coin} · ${t.time.slice(11)} UTC · ${t.session}</span>${st}</h3>
+      <div>Buy ${px(t.entry)} · TP <b>${px(t.tp)}</b> · SL <b>${px(t.sl)}</b></div>
+      <div class="muted">$${t.size.toLocaleString()} · win +${usd((0.015 - 0.002) * t.size)} · loss −${usd((1 - t.sl / t.entry + 0.002) * t.size)} · RSI6 ${t.rsi6}</div>
+      <div class="muted">Support: ${Object.entries(t.supports || {}).map(([k, v]) => k.replace("_", " ") + " " + px(v)).join(", ") || "—"}${t.liq_above ? " · liquidity above " + px(t.liq_above) : ""}</div>
+      ${t.skip_reason ? `<div class="muted">Skipped: ${t.skip_reason}</div>` : ""}<div>${res}</div></div>`;
+  }).join("") : '<p class="muted">None yet today. A proposal only appears when every condition holds — most days have 0–2.</p>';
+
+  const w = log.watch || [];
+  $("wstamp").textContent = w.length ? `Last closed 15m candle: ${w[0].time} UTC (${w[0].session} session)` : "";
+  $("watch").innerHTML = w.map(x => `<div class="card"><h3><span>${x.coin} ${px(x.price)} · RSI6 ${x.rsi6}</span><span class="badge ${x.met === x.of ? "ok" : ""}">${x.met}/${x.of}</span></h3>
+    ${condList(x.ok, x.need, labels, ["asia", "stretch", "capitulation", "magnet"])}</div>`).join("");
+
+  // paper history
+  const done = all.filter(t => t.pnl_usd != null && t.status !== "skipped");
+  const byDay = {};
+  done.forEach(t => { const d = t.time.slice(0, 10); (byDay[d] = byDay[d] || {n: 0, w: 0, usd: 0}); byDay[d].n++; byDay[d].usd += t.pnl_usd; if (t.status === "TP") byDay[d].w++; });
+  const days = Object.keys(byDay).sort();
+  drawEq(days.map(d => byDay[d].usd));
+  $("hist").innerHTML = days.length ? "<tr><th>Day</th><th>Trades</th><th>Wins</th><th>P&L</th><th>vs $50</th></tr>" + days.slice().reverse().slice(0, 30).map(d => {
+    const r = byDay[d]; return `<tr><td>${d}</td><td>${r.n}</td><td>${r.w}</td><td class="${cls(r.usd)}">${usd(r.usd)}</td><td>${r.usd >= L.goal ? "✓" : "—"}</td></tr>`; }).join("")
+    : '<tr><td class="muted">No closed paper trades yet.</td></tr>';
+
+  // backtest
+  const R = bt.results?.structure || {}, rnd = bt.random?.all || {};
+  const per = bt.period ? Object.values(bt.period)[0] : null;
+  $("bperiod").textContent = per ? `${per[0]} → ${per[1]} (${per[2]} days) · BTC, ETH, SOL pooled · TP +1.5%, stop below support, 24h max, 0.2% fees` : "";
+  $("bt").innerHTML = "<tr><th>Rule</th><th>Trades</th><th>Hit +1.5%</th><th>Avg/trade</th><th>90% range</th><th>$/day</th><th>Days ≥ $50</th></tr>" +
+    Object.entries(R).map(([k, s]) => { const p = s.portfolio || {}; const ci = s.ci90_avg_pct;
+      return `<tr><td>${k.replace(/_/g, " ")}</td><td>${s.n}</td><td>${s.win ?? "—"}%</td><td class="${cls((s.avg_net_pct ?? 0) - (rnd.avg_net_pct ?? 0))}">${pct(s.avg_net_pct)}</td>
+      <td class="weak">${ci ? pct(ci[0]) + " … " + pct(ci[1]) : "too few"}</td><td class="${cls(p.usd_per_day)}">${p.usd_per_day != null ? usd(p.usd_per_day) : "—"}</td><td>${p.days_goal_met ?? "—"}%</td></tr>`; }).join("") +
+    `<tr><td><i>random entries</i></td><td>${rnd.n ?? "—"}</td><td>${rnd.win ?? "—"}%</td><td>${pct(rnd.avg_net_pct)}</td><td></td><td></td><td></td></tr>`;
+  const S = R["C_core+not_falling"]?.by_session || {}, RS = bt.random || {};
+  $("sess").innerHTML = "<tr><th>Session (UTC)</th><th>Trades</th><th>Hit +1.5%</th><th>Avg/trade</th><th>Random avg</th></tr>" +
+    [["Asia", "00–08"], ["Europe", "08–13"], ["US", "13–21"], ["Late", "21–24"]].map(([k, h]) => { const s = S[k] || {n: 0};
+      return `<tr><td>${k} ${h}</td><td>${s.n}</td><td>${s.win ?? "—"}${s.n ? "%" : ""}</td><td class="${cls(s.avg_net_pct)}">${pct(s.avg_net_pct)}</td><td class="weak">${pct(RS[k]?.avg_net_pct)}</td></tr>`; }).join("");
+  $("bnote").innerHTML = `Green avg = better than random entries. Live alerts switch on only when a rule has ≥30 trades, beats random by ≥0.15% per trade, and its whole 90% range is above zero. Pick: <b>${bt.pick || "none yet"}</b>. Re-tested daily.`;
+
+  const r = bt.rules || {};
+  $("rules").innerHTML = [
+    "Entry on a closed 15m candle only when every condition of the rule is ✓.",
+    ...(bt.variants?.[log.rule] || []).map(n => labels[n]),
+    `Take profit +${r.tp_pct ?? 1.5}% · stop ${r.sl || "below support"} · close after ${r.max_hold_h ?? 24}h · fees ${r.fee_pct ?? 0.2}% round trip.`,
+    `$${(r.size ?? 2500).toLocaleString()} per trade, max ${r.max_open ?? 2} open, max ${r.max_per_day ?? 7} a day, done for the day after ${r.max_losses_per_day ?? 2} losses.`,
+    "Bybit: buy with a limit at the entry, then place an OCO sell (GTC) — TP limit at the TP, stop trigger at the SL with a Market order."
+  ].map(x => `<li>${x}</li>`).join("");
+}
+
+function drawEq(vals) {
+  const cv = $("eq"), dpr = devicePixelRatio || 1, W = cv.clientWidth, H = 180;
+  cv.width = W * dpr; cv.height = H * dpr; const g = cv.getContext("2d"); g.scale(dpr, dpr);
+  const cs = getComputedStyle(document.documentElement);
+  g.fillStyle = cs.getPropertyValue("--muted"); g.font = "12px sans-serif";
+  if (!vals.length) { g.fillText("Cumulative paper P&L appears here once trades close.", 8, 20); return; }
+  const eq = [0]; vals.forEach(v => eq.push(eq.at(-1) + v));
+  const goal = eq.map((_, i) => i * 50);
+  const lo = Math.min(...eq, 0), hi = Math.max(...eq, ...goal, 1);
+  const x = i => 40 + i / (eq.length - 1 || 1) * (W - 50), y = v => 10 + (hi - v) / (hi - lo || 1) * (H - 30);
+  g.strokeStyle = cs.getPropertyValue("--grid"); g.beginPath(); g.moveTo(40, y(0)); g.lineTo(W - 10, y(0)); g.stroke();
+  g.setLineDash([4, 4]); g.strokeStyle = cs.getPropertyValue("--muted"); g.beginPath(); goal.forEach((v, i) => i ? g.lineTo(x(i), y(v)) : g.moveTo(x(i), y(v))); g.stroke(); g.setLineDash([]);
+  g.strokeStyle = cs.getPropertyValue("--accent"); g.lineWidth = 2; g.beginPath(); eq.forEach((v, i) => i ? g.lineTo(x(i), y(v)) : g.moveTo(x(i), y(v))); g.stroke();
+  g.fillText(usd(eq.at(-1)), x(eq.length - 1) - 40, y(eq.at(-1)) - 6); g.fillText("$50/day pace", 44, y(goal.at(-1)) + 14);
+}
+
+Promise.all([get("trades.json"), get("backtest.json")]).then(([l, b]) => render(l, b))
+  .catch(e => { $("status").innerHTML = `<p class="muted">No data yet (${e.message}). The 15-minute scanner publishes it to the trades-data branch on its first run.</p>`; });
+</script>
+</body>
+</html>
