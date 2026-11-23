@@ -1,4 +1,4 @@
-"""Daily 1.5% longs: $5k budget, goal ≈ $50/day, at most 7 proposals a day.
+"""Daily 1% longs: $5k budget, goal ≈ $50/day, at most 7 proposals a day.
 
 A proposal is made on a CLOSED 15-minute candle only when every condition
 of the chosen rule holds (see CONDS). The idea, from the research:
@@ -12,7 +12,7 @@ of the chosen rule holds (see CONDS). The idea, from the research:
 
 Risk rules (paper log and backtest): $2,500 per position, at most 2 open,
 at most 7 proposals per UTC day, stop for the day after 2 losses,
-TP +1.5%, SL below the support (0.8%-2.0%), close after 24h. Fees 0.2%.
+TP +1%, SL below the support (0.8%-2.0%), close after 24h. Fees 0.2%.
 
 backtest(): every rule variant vs random entries with the same exits, by
 session, plus a portfolio simulation in dollars vs the $50/day goal.
@@ -30,7 +30,7 @@ from .paths import DATA, ROOT, SITE_DATA
 from .scalp import daily_preds, fmtp, rsi
 
 COINS = {"BTC": "btc", "ETH": "eth", "SOL": "sol"}
-TP = 0.015
+TP = 0.01
 SL_FIXED = 0.015
 SL_MIN, SL_MAX, SL_PAD = 0.008, 0.020, 0.003
 FEE = 0.002
@@ -150,7 +150,7 @@ def build(coin, btc=None):
 SUPPORTS = ("liq_below", "ma99", "ma200", "swing_low", "lo_q50")
 LABELS = {
     "hook": "15m RSI(6) was under 25 and turned up",
-    "room": "day's predicted high ≥ 1.7% above (room for the 1.5% target)",
+    "room": "day's predicted high ≥ 1.2% above (room for the 1% target)",
     "hold": "price still above the day's predicted low (10% band)",
     "support": "within 0.6% above a support (1h liquidity / MA99 / MA200 / swing low / predicted low)",
     "stopped": "selling stopped: green 15m candle closed back over EMA7",
@@ -159,7 +159,7 @@ LABELS = {
     "asia": "Asian session (00–08 UTC)",
     "stretch": "stretched: ≥1.5% under the 1h MA25 (bigger dips revert harder)",
     "capitulation": "a volume spike (≥2× average) in the last hour",
-    "magnet": "a liquidity cluster 1.5–6% above to pull price up",
+    "magnet": "a liquidity cluster 1–6% above to pull price up",
 }
 
 
@@ -196,8 +196,12 @@ VARIANTS = {
     "F_C+capitulation": SAFE + ["capitulation"],
     "G_C+magnet": SAFE + ["magnet"],
     "H_C+asia+stretch": SAFE + ["asia", "stretch"],
+    "I_C+asia+capitulation": SAFE + ["asia", "capitulation"],
+    "J_C+asia+magnet": SAFE + ["asia", "magnet"],
 }
-LIVE_RULE = "C_core+not_falling"   # replaced by the backtest's pick (see pick())
+# Best on 391 days at TP 1% (57 trades, 67% hit, +0.22%/trade after fees, both halves positive).
+# Chosen after trying 10 variants, so the paper log is the real test.
+LIVE_RULE = "I_C+asia+capitulation"
 
 
 def mask(cd, names):
@@ -344,9 +348,13 @@ def backtest():
                 s["by_session"] = {k: stats(g, days) for k, g in t.groupby("session")}
                 s["by_coin"] = {k: stats(g, days) for k, g in t.groupby("coin")}
                 s["portfolio"] = portfolio(t, days)
+                mid = t.t.min() + (t.t.max() - t.t.min()) / 2
+                s["halves_avg_pct"] = [round(float(t[t.t < mid].ret.mean()) * 100, 3),
+                                       round(float(t[t.t >= mid].ret.mean()) * 100, 3)]
                 if mode == "structure":
-                    s["recent"] = [{"coin": r.coin, "t": str(r.t)[:16], "ret_pct": round(r.ret * 100, 2),
-                                    "why": r.why} for r in t.sort_values("t").tail(15).itertuples()]
+                    s["recent"] = [{"coin": r.coin, "t": str(r.t)[:16], "exit_t": str(r.exit_t)[:16],
+                                    "ret_pct": round(r.ret * 100, 2), "why": r.why}
+                                   for r in t.sort_values("t").tail(20).itertuples()]
             out[mode][name] = s
     res["results"] = out
     res["random"] = {k: stats(pd.concat(v), days) for k, v in rnd.items() if v}
@@ -360,21 +368,23 @@ def backtest():
 
 
 def pick(res):
-    """Gate: the live rule is the safest variant (C, or a stricter one) that beats random by
-    ≥0.15%/trade after fees, with ≥30 trades and the lower 90% bound above zero. No pick -> paper only."""
+    """Gate: a "not falling" variant that beats random by ≥0.15%/trade after fees, with ≥30 trades,
+    the lower 90% bound above zero, and positive in BOTH halves of the period. None -> paper only."""
     rnd = res["random"]["all"]["avg_net_pct"]
     best, why = None, "no rule has beaten random entries after fees yet — paper trading only"
-    for name in ("C_core+not_falling", "D_C+asia", "E_C+stretch", "F_C+capitulation", "G_C+magnet",
-                 "H_C+asia+stretch"):
-        s = res["results"]["structure"][name]
-        ci = s.get("ci90_avg_pct")
-        if s.get("n", 0) >= 30 and ci and ci[0] > 0 and s["avg_net_pct"] >= rnd + 0.15:
-            if best is None or s["avg_net_pct"] > res["results"]["structure"][best]["avg_net_pct"]:
+    R = res["results"]["structure"]
+    for name in VARIANTS:
+        if not name[0] in "CDEFGHIJ":
+            continue
+        s = R[name]
+        ci, hv = s.get("ci90_avg_pct"), s.get("halves_avg_pct") or [-1, -1]
+        if s.get("n", 0) >= 30 and ci and ci[0] > 0 and s["avg_net_pct"] >= rnd + 0.15 and min(hv) > 0:
+            if best is None or s["avg_net_pct"] > R[best]["avg_net_pct"]:
                 best = name
     if best:
-        s = res["results"]["structure"][best]
-        why = (f"{best}: {s['n']} trades, {s['win']}% hit +1.5%, {s['avg_net_pct']:+.2f}% per trade after fees "
-               f"(random {rnd:+.2f}%)")
+        s = R[best]
+        why = (f"{best}: {s['n']} trades in {res['period']['BTC'][2]} days, {s['win']}% hit +{TP*100:g}%, "
+               f"{s['avg_net_pct']:+.2f}% per trade after fees (random {rnd:+.2f}%)")
     return best, why
 
 
@@ -395,13 +405,15 @@ def save_log(log):
 
 
 def update_open(log, frames):
+    """Resolve every proposal — taken or skipped — so the page can show hit or missed."""
+    done = []
     for tr in log["trades"]:
         if tr["status"] != "open":
             continue
         f = frames[tr["coin"]]
-        after = f[f.t > pd.Timestamp(tr["time"])]
-        for r in after.itertuples():
-            if r.low <= tr["sl"]:
+        after = f[f.t > pd.Timestamp(tr["time"], tz="UTC")]
+        for r in after.head(MAX_HOLD).itertuples():
+            if r.low <= tr["sl"]:                 # same candle = counted as a loss
                 tr.update(status="SL", exit=tr["sl"], exit_time=str(r.t)[:16])
                 break
             if r.high >= tr["tp"]:
@@ -413,19 +425,34 @@ def update_open(log, frames):
                 tr.update(status="time", exit=float(r.close), exit_time=str(r.t)[:16])
             elif len(after):
                 tr["last"] = float(after.close.iat[-1])
+                tr["max_seen"] = float(after.high.max())
+                tr["min_seen"] = float(after.low.min())
         if tr["status"] != "open":
             ret = tr["exit"] / tr["entry"] - 1 - FEE
             tr["pnl_usd"] = round(ret * tr["size"], 2)
             tr["ret_pct"] = round(ret * 100, 2)
-            tr["closed"] = True
+            tr["result"] = "hit" if tr["status"] == "TP" else "missed"
+            tr.pop("last", None)
+            done.append(tr)
+    return done
+
+
+def outcome_msg(tr):
+    head = "✅ HIT" if tr["result"] == "hit" else ("⏱ 24h exit" if tr["status"] == "time" else "❌ MISSED (stop)")
+    tag = "" if tr.get("taken", True) else " (was skipped by the daily limits)"
+    return (f"{head}{tag} — {tr['coin']} long from {tr['time']} UTC\n"
+            f"Entry {fmtp(tr['entry'])} → exit {fmtp(tr['exit'])} at {tr['exit_time']} UTC · "
+            f"{tr['ret_pct']:+.2f}% after fees = {'+' if tr['pnl_usd'] >= 0 else '−'}${abs(tr['pnl_usd']):.0f}")
 
 
 def live():
     from .alerts import send
     rep = json.loads(REPORT.read_text()) if REPORT.exists() else {}
-    rule = rep.get("pick") or LIVE_RULE
     gated = bool(rep.get("pick"))
-    force = os.environ.get("DAYTRADE_TELEGRAM", "gated") == "always"
+    rule = rep.get("pick") or LIVE_RULE
+    if rule not in VARIANTS:
+        rule, gated = LIVE_RULE, False
+    alerts = gated or os.environ.get("DAYTRADE_TELEGRAM", "gated") == "always"
     btc = build("BTC")
     frames = {"BTC": btc}
     for coin in COINS:
@@ -434,11 +461,14 @@ def live():
     for k in frames:                          # newest row is still forming
         frames[k] = frames[k].iloc[:-1].reset_index(drop=True)
     log = load_log()
-    update_open(log, frames)
+    for tr in update_open(log, frames):
+        print(outcome_msg(tr))
+        if alerts and tr.get("taken", True) and tr.get("alerted"):
+            send(outcome_msg(tr))
     today = datetime.now(timezone.utc).date().isoformat()
-    todays = [t for t in log["trades"] if t["time"][:10] == today]
-    n_open = sum(t["status"] == "open" for t in log["trades"])
-    losses = sum(t["status"] == "SL" or (t.get("pnl_usd", 0) < 0) for t in todays if t["status"] != "open")
+    todays = [t for t in log["trades"] if t["time"][:10] == today and t.get("taken", True)]
+    n_open = sum(t["status"] == "open" and t.get("taken", True) for t in log["trades"])
+    losses = sum(t.get("pnl_usd", 0) < 0 for t in todays if t["status"] != "open")
     watch = []
     for coin, f in frames.items():
         cd = conditions(f)
@@ -466,8 +496,8 @@ def live():
               "supports": {s: float(r[s]) for s in SUPPORTS if pd.notna(r[s]) and r[s] <= e
                            and e / r[s] - 1 <= SUPPORT_BAND},
               "pred_hi": float(r.hi_q50), "liq_above": float(r.liq_above) if pd.notna(r.liq_above) else None,
-              "extras": [k for k in ("asia", "stretch", "capitulation", "magnet") if ok[k]],
-              "status": "skipped" if blocked else "open", "skip_reason": blocked or None}
+              "extras": [k for k in ("asia", "stretch", "capitulation", "magnet") if ok[k] and k not in need],
+              "status": "open", "taken": not blocked, "skip_reason": blocked or None, "live": gated}
         log["trades"].append(tr)
         if blocked:
             continue
@@ -475,20 +505,19 @@ def live():
         n_open += 1
         gain = (TP - FEE) * SIZE
         loss = (1 - sl / e + FEE) * SIZE
-        msg = (f"{'🟢' if gated else '📝 PAPER'} {coin} 1.5% long #{len(todays)}/7 today ({snap['time']} UTC, {r.session})\n"
+        msg = (f"{'🟢' if gated else '📝 PAPER'} {coin} 1% long #{len(todays)}/7 today ({snap['time']} UTC, {r.session})\n"
                f"Buy ~{fmtp(e)} with ${SIZE:,} · TP {fmtp(tr['tp'])} (+${gain:.0f}) · SL {fmtp(sl)} (−${loss:.0f})\n"
-               f"RSI6 {snap['rsi6']} hooked up, green close over EMA7, BTC not dumping\n"
+               f"RSI6 {snap['rsi6']} hooked up, volume spike, green close over EMA7, BTC not dumping\n"
                f"Support: " + ", ".join(f"{k.replace('_', ' ')} {fmtp(v)}" for k, v in tr["supports"].items())
-               + (f" · liquidity above {fmtp(tr['liq_above'])}" if tr["liq_above"] else "")
-               + (f" · extras: {', '.join(tr['extras'])}" if tr["extras"] else "") + "\n"
-               + ("Backtest: " + rep.get("gate", "") if gated else
-                  "Paper only — " + rep.get("gate", "no backtest yet")))
+               + (f" · liquidity above {fmtp(tr['liq_above'])}" if tr["liq_above"] else "") + "\n"
+               f"Bybit: limit buy, then OCO sell (GTC): TP limit {fmtp(tr['tp'])}, stop {fmtp(sl)} Market.\n"
+               + ("Backtest: " + rep.get("gate", "") if gated else "Paper only — " + rep.get("gate", "no backtest yet")))
         print(msg)
-        if gated or force:
-            send(msg)
+        if alerts:
+            tr["alerted"] = bool(send(msg))
     log["watch"] = watch
     log["rule"], log["gated"], log["gate"] = rule, gated, rep.get("gate")
-    log["limits"] = {"size": SIZE, "max_open": MAX_OPEN, "max_per_day": MAX_PER_DAY,
+    log["limits"] = {"size": SIZE, "max_open": MAX_OPEN, "max_per_day": MAX_PER_DAY, "tp": TP, "fee": FEE,
                      "max_losses": MAX_LOSSES, "goal": GOAL, "budget": BUDGET}
     log["trades"] = log["trades"][-600:]
     save_log(log)
