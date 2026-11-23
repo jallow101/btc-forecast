@@ -56,12 +56,14 @@ jobs:
           python -m btcf.daytrade backtest || true
 
       - name: Commit price history, forecast log, backtest store and alert state
+        continue-on-error: true
         run: |
           git config user.name "btc-forecast-bot"
           git config user.email "actions@users.noreply.github.com"
           git add -A data
           if git diff --cached --quiet; then echo "No changes"; else
-            git commit -m "Daily forecast $(date -u +%Y-%m-%d)" && git pull --rebase -q && git push
+            git commit -m "Daily forecast $(date -u +%Y-%m-%d)"
+            for i in 1 2 3; do git pull --rebase -q && git push && break; sleep 10; done
           fi
 
       - uses: actions/configure-pages@v5
