@@ -1,17 +1,19 @@
 name: 1% and 1.5% long setups
+# GitHub delays scheduled runs by hours, so one run stays alive ~5h45m and
+# checks after every 15-minute candle closes. A new run queues behind it.
 on:
   schedule:
-    - cron: "2,17,32,47 * * * *"     # just after each 15-minute candle closes
+    - cron: "5 * * * *"
   workflow_dispatch:
 permissions:
   contents: write
 concurrency:
   group: scalp
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 355
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -19,24 +21,28 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: pip install -r requirements.txt
-      - run: python -m btcf.liq_fetch
-      - name: Check setups (alerts only fire if the backtest gate is open)
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python -m btcf.scalp
-      - name: Daily 1.5% trades — paper log (restore, update, publish to trades-data)
+      - name: Scan every 15 minutes for ~5h40m
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           DAYTRADE_TELEGRAM: ${{ vars.DAYTRADE_TELEGRAM || 'gated' }}
+          PUSH_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
         run: |
-          mkdir -p out/trades
-          git fetch -q origin trades-data && git show origin/trades-data:trades.json > out/trades/trades.json 2>/dev/null || rm -f out/trades/trades.json
-          python -m btcf.daytrade
-          cd out/trades
-          git init -q -b trades-data
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A && git commit -qm "Trades $(date -u +%F' '%H:%M)"
-          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" trades-data
+          end=$(( $(date +%s) + 340*60 ))
+          while [ "$(date +%s)" -lt "$end" ]; do
+            git pull -q --rebase || true            # pick up the newest daily predictions/backtest
+            python -m btcf.liq_fetch > /dev/null || true
+            python -m btcf.scalp || true
+            mkdir -p out/trades
+            git fetch -q origin trades-data 2>/dev/null && git show origin/trades-data:trades.json > out/trades/trades.json 2>/dev/null || rm -f out/trades/trades.json
+            if python -m btcf.daytrade; then
+              ( cd out/trades && rm -rf .git && git init -q -b trades-data \
+                && git config user.name "github-actions[bot]" \
+                && git config user.email "github-actions[bot]@users.noreply.github.com" \
+                && git add -A && git commit -qm "Trades $(date -u +%F' '%H:%M)" && git push -qf "$PUSH_URL" trades-data ) || true
+            fi
+            git checkout -q -- data 2>/dev/null || true
+            # sleep until 2 minutes after the next 15-minute candle closes
+            now=$(date +%s); nxt=$(( (now / 900 + 1) * 900 + 120 ))
+            sleep $(( nxt - now ))
+          done
