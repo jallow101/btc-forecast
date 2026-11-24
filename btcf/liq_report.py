@@ -279,6 +279,22 @@ def range_block(days=1):
     return "\n".join(out)
 
 
+def derivs_block():
+    """Real leverage data (OKX) published by the 15-minute scanner."""
+    try:
+        import urllib.request
+        url = "https://raw.githubusercontent.com/jallow101/btc-forecast/trades-data/derivs.json"
+        with urllib.request.urlopen(url, timeout=20) as r:
+            D = json.load(r)
+    except Exception:  # noqa: BLE001
+        return None
+    out = ["Real leverage (OKX perps):"]
+    for c in ("BTC", "ETH"):
+        if c in D and D[c].get("read"):
+            out.append(f"• {c}: " + " ".join(D[c]["read"]))
+    return "\n".join(out) if len(out) > 1 else None
+
+
 def cal_block(cal, days=7):
     if cal is None:
         return "Calendar: unavailable this run"
@@ -435,7 +451,8 @@ def weekly(out, title="📊 Weekly liquidity outlook", why=None):
         sb = ("1% long setup: LIVE — alerts on. " if ok else "1% long setup: paper only, alerts off. ") + why
     except Exception:  # noqa: BLE001
         sb = None
-    body += ([rb] if rb else []) + ([sb] if sb else []) + [cal_block(cal), news_block(news), DISCLAIMER]
+    db = derivs_block()
+    body += ([rb] if rb else []) + ([db] if db else []) + ([sb] if sb else []) + [cal_block(cal), news_block(news), DISCLAIMER]
     text = "\n\n".join(body)
     print(text)
     img = heat_png(out, "BTC", "4h", out / "btc_weekly.png", "BTC Liquidation Heatmap (1 month, estimated)")
@@ -470,7 +487,8 @@ def daily(out):
             txt += f"\n• vs weekly plan: price {pct(p['price'], w['price'])}, trend {w['trend']}→{p['trend']}"
         body.append(txt)
     rb = range_block(1)
-    body += ([rb] if rb else []) + [cal_block(cal, 1), news_block(news), PAGE]
+    db = derivs_block()
+    body += ([rb] if rb else []) + ([db] if db else []) + [cal_block(cal, 1), news_block(news), PAGE]
     text = "\n\n".join(body)
     print(text)
     img = heat_png(out, "BTC", "15m", out / "btc_24h.png", "BTC Liquidation Heatmap (24 hour, estimated)", last_bars=96)

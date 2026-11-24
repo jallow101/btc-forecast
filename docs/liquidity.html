@@ -63,6 +63,15 @@ ul { margin: 6px 0 0; padding-left: 1.2em; }
     <p class="muted" id="hint"></p>
   </section>
 
+  <section class="panel" id="dv" hidden>
+    <h2>Real leverage — OKX perpetuals</h2>
+    <p class="muted" id="dv-s"></p>
+    <div class="kpis" id="dv-k" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px"></div>
+    <ul id="dv-r" style="margin:10px 0 0;padding-left:1.2em"></ul>
+    <div class="tw"><table><thead><tr><th>Where traders got liquidated (24h)</th><th>Who</th><th>Size</th></tr></thead><tbody id="dv-c"></tbody></table></div>
+    <p class="muted">Dots on the chart above are real liquidations: <span style="color:#ff4d5e">red = longs wiped</span>, <span style="color:#26c281">green = shorts wiped</span>, bigger = larger. The heat itself is still estimated from candles.</p>
+  </section>
+
   <section class="panel" id="wk" hidden>
     <h2 id="wk-h">This week's outlook</h2>
     <p class="muted" id="wk-s"></p>
@@ -96,6 +105,8 @@ ul { margin: 6px 0 0; padding-left: 1.2em; }
 </main>
 <script>
 const RAW = 'https://raw.githubusercontent.com/jallow101/btc-forecast/liq-data/';
+const TRAW = 'https://raw.githubusercontent.com/jallow101/btc-forecast/trades-data/';
+let DER = null;
 const q = new URLSearchParams(location.search);
 const COIN = (q.get('coin') || 'btc').toUpperCase(), TF = q.get('tf') || '1h';
 const $ = (id) => document.getElementById(id);
@@ -160,6 +171,19 @@ function draw(d) {
     g.beginPath(); g.moveTo(x(i), y(c[2])); g.lineTo(x(i), y(c[3])); g.stroke();
     const yo = y(c[1]), yc = y(c[4]); g.fillRect(x(i) - cw / 2, Math.min(yo, yc), cw, Math.max(1, Math.abs(yo - yc)));
   });
+  // real liquidations (OKX) as dots
+  if (DER && DER.liqs && n > 1) {
+    const T = C.map((c) => Date.parse(c[0].endsWith('Z') || c[0].includes('+') ? c[0] : c[0] + 'Z') / 1000);
+    const t0 = T[0], t1 = T[n - 1] + (T[n - 1] - T[n - 2]);
+    const big = Math.max(1, ...DER.liqs.map((r) => r[2]));
+    DER.liqs.forEach(([ts, p, usd, sd]) => {
+      if (ts < t0 || ts > t1 || p < pmin || p > pmax || usd < big * 0.01) return;
+      const xx = padL + (ts - t0) / (t1 - t0) * plotW;
+      g.beginPath(); g.arc(xx, y(p), 2 + 9 * Math.sqrt(usd / big), 0, 7);
+      g.fillStyle = sd === 'long' ? 'rgba(255,77,94,0.75)' : 'rgba(38,194,129,0.75)'; g.fill();
+      g.strokeStyle = '#fff'; g.lineWidth = 0.6; g.stroke(); g.lineWidth = 1;
+    });
+  }
   // current levels histogram on the right
   const sx = padL + plotW + 6, lv = d.levels.filter((r) => r[0] >= pmin && r[0] <= pmax);
   const lmax = Math.max(1e-9, ...lv.map((r) => r[1]));
@@ -231,6 +255,23 @@ function backtest(all) {
     draw(d); table(d); addEventListener('resize', () => draw(d));
   } catch (e) { $('ttl').textContent = 'Data not available yet'; }
   try { backtest(await get('backtest.json')); } catch (e) { /* none yet */ }
+  try {
+    const r = await fetch(TRAW + 'derivs.json?v=' + Date.now()); const D = await r.json();
+    if (D[COIN]) {
+      DER = D[COIN]; const x = DER, L = x.liq_24h, m = (v) => '$' + (v / 1e6).toFixed(1) + 'M', sg = (v) => v == null ? '—' : (v > 0 ? '+' : '') + v.toFixed(1) + '%';
+      $('dv').hidden = false;
+      $('dv-s').textContent = 'Updated ' + D.made.replace('T', ' ').slice(0, 16) + ' UTC · every 15 minutes';
+      $('dv-k').innerHTML = [
+        ['Funding / 8h', (x.funding_8h_pct > 0 ? '+' : '') + x.funding_8h_pct.toFixed(4) + '%', `≈ ${x.funding_year_pct}%/yr for longs`],
+        ['Open interest', x.oi_usd ? '$' + (x.oi_usd / 1e9).toFixed(2) + 'B' : '—', `${sg(x.oi_chg_24h_pct)} 24h · ${sg(x.oi_chg_4h_pct)} 4h`],
+        ['Long/short accounts', x.ls_ratio ? x.ls_ratio.toFixed(2) : '—', x.ls_ratio_24h_ago ? 'was ' + x.ls_ratio_24h_ago.toFixed(2) + ' 24h ago' : ''],
+        ['Liquidated 24h', m(L.long_usd + L.short_usd), `longs ${m(L.long_usd)} · shorts ${m(L.short_usd)}`],
+      ].map(([a, b, c]) => `<div style="border:1px solid var(--line);border-radius:8px;padding:8px"><span class="muted" style="font-size:12px">${a}</span><b style="display:block;font-size:20px">${b}</b><span class="muted" style="font-size:12px">${c}</span></div>`).join('');
+      $('dv-r').innerHTML = (x.read || []).map((t) => `<li>${t}</li>`).join('');
+      $('dv-c').innerHTML = (x.liq_clusters_24h || []).map(([p, u, sd]) => `<tr><td>${fmt(p)}</td><td>${sd === 'long' ? 'longs' : 'shorts'}</td><td>${m(u)}</td></tr>`).join('') || '<tr><td colspan=3 class="muted">none in 24h</td></tr>';
+      try { draw(await get(`${COIN}_${TF}.json`)); } catch (e) { /* keep */ }
+    }
+  } catch (e) { /* derivatives data not published yet */ }
   try {
     const w = await get('weekly_plan.json');
     $('wk').hidden = false;
