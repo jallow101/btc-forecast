@@ -1,5 +1,5 @@
 {
- "made": "2026-11-24T11:22+00:00",
+ "made": "2026-11-24T11:37+00:00",
  "rules": {
   "tp_pct": 1.0,
   "sl": "below support, 0.8-2.0%",
@@ -136,35 +136,35 @@
  "results": {
   "structure": {
    "A_rsi_hook_only": {
-    "n": 2218,
-    "per_day": 5.67,
+    "n": 2219,
+    "per_day": 5.68,
     "win": 52.8,
     "avg_net_pct": -0.241,
-    "total_net_pct": -535.5,
-    "max_dd_pct": 534.9,
+    "total_net_pct": -535.4,
+    "max_dd_pct": 534.5,
     "avg_sl_pct": 1.46,
     "ci90_avg_pct": [
-     -0.282,
-     -0.199
+     -0.285,
+     -0.201
     ],
     "by_session": {
      "Asia": {
       "n": 700,
       "per_day": 1.79,
       "win": 55.6,
-      "avg_net_pct": -0.189,
-      "total_net_pct": -132.1,
-      "max_dd_pct": 134.9,
+      "avg_net_pct": -0.188,
+      "total_net_pct": -131.7,
+      "max_dd_pct": 134.5,
       "avg_sl_pct": 1.44
      },
      "Europe": {
-      "n": 374,
+      "n": 375,
       "per_day": 0.96,
-      "win": 46.0,
+      "win": 45.9,
       "avg_net_pct": -0.401,
-      "total_net_pct": -150.0,
-      "max_dd_pct": 149.9,
-      "avg_sl_pct": 1.46
+      "total_net_pct": -150.2,
+      "max_dd_pct": 150.1,
+      "avg_sl_pct": 1.45
      },
      "Late": {
       "n": 259,
@@ -191,8 +191,8 @@
       "per_day": 1.57,
       "win": 50.8,
       "avg_net_pct": -0.2,
-      "total_net_pct": -123.0,
-      "max_dd_pct": 122.0,
+      "total_net_pct": -122.7,
+      "max_dd_pct": 121.7,
       "avg_sl_pct": 1.44
      },
      "ETH": {
@@ -205,38 +205,31 @@
       "avg_sl_pct": 1.47
      },
      "SOL": {
-      "n": 831,
+      "n": 832,
       "per_day": 2.13,
       "win": 52.9,
       "avg_net_pct": -0.289,
-      "total_net_pct": -240.1,
+      "total_net_pct": -240.4,
       "max_dd_pct": 243.5,
       "avg_sl_pct": 1.48
      }
     },
     "portfolio": {
      "days": 391,
-     "trades": 1087,
-     "usd_total": -4214.0,
-     "usd_per_day": -10.7,
+     "trades": 1091,
+     "usd_total": -3816.0,
+     "usd_per_day": -9.7,
      "goal_per_day": 50,
-     "days_goal_met": 12.0,
-     "red_days": 52.9,
+     "days_goal_met": 13.0,
+     "red_days": 52.4,
      "worst_day": -100.0,
-     "max_dd_usd": 4164.0
+     "max_dd_usd": 3766.0
     },
     "halves_avg_pct": [
      -0.24,
      -0.243
     ],
     "recent": [
-     {
-      "coin": "SOL",
-      "t": "2026-11-20 15:45",
-      "exit_t": "2026-11-20 16:00",
-      "ret_pct": 0.8,
-      "why": "TP"
-     },
      {
       "coin": "BTC",
       "t": "2026-11-20 16:00",
@@ -273,16 +266,16 @@
       "why": "TP"
      },
      {
-      "coin": "ETH",
+      "coin": "SOL",
       "t": "2026-11-21 03:45",
-      "exit_t": "2026-11-21 04:00",
+      "exit_t": "2026-11-21 06:15",
       "ret_pct": -2.0,
       "why": "SL"
      },
      {
-      "coin": "SOL",
+      "coin": "ETH",
       "t": "2026-11-21 03:45",
-      "exit_t": "2026-11-21 06:15",
+      "exit_t": "2026-11-21 04:00",
       "ret_pct": -2.0,
       "why": "SL"
      },
@@ -345,8 +338,8 @@
      {
       "coin": "BTC",
       "t": "2026-11-24 03:15",
-      "exit_t": "2026-11-24 11:15",
-      "ret_pct": -1.19,
+      "exit_t": "2026-11-24 11:30",
+      "ret_pct": -0.8,
       "why": "time"
      },
      {
@@ -369,20 +362,27 @@
       "exit_t": "2026-11-24 10:45",
       "ret_pct": -2.0,
       "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-24 11:15",
+      "exit_t": "2026-11-24 11:30",
+      "ret_pct": -0.25,
+      "why": "time"
      }
     ]
    },
    "B_core": {
-    "n": 1143,
-    "per_day": 2.92,
+    "n": 1144,
+    "per_day": 2.93,
     "win": 41.6,
     "avg_net_pct": -0.241,
-    "total_net_pct": -275.1,
+    "total_net_pct": -275.4,
     "max_dd_pct": 274.7,
     "avg_sl_pct": 0.81,
     "ci90_avg_pct": [
      -0.283,
-     -0.199
+     -0.197
     ],
     "by_session": {
      "Asia": {
@@ -395,12 +395,12 @@
       "avg_sl_pct": 0.81
      },
      "Europe": {
-      "n": 239,
+      "n": 240,
       "per_day": 0.61,
-      "win": 37.7,
+      "win": 37.5,
       "avg_net_pct": -0.319,
-      "total_net_pct": -76.2,
-      "max_dd_pct": 76.5,
+      "total_net_pct": -76.5,
+      "max_dd_pct": 76.8,
       "avg_sl_pct": 0.81
      },
      "Late": {
@@ -442,11 +442,11 @@
       "avg_sl_pct": 0.81
      },
      "SOL": {
-      "n": 429,
+      "n": 430,
       "per_day": 1.1,
-      "win": 41.3,
+      "win": 41.2,
       "avg_net_pct": -0.262,
-      "total_net_pct": -112.4,
+      "total_net_pct": -112.7,
       "max_dd_pct": 113.6,
       "avg_sl_pct": 0.81
      }
@@ -467,13 +467,6 @@
      -0.253
     ],
     "recent": [
-     {
-      "coin": "BTC",
-      "t": "2026-11-18 14:45",
-      "exit_t": "2026-11-18 15:45",
-      "ret_pct": -1.02,
-      "why": "SL"
-     },
      {
       "coin": "BTC",
       "t": "2026-11-18 17:15",
@@ -606,6 +599,13 @@
       "exit_t": "2026-11-24 10:45",
       "ret_pct": -1.08,
       "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-24 11:15",
+      "exit_t": "2026-11-24 11:30",
+      "ret_pct": -0.25,
+      "why": "time"
      }
     ]
    },
@@ -618,7 +618,7 @@
     "max_dd_pct": 82.3,
     "avg_sl_pct": 0.81,
     "ci90_avg_pct": [
-     -0.254,
+     -0.255,
      -0.117
     ],
     "by_session": {
@@ -855,8 +855,8 @@
     "max_dd_pct": 12.6,
     "avg_sl_pct": 0.81,
     "ci90_avg_pct": [
-     -0.189,
-     0.063
+     -0.193,
+     0.065
     ],
     "by_session": {
      "Asia": {
@@ -1065,8 +1065,8 @@
     "max_dd_pct": 19.5,
     "avg_sl_pct": 0.81,
     "ci90_avg_pct": [
-     -0.397,
-     -0.075
+     -0.404,
+     -0.074
     ],
     "by_session": {
      "Asia": {
@@ -1302,8 +1302,8 @@
     "max_dd_pct": 30.6,
     "avg_sl_pct": 0.81,
     "ci90_avg_pct": [
-     -0.201,
-     -0.014
+     -0.202,
+     -0.012
     ],
     "by_session": {
      "Asia": {
@@ -1540,7 +1540,7 @@
     "avg_sl_pct": 0.81,
     "ci90_avg_pct": [
      -0.257,
-     -0.119
+     -0.118
     ],
     "by_session": {
      "Asia": {
@@ -1777,7 +1777,7 @@
     "avg_sl_pct": 0.81,
     "ci90_avg_pct": [
      -0.693,
-     -0.067
+     -0.066
     ],
     "by_session": {
      "Asia": {
@@ -1986,8 +1986,8 @@
     "max_dd_pct": 3.0,
     "avg_sl_pct": 0.81,
     "ci90_avg_pct": [
-     0.001,
-     0.374
+     0.002,
+     0.385
     ],
     "by_session": {
      "Asia": {
@@ -2196,8 +2196,8 @@
     "max_dd_pct": 12.6,
     "avg_sl_pct": 0.81,
     "ci90_avg_pct": [
-     -0.194,
-     0.065
+     -0.193,
+     0.064
     ],
     "by_session": {
      "Asia": {
@@ -2400,16 +2400,16 @@
   },
   "fixed": {
    "A_rsi_hook_only": {
-    "n": 2153,
+    "n": 2154,
     "per_day": 5.51,
     "win": 54.5,
     "avg_net_pct": -0.261,
-    "total_net_pct": -562.5,
-    "max_dd_pct": 561.5,
+    "total_net_pct": -562.3,
+    "max_dd_pct": 561.1,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
-     -0.304,
-     -0.217
+     -0.303,
+     -0.218
     ],
     "by_session": {
      "Asia": {
@@ -2417,17 +2417,17 @@
       "per_day": 1.72,
       "win": 57.9,
       "avg_net_pct": -0.207,
-      "total_net_pct": -139.6,
-      "max_dd_pct": 142.0,
+      "total_net_pct": -139.2,
+      "max_dd_pct": 141.6,
       "avg_sl_pct": 1.5
      },
      "Europe": {
-      "n": 364,
+      "n": 365,
       "per_day": 0.93,
-      "win": 52.5,
+      "win": 52.3,
       "avg_net_pct": -0.33,
-      "total_net_pct": -120.1,
-      "max_dd_pct": 118.8,
+      "total_net_pct": -120.4,
+      "max_dd_pct": 119.0,
       "avg_sl_pct": 1.5
      },
      "Late": {
@@ -2455,8 +2455,8 @@
       "per_day": 1.53,
       "win": 52.1,
       "avg_net_pct": -0.244,
-      "total_net_pct": -145.8,
-      "max_dd_pct": 144.1,
+      "total_net_pct": -145.4,
+      "max_dd_pct": 143.7,
       "avg_sl_pct": 1.5
      },
      "ETH": {
@@ -2469,11 +2469,11 @@
       "avg_sl_pct": 1.5
      },
      "SOL": {
-      "n": 806,
+      "n": 807,
       "per_day": 2.06,
-      "win": 54.6,
+      "win": 54.5,
       "avg_net_pct": -0.309,
-      "total_net_pct": -248.7,
+      "total_net_pct": -249.0,
       "max_dd_pct": 251.7,
       "avg_sl_pct": 1.5
      }
@@ -2481,48 +2481,48 @@
     "portfolio": {
      "days": 391,
      "trades": 1069,
-     "usd_total": -5077.0,
+     "usd_total": -5067.0,
      "usd_per_day": -12.9,
      "goal_per_day": 50,
      "days_goal_met": 12.2,
      "red_days": 54.5,
      "worst_day": -85.0,
-     "max_dd_usd": 5047.0
+     "max_dd_usd": 5037.0
     },
     "halves_avg_pct": [
      -0.273,
-     -0.248
+     -0.247
     ]
    },
    "B_core": {
     "n": 926,
     "per_day": 2.37,
     "win": 55.7,
-    "avg_net_pct": -0.242,
-    "total_net_pct": -224.0,
-    "max_dd_pct": 222.4,
+    "avg_net_pct": -0.241,
+    "total_net_pct": -223.2,
+    "max_dd_pct": 222.0,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
      -0.305,
-     -0.179
+     -0.177
     ],
     "by_session": {
      "Asia": {
       "n": 331,
       "per_day": 0.85,
       "win": 57.4,
-      "avg_net_pct": -0.212,
-      "total_net_pct": -70.0,
-      "max_dd_pct": 74.9,
+      "avg_net_pct": -0.211,
+      "total_net_pct": -69.7,
+      "max_dd_pct": 74.6,
       "avg_sl_pct": 1.5
      },
      "Europe": {
       "n": 183,
       "per_day": 0.47,
       "win": 55.2,
-      "avg_net_pct": -0.262,
-      "total_net_pct": -48.0,
-      "max_dd_pct": 53.2,
+      "avg_net_pct": -0.26,
+      "total_net_pct": -47.6,
+      "max_dd_pct": 52.7,
       "avg_sl_pct": 1.5
      },
      "Late": {
@@ -2558,8 +2558,8 @@
       "n": 311,
       "per_day": 0.8,
       "win": 58.5,
-      "avg_net_pct": -0.196,
-      "total_net_pct": -60.8,
+      "avg_net_pct": -0.195,
+      "total_net_pct": -60.5,
       "max_dd_pct": 72.5,
       "avg_sl_pct": 1.5
      },
@@ -2567,8 +2567,8 @@
       "n": 345,
       "per_day": 0.88,
       "win": 55.4,
-      "avg_net_pct": -0.279,
-      "total_net_pct": -96.1,
+      "avg_net_pct": -0.277,
+      "total_net_pct": -95.7,
       "max_dd_pct": 96.9,
       "avg_sl_pct": 1.5
      }
@@ -2576,17 +2576,17 @@
     "portfolio": {
      "days": 391,
      "trades": 676,
-     "usd_total": -4208.0,
+     "usd_total": -4189.0,
      "usd_per_day": -10.7,
      "goal_per_day": 50,
      "days_goal_met": 7.4,
      "red_days": 44.3,
      "worst_day": -85.0,
-     "max_dd_usd": 4123.0
+     "max_dd_usd": 4120.0
     },
     "halves_avg_pct": [
      -0.224,
-     -0.261
+     -0.259
     ]
    },
    "C_core+not_falling": {
@@ -2594,20 +2594,20 @@
     "per_day": 1.07,
     "win": 56.1,
     "avg_net_pct": -0.223,
-    "total_net_pct": -93.2,
-    "max_dd_pct": 91.5,
+    "total_net_pct": -92.8,
+    "max_dd_pct": 91.1,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
-     -0.317,
-     -0.127
+     -0.321,
+     -0.128
     ],
     "by_session": {
      "Asia": {
       "n": 122,
       "per_day": 0.31,
       "win": 64.8,
-      "avg_net_pct": -0.032,
-      "total_net_pct": -3.9,
+      "avg_net_pct": -0.029,
+      "total_net_pct": -3.6,
       "max_dd_pct": 17.6,
       "avg_sl_pct": 1.5
      },
@@ -2653,9 +2653,9 @@
       "n": 129,
       "per_day": 0.33,
       "win": 59.7,
-      "avg_net_pct": -0.163,
-      "total_net_pct": -21.0,
-      "max_dd_pct": 20.9,
+      "avg_net_pct": -0.16,
+      "total_net_pct": -20.7,
+      "max_dd_pct": 20.6,
       "avg_sl_pct": 1.5
      },
      "SOL": {
@@ -2671,38 +2671,38 @@
     "portfolio": {
      "days": 391,
      "trades": 374,
-     "usd_total": -2192.0,
+     "usd_total": -2183.0,
      "usd_per_day": -5.6,
      "goal_per_day": 50,
      "days_goal_met": 3.1,
      "red_days": 29.3,
      "worst_day": -85.0,
-     "max_dd_usd": 2149.0
+     "max_dd_usd": 2141.0
     },
     "halves_avg_pct": [
      -0.205,
-     -0.241
+     -0.239
     ]
    },
    "D_C+asia": {
     "n": 131,
     "per_day": 0.34,
     "win": 63.4,
-    "avg_net_pct": -0.071,
-    "total_net_pct": -9.2,
+    "avg_net_pct": -0.068,
+    "total_net_pct": -8.9,
     "max_dd_pct": 18.5,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
-     -0.241,
-     0.099
+     -0.244,
+     0.096
     ],
     "by_session": {
      "Asia": {
       "n": 131,
       "per_day": 0.34,
       "win": 63.4,
-      "avg_net_pct": -0.071,
-      "total_net_pct": -9.2,
+      "avg_net_pct": -0.068,
+      "total_net_pct": -8.9,
       "max_dd_pct": 18.5,
       "avg_sl_pct": 1.5
      }
@@ -2721,8 +2721,8 @@
       "n": 38,
       "per_day": 0.1,
       "win": 60.5,
-      "avg_net_pct": -0.138,
-      "total_net_pct": -5.2,
+      "avg_net_pct": -0.129,
+      "total_net_pct": -4.9,
       "max_dd_pct": 11.1,
       "avg_sl_pct": 1.5
      },
@@ -2739,38 +2739,38 @@
     "portfolio": {
      "days": 391,
      "trades": 123,
-     "usd_total": -281.0,
+     "usd_total": -273.0,
      "usd_per_day": -0.7,
      "goal_per_day": 50,
      "days_goal_met": 0.0,
      "red_days": 9.7,
      "worst_day": -85.0,
-     "max_dd_usd": 301.0
+     "max_dd_usd": 293.0
     },
     "halves_avg_pct": [
      -0.043,
-     -0.091
+     -0.086
     ]
    },
    "E_C+stretch": {
     "n": 79,
     "per_day": 0.2,
     "win": 50.6,
-    "avg_net_pct": -0.362,
-    "total_net_pct": -28.6,
-    "max_dd_pct": 27.3,
+    "avg_net_pct": -0.357,
+    "total_net_pct": -28.2,
+    "max_dd_pct": 27.0,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
-     -0.577,
-     -0.14
+     -0.579,
+     -0.136
     ],
     "by_session": {
      "Asia": {
       "n": 23,
       "per_day": 0.06,
       "win": 47.8,
-      "avg_net_pct": -0.408,
-      "total_net_pct": -9.4,
+      "avg_net_pct": -0.393,
+      "total_net_pct": -9.0,
       "max_dd_pct": 8.7,
       "avg_sl_pct": 1.5
      },
@@ -2816,9 +2816,9 @@
       "n": 29,
       "per_day": 0.07,
       "win": 48.3,
-      "avg_net_pct": -0.414,
-      "total_net_pct": -12.0,
-      "max_dd_pct": 12.8,
+      "avg_net_pct": -0.402,
+      "total_net_pct": -11.7,
+      "max_dd_pct": 12.6,
       "avg_sl_pct": 1.5
      },
      "SOL": {
@@ -2834,17 +2834,17 @@
     "portfolio": {
      "days": 391,
      "trades": 77,
-     "usd_total": -692.0,
-     "usd_per_day": -1.8,
+     "usd_total": -683.0,
+     "usd_per_day": -1.7,
      "goal_per_day": 50,
      "days_goal_met": 0.0,
      "red_days": 7.9,
      "worst_day": -85.0,
-     "max_dd_usd": 649.0
+     "max_dd_usd": 641.0
     },
     "halves_avg_pct": [
      -0.544,
-     -0.12
+     -0.11
     ]
    },
    "F_C+capitulation": {
@@ -2856,8 +2856,8 @@
     "max_dd_pct": 43.0,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
-     -0.295,
-     -0.038
+     -0.292,
+     -0.033
     ],
     "by_session": {
      "Asia": {
@@ -2946,21 +2946,21 @@
     "n": 415,
     "per_day": 1.06,
     "win": 56.1,
-    "avg_net_pct": -0.222,
-    "total_net_pct": -91.9,
-    "max_dd_pct": 90.2,
+    "avg_net_pct": -0.221,
+    "total_net_pct": -91.6,
+    "max_dd_pct": 89.9,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
-     -0.314,
-     -0.128
+     -0.317,
+     -0.127
     ],
     "by_session": {
      "Asia": {
       "n": 122,
       "per_day": 0.31,
       "win": 64.8,
-      "avg_net_pct": -0.032,
-      "total_net_pct": -3.9,
+      "avg_net_pct": -0.029,
+      "total_net_pct": -3.6,
       "max_dd_pct": 17.6,
       "avg_sl_pct": 1.5
      },
@@ -3006,9 +3006,9 @@
       "n": 128,
       "per_day": 0.33,
       "win": 59.4,
-      "avg_net_pct": -0.17,
-      "total_net_pct": -21.8,
-      "max_dd_pct": 20.9,
+      "avg_net_pct": -0.168,
+      "total_net_pct": -21.5,
+      "max_dd_pct": 20.6,
       "avg_sl_pct": 1.5
      },
      "SOL": {
@@ -3024,38 +3024,38 @@
     "portfolio": {
      "days": 391,
      "trades": 372,
-     "usd_total": -2161.0,
+     "usd_total": -2153.0,
      "usd_per_day": -5.5,
      "goal_per_day": 50,
      "days_goal_met": 3.1,
      "red_days": 29.0,
      "worst_day": -85.0,
-     "max_dd_usd": 2119.0
+     "max_dd_usd": 2110.0
     },
     "halves_avg_pct": [
      -0.201,
-     -0.241
+     -0.239
     ]
    },
    "H_C+asia+stretch": {
     "n": 23,
     "per_day": 0.06,
     "win": 47.8,
-    "avg_net_pct": -0.408,
-    "total_net_pct": -9.4,
+    "avg_net_pct": -0.393,
+    "total_net_pct": -9.0,
     "max_dd_pct": 8.7,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
-     -0.819,
-     -0.009
+     -0.797,
+     -0.008
     ],
     "by_session": {
      "Asia": {
       "n": 23,
       "per_day": 0.06,
       "win": 47.8,
-      "avg_net_pct": -0.408,
-      "total_net_pct": -9.4,
+      "avg_net_pct": -0.393,
+      "total_net_pct": -9.0,
       "max_dd_pct": 8.7,
       "avg_sl_pct": 1.5
      }
@@ -3074,8 +3074,8 @@
       "n": 9,
       "per_day": 0.02,
       "win": 33.3,
-      "avg_net_pct": -0.79,
-      "total_net_pct": -7.1,
+      "avg_net_pct": -0.752,
+      "total_net_pct": -6.8,
       "max_dd_pct": 6.0,
       "avg_sl_pct": 1.5
      },
@@ -3092,7 +3092,7 @@
     "portfolio": {
      "days": 391,
      "trades": 23,
-     "usd_total": -235.0,
+     "usd_total": -226.0,
      "usd_per_day": -0.6,
      "goal_per_day": 50,
      "days_goal_met": 0.0,
@@ -3102,7 +3102,7 @@
     },
     "halves_avg_pct": [
      -0.797,
-     -0.109
+     -0.082
     ]
    },
    "I_C+asia+capitulation": {
@@ -3115,7 +3115,7 @@
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
      -0.084,
-     0.391
+     0.381
     ],
     "by_session": {
      "Asia": {
@@ -3177,21 +3177,21 @@
     "n": 131,
     "per_day": 0.34,
     "win": 63.4,
-    "avg_net_pct": -0.071,
-    "total_net_pct": -9.2,
+    "avg_net_pct": -0.068,
+    "total_net_pct": -8.9,
     "max_dd_pct": 18.5,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
-     -0.24,
-     0.105
+     -0.235,
+     0.099
     ],
     "by_session": {
      "Asia": {
       "n": 131,
       "per_day": 0.34,
       "win": 63.4,
-      "avg_net_pct": -0.071,
-      "total_net_pct": -9.2,
+      "avg_net_pct": -0.068,
+      "total_net_pct": -8.9,
       "max_dd_pct": 18.5,
       "avg_sl_pct": 1.5
      }
@@ -3210,8 +3210,8 @@
       "n": 38,
       "per_day": 0.1,
       "win": 60.5,
-      "avg_net_pct": -0.138,
-      "total_net_pct": -5.2,
+      "avg_net_pct": -0.129,
+      "total_net_pct": -4.9,
       "max_dd_pct": 11.1,
       "avg_sl_pct": 1.5
      },
@@ -3228,17 +3228,17 @@
     "portfolio": {
      "days": 391,
      "trades": 123,
-     "usd_total": -281.0,
+     "usd_total": -273.0,
      "usd_per_day": -0.7,
      "goal_per_day": 50,
      "days_goal_met": 0.0,
      "red_days": 9.7,
      "worst_day": -85.0,
-     "max_dd_usd": 301.0
+     "max_dd_usd": 293.0
     },
     "halves_avg_pct": [
      -0.043,
-     -0.091
+     -0.086
     ]
    }
   }
@@ -3247,49 +3247,49 @@
   "all": {
    "n": 9000,
    "per_day": 23.02,
-   "win": 54.4,
-   "avg_net_pct": -0.211,
-   "total_net_pct": -1899.2,
-   "max_dd_pct": 1902.9,
+   "win": 54.1,
+   "avg_net_pct": -0.218,
+   "total_net_pct": -1960.1,
+   "max_dd_pct": 1966.6,
    "avg_sl_pct": 1.5
   },
   "Asia": {
-   "n": 2949,
-   "per_day": 7.54,
-   "win": 54.3,
-   "avg_net_pct": -0.215,
-   "total_net_pct": -634.5,
-   "max_dd_pct": 638.3,
+   "n": 2938,
+   "per_day": 7.51,
+   "win": 53.7,
+   "avg_net_pct": -0.223,
+   "total_net_pct": -654.2,
+   "max_dd_pct": 658.4,
    "avg_sl_pct": 1.5
   },
   "Europe": {
-   "n": 1800,
-   "per_day": 4.6,
-   "win": 52.8,
-   "avg_net_pct": -0.25,
-   "total_net_pct": -450.5,
-   "max_dd_pct": 454.2,
+   "n": 1813,
+   "per_day": 4.64,
+   "win": 52.7,
+   "avg_net_pct": -0.255,
+   "total_net_pct": -461.8,
+   "max_dd_pct": 466.2,
    "avg_sl_pct": 1.5
   },
   "US": {
-   "n": 3077,
-   "per_day": 7.87,
-   "win": 55.0,
-   "avg_net_pct": -0.19,
-   "total_net_pct": -585.2,
-   "max_dd_pct": 591.3,
+   "n": 3082,
+   "per_day": 7.88,
+   "win": 54.8,
+   "avg_net_pct": -0.196,
+   "total_net_pct": -603.3,
+   "max_dd_pct": 609.9,
    "avg_sl_pct": 1.5
   },
   "Late": {
-   "n": 1174,
-   "per_day": 3.0,
-   "win": 55.5,
-   "avg_net_pct": -0.195,
-   "total_net_pct": -229.0,
-   "max_dd_pct": 229.7,
+   "n": 1167,
+   "per_day": 2.98,
+   "win": 55.0,
+   "avg_net_pct": -0.206,
+   "total_net_pct": -240.7,
+   "max_dd_pct": 242.5,
    "avg_sl_pct": 1.5
   }
  },
  "pick": "I_C+asia+capitulation",
- "gate": "I_C+asia+capitulation: 55 trades in 391 days, 65.5% hit +1%, +0.20% per trade after fees (random -0.21%)"
+ "gate": "I_C+asia+capitulation: 55 trades in 391 days, 65.5% hit +1%, +0.20% per trade after fees (random -0.22%)"
 }
