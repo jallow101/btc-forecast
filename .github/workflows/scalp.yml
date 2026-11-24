@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+  actions: write
 concurrency:
   group: scalp
   cancel-in-progress: false
@@ -26,11 +27,20 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           DAYTRADE_TELEGRAM: ${{ vars.DAYTRADE_TELEGRAM || 'gated' }}
+          GH_TOKEN: ${{ github.token }}
           PUSH_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
         run: |
           end=$(( $(date +%s) + 340*60 ))
           while [ "$(date +%s)" -lt "$end" ]; do
             git pull -q --rebase || true            # pick up the newest daily predictions/backtest
+            # GitHub runs the 01:40 daily schedule hours late, so start it ourselves at ~00:20 UTC
+            today=$(date -u +%F); mins=$(( 10#$(date -u +%H) * 60 + 10#$(date -u +%M) ))
+            if [ "$mins" -ge 20 ] && [ "$mins" -lt 240 ] && [ ! -f "/tmp/daily_$today" ]; then
+              made=$(python -c "import json;print(json.load(open('data/daily_range_latest.json'))['btc'][0]['run_date'])" 2>/dev/null || echo none)
+              yday=$(date -u -d yesterday +%F)
+              if [ "$made" != "$yday" ]; then gh workflow run daily.yml --ref main && echo "started daily run"; fi
+              touch "/tmp/daily_$today"
+            fi
             python -m btcf.liq_fetch > /dev/null || true
             python -m btcf.scalp || true
             mkdir -p out/trades
