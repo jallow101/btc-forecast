@@ -26,6 +26,7 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_EXTRA_CHATS: ${{ vars.TELEGRAM_EXTRA_CHATS }}
           DAYTRADE_TELEGRAM: ${{ vars.DAYTRADE_TELEGRAM || 'gated' }}
           GH_TOKEN: ${{ github.token }}
           PUSH_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git

@@ -41,6 +41,7 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_EXTRA_CHATS: ${{ vars.TELEGRAM_EXTRA_CHATS }}
           ALERT_TEST: ${{ inputs.test_alert }}
         run: python -m btcf.alerts
 

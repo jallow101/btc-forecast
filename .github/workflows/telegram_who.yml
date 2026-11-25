@@ -1,0 +1,18 @@
+name: "Telegram: find chat ids"
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  who:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_EXTRA_CHATS: ${{ vars.TELEGRAM_EXTRA_CHATS }}
+        run: python -m btcf.tg_who

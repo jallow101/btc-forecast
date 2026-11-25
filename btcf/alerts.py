@@ -22,8 +22,9 @@ usd = lambda v: f"${v:,.0f}"
 
 def chats():
     """TELEGRAM_CHAT_ID may hold several ids separated by commas (you, friends, a channel like -100123...)."""
-    raw = os.environ.get("TELEGRAM_CHAT_ID") or ""
-    return [c.strip().strip('"').strip("'") for c in raw.replace(";", ",").replace("\n", ",").split(",") if c.strip()]
+    raw = (os.environ.get("TELEGRAM_CHAT_ID") or "") + "," + (os.environ.get("TELEGRAM_EXTRA_CHATS") or "")
+    ids = [c.strip().strip('"').strip("'") for c in raw.replace(";", ",").replace("\n", ",").split(",") if c.strip()]
+    return list(dict.fromkeys(ids))           # no duplicates
 
 
 def send(text):
