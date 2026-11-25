@@ -20,12 +20,25 @@ STATE = DATA / "alert_state.json"
 usd = lambda v: f"${v:,.0f}"
 
 
+def chats():
+    """TELEGRAM_CHAT_ID may hold several ids separated by commas (you, friends, a channel like -100123...)."""
+    raw = os.environ.get("TELEGRAM_CHAT_ID") or ""
+    return [c.strip().strip('"').strip("'") for c in raw.replace(";", ",").replace("\n", ",").split(",") if c.strip()]
+
+
 def send(text):
-    token, chat = os.environ.get("TELEGRAM_BOT_TOKEN"), os.environ.get("TELEGRAM_CHAT_ID")
-    if not token or not chat:
+    token = os.environ.get("TELEGRAM_BOT_TOKEN")
+    ids = chats()
+    if not token or not ids:
         print("[alert not sent: no Telegram secrets]\n" + text)
         return False
-    chat = chat.strip().strip('"').strip("'")
+    ok = False
+    for chat in ids:
+        ok = _send_one(token, chat, text) or ok
+    return ok
+
+
+def _send_one(token, chat, text):
     data = urllib.parse.urlencode({"chat_id": chat, "text": text, "disable_web_page_preview": "true"}).encode()
     try:
         with urllib.request.urlopen(f"https://api.telegram.org/bot{token.strip()}/sendMessage", data=data, timeout=20) as r:
@@ -35,10 +48,9 @@ def send(text):
             reason = json.loads(e.read().decode()).get("description", "")
         except Exception:  # noqa: BLE001
             reason = ""
-        print(f"Telegram send failed: HTTP {e.code} {reason}")
-        if "chat not found" in reason.lower():
-            print("-> TELEGRAM_CHAT_ID is wrong, or you have not sent your bot a message yet. Use the number after "
-                  '"chat":{"id": on the getUpdates page (not the "update_id" or "message_id").')
+        print(f"Telegram send to chat #{chats().index(chat) + 1} failed: HTTP {e.code} {reason}")
+        if "chat not found" in reason.lower() or "blocked" in reason.lower():
+            print("-> that person hasn't pressed Start on the bot (or blocked it), or the id is wrong.")
         elif e.code == 401:
             print("-> TELEGRAM_BOT_TOKEN is wrong. Copy it again from @BotFather.")
         return False

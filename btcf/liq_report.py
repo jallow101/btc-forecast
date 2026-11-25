@@ -389,11 +389,18 @@ def chart(out, coin, path):
 
 
 def send_photo(path, caption=""):
-    token, chat = os.environ.get("TELEGRAM_BOT_TOKEN"), os.environ.get("TELEGRAM_CHAT_ID")
-    if not token or not chat:
+    from .alerts import chats
+    token, ids = os.environ.get("TELEGRAM_BOT_TOKEN"), chats()
+    if not token or not ids or not path:
         print(f"[photo not sent: no Telegram secrets] {path}")
         return False
-    chat = chat.strip().strip('"').strip("'")
+    ok = False
+    for chat in ids:
+        ok = _photo_one(token, chat, path, caption) or ok
+    return ok
+
+
+def _photo_one(token, chat, path, caption):
     b = uuid.uuid4().hex
     parts = []
     for k, v in (("chat_id", chat), ("caption", caption[:1000])):
