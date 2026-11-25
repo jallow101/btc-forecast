@@ -1,27 +1,77 @@
 {
- "note": "Price alerts for the re-entry plan. dir=down fires when price trades at or below the level, dir=up at or above. Edit freely.",
+ "note": "Price alerts for the re-entry plan. dir=down fires when price trades at or below the level, dir=up at or above. Edit freely. Today's predicted-low alerts are added automatically each day from the daily model.",
  "zones": [
-  {"id": "btc-59500", "coin": "BTC", "dir": "down", "price": 59500, "title": "BTC at today's predicted-low area",
-   "plan": "Quick bounce only: small buy (~$1,000), sell $60,400, stop $58,700."},
-  {"id": "btc-56800", "coin": "BTC", "dir": "down", "price": 56800, "title": "BTC zone 1 ($55.1–56.8k: liquidity + Nov 21 low)",
-   "plan": "Buy ~30% ($1,500) with limits $56,800 and $55,300. OCO: TP $59,500 then $63,200, stop $54,300 (Market)."},
-  {"id": "btc-55100", "coin": "BTC", "dir": "down", "price": 55100, "title": "BTC swept the Nov 21 low ($55.1k)",
-   "plan": "Watch for a 15m/1h reclaim back above $55.1k before adding. A clean break opens the $53.5k pool."},
-  {"id": "btc-53500", "coin": "BTC", "dir": "down", "price": 54800, "title": "BTC zone 2 ($52.4–54.8k: big 4h liquidity pool)",
-   "plan": "Buy ~40% ($2,000) with limits $54,500 and $53,200. OCO: TP $57,500 then $60,000, stop $51,600 (Market)."},
-  {"id": "btc-48000", "coin": "BTC", "dir": "down", "price": 48000, "title": "BTC entered the long-term $48k–30k zone",
-   "plan": "Start the $11k 3-year plan: first tranche of the BTC allocation (spot, no leverage above $40k)."},
-  {"id": "btc-64600", "coin": "BTC", "dir": "up", "price": 64600, "title": "BTC above yesterday's spike high ($64.6k)",
-   "plan": "If a DAILY candle closes above $64.6k the second-leg-down view is wrong — stop waiting for $55k and look at the $65–67k liquidity."},
-  {"id": "eth-1660", "coin": "ETH", "dir": "down", "price": 1660, "title": "ETH at today's predicted-low area",
-   "plan": "Quick bounce only: small buy, sell $1,700, stop $1,625."},
-  {"id": "eth-1618", "coin": "ETH", "dir": "down", "price": 1618, "title": "ETH zone 1 ($1,600–1,618: 1h liquidity)",
-   "plan": "Buy ~30% with limits $1,615 and $1,602. OCO: TP $1,700 then $1,790, stop $1,576 (Market)."},
-  {"id": "eth-1540", "coin": "ETH", "dir": "down", "price": 1540, "title": "ETH zone 2 ($1,490–1,540: 4h liquidity)",
-   "plan": "Buy ~40% with limits $1,535 and $1,500. OCO: TP $1,610 then $1,700, stop $1,468 (Market)."},
-  {"id": "eth-1350", "coin": "ETH", "dir": "down", "price": 1350, "title": "ETH at the long-term buy area (~BTC $48k)",
-   "plan": "Long-term ETH tranche of the 3-year plan."},
-  {"id": "eth-1845", "coin": "ETH", "dir": "up", "price": 1845, "title": "ETH above yesterday's spike high ($1,845)",
-   "plan": "A daily close above $1,845 weakens the bearish view; next liquidity $1,880–1,900."}
+  {
+   "id": "btc-56800",
+   "coin": "BTC",
+   "dir": "down",
+   "price": 56800,
+   "title": "BTC zone 1 ($55.1–56.8k: liquidity + Nov 21 low)",
+   "plan": "Buy ~30% ($1,500) with limits $56,800 and $55,300. OCO: TP $59,500 then $63,200, stop $54,300 (Market)."
+  },
+  {
+   "id": "btc-55100",
+   "coin": "BTC",
+   "dir": "down",
+   "price": 55100,
+   "title": "BTC swept the Nov 21 low ($55.1k)",
+   "plan": "Watch for a 15m/1h reclaim back above $55.1k before adding. A clean break opens the $53.5k pool."
+  },
+  {
+   "id": "btc-53500",
+   "coin": "BTC",
+   "dir": "down",
+   "price": 54800,
+   "title": "BTC zone 2 ($52.4–54.8k: big 4h liquidity pool)",
+   "plan": "Buy ~40% ($2,000) with limits $54,500 and $53,200. OCO: TP $57,500 then $60,000, stop $51,600 (Market)."
+  },
+  {
+   "id": "btc-48000",
+   "coin": "BTC",
+   "dir": "down",
+   "price": 48000,
+   "title": "BTC entered the long-term $48k–30k zone",
+   "plan": "Start the $11k 3-year plan: first tranche of the BTC allocation (spot, no leverage above $40k)."
+  },
+  {
+   "id": "btc-64600",
+   "coin": "BTC",
+   "dir": "up",
+   "price": 64600,
+   "title": "BTC above yesterday's spike high ($64.6k)",
+   "plan": "If a DAILY candle closes above $64.6k the second-leg-down view is wrong — stop waiting for $55k and look at the $65–67k liquidity."
+  },
+  {
+   "id": "eth-1618",
+   "coin": "ETH",
+   "dir": "down",
+   "price": 1618,
+   "title": "ETH zone 1 ($1,600–1,618: 1h liquidity)",
+   "plan": "Buy ~30% with limits $1,615 and $1,602. OCO: TP $1,700 then $1,790, stop $1,576 (Market)."
+  },
+  {
+   "id": "eth-1540",
+   "coin": "ETH",
+   "dir": "down",
+   "price": 1540,
+   "title": "ETH zone 2 ($1,490–1,540: 4h liquidity)",
+   "plan": "Buy ~40% with limits $1,535 and $1,500. OCO: TP $1,610 then $1,700, stop $1,468 (Market)."
+  },
+  {
+   "id": "eth-1350",
+   "coin": "ETH",
+   "dir": "down",
+   "price": 1350,
+   "title": "ETH at the long-term buy area (~BTC $48k)",
+   "plan": "Long-term ETH tranche of the 3-year plan."
+  },
+  {
+   "id": "eth-1845",
+   "coin": "ETH",
+   "dir": "up",
+   "price": 1845,
+   "title": "ETH above yesterday's spike high ($1,845)",
+   "plan": "A daily close above $1,845 weakens the bearish view; next liquidity $1,880–1,900."
+  }
  ]
 }

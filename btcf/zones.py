@@ -20,9 +20,29 @@ def candles(coin):
     return df.iloc[:-1]                        # last row is still forming
 
 
+def daily_zones():
+    """One alert per coin per day at the model's predicted low (refreshed with each daily run)."""
+    p = DATA / "daily_range_latest.json"
+    if not p.exists():
+        return []
+    from datetime import datetime, timezone
+    today = datetime.now(timezone.utc).date().isoformat()
+    out = []
+    for key, coin in (("btc", "BTC"), ("eth", "ETH")):
+        r = next((x for x in json.loads(p.read_text()).get(key, []) if x["target_date"] == today), None)
+        if not r:
+            continue
+        lo, tp = r["lo_q50"], min(r["hi_q10"], r["lo_q50"] * 1.024)
+        out.append({"id": f"{key}-predlow-{today}", "coin": coin, "dir": "down", "price": round(lo, 2 if lo < 10000 else 0),
+                    "title": f"{coin} at today's predicted low",
+                    "plan": (f"Quick bounce only: small buy, sell {fmtp(tp)}, stop {fmtp(r['lo_q10'] * 0.995)}. "
+                             f"Model's 80% low range today: {fmtp(r['lo_q10'])}–{fmtp(r['lo_q90'])}.")})
+    return out
+
+
 def run(derivs=None):
     from .alerts import send
-    cfg = json.loads((DATA / "zones.json").read_text())["zones"]
+    cfg = json.loads((DATA / "zones.json").read_text())["zones"] + daily_zones()
     st = json.loads(STATE.read_text()) if STATE.exists() else {}
     fired = []
     for z in cfg:
