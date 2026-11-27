@@ -1,5 +1,5 @@
 {
- "made": "2026-11-27T00:34+00:00",
+ "made": "2026-11-27T10:08+00:00",
  "rules": {
   "tp_pct": 1.0,
   "sl": "below support, 0.8-2.0%",
@@ -136,16 +136,16 @@
  "results": {
   "structure": {
    "A_rsi_hook_only": {
-    "n": 2188,
-    "per_day": 5.6,
+    "n": 2186,
+    "per_day": 5.59,
     "win": 52.8,
     "avg_net_pct": -0.241,
-    "total_net_pct": -526.3,
-    "max_dd_pct": 529.0,
+    "total_net_pct": -527.7,
+    "max_dd_pct": 529.6,
     "avg_sl_pct": 1.46,
     "ci90_avg_pct": [
-     -0.282,
-     -0.199
+     -0.283,
+     -0.2
     ],
     "by_session": {
      "Asia": {
@@ -169,64 +169,64 @@
      "Late": {
       "n": 256,
       "per_day": 0.65,
-      "win": 58.2,
+      "win": 58.6,
       "avg_net_pct": -0.102,
-      "total_net_pct": -26.2,
-      "max_dd_pct": 36.5,
+      "total_net_pct": -26.0,
+      "max_dd_pct": 36.4,
       "avg_sl_pct": 1.49
      },
      "US": {
-      "n": 870,
-      "per_day": 2.23,
-      "win": 51.8,
-      "avg_net_pct": -0.258,
-      "total_net_pct": -224.4,
-      "max_dd_pct": 235.9,
+      "n": 868,
+      "per_day": 2.22,
+      "win": 51.7,
+      "avg_net_pct": -0.26,
+      "total_net_pct": -226.0,
+      "max_dd_pct": 236.7,
       "avg_sl_pct": 1.48
      }
     },
     "by_coin": {
      "BTC": {
-      "n": 607,
+      "n": 606,
       "per_day": 1.55,
-      "win": 51.1,
-      "avg_net_pct": -0.192,
-      "total_net_pct": -116.5,
+      "win": 51.0,
+      "avg_net_pct": -0.194,
+      "total_net_pct": -117.3,
       "max_dd_pct": 118.4,
       "avg_sl_pct": 1.43
      },
      "ETH": {
       "n": 762,
       "per_day": 1.95,
-      "win": 54.1,
+      "win": 54.2,
       "avg_net_pct": -0.227,
-      "total_net_pct": -173.1,
+      "total_net_pct": -172.9,
       "max_dd_pct": 177.0,
       "avg_sl_pct": 1.47
      },
      "SOL": {
-      "n": 819,
+      "n": 818,
       "per_day": 2.09,
-      "win": 52.9,
-      "avg_net_pct": -0.289,
-      "total_net_pct": -236.7,
-      "max_dd_pct": 239.1,
+      "win": 52.8,
+      "avg_net_pct": -0.29,
+      "total_net_pct": -237.5,
+      "max_dd_pct": 238.6,
       "avg_sl_pct": 1.48
      }
     },
     "portfolio": {
      "days": 391,
-     "trades": 1064,
-     "usd_total": -4462.0,
-     "usd_per_day": -11.5,
+     "trades": 1065,
+     "usd_total": -3948.0,
+     "usd_per_day": -10.2,
      "goal_per_day": 50,
-     "days_goal_met": 13.4,
-     "red_days": 53.7,
+     "days_goal_met": 14.5,
+     "red_days": 53.4,
      "worst_day": -100.0,
-     "max_dd_usd": 4502.0
+     "max_dd_usd": 3998.0
     },
     "halves_avg_pct": [
-     -0.237,
+     -0.239,
      -0.244
     ],
     "recent": [
@@ -367,8 +367,8 @@
       "coin": "ETH",
       "t": "2026-11-21 22:45",
       "exit_t": "2026-11-27 00:30",
-      "ret_pct": 0.62,
-      "why": "time"
+      "ret_pct": 0.8,
+      "why": "TP"
      }
     ]
    },
@@ -381,8 +381,8 @@
     "max_dd_pct": 269.4,
     "avg_sl_pct": 0.81,
     "ci90_avg_pct": [
-     -0.283,
-     -0.195
+     -0.284,
+     -0.196
     ],
     "by_session": {
      "Asia": {
@@ -618,8 +618,8 @@
     "max_dd_pct": 78.0,
     "avg_sl_pct": 0.81,
     "ci90_avg_pct": [
-     -0.251,
-     -0.107
+     -0.254,
+     -0.109
     ],
     "by_session": {
      "Asia": {
@@ -855,8 +855,8 @@
     "max_dd_pct": 12.6,
     "avg_sl_pct": 0.81,
     "ci90_avg_pct": [
-     -0.19,
-     0.062
+     -0.191,
+     0.063
     ],
     "by_session": {
      "Asia": {
@@ -1065,8 +1065,8 @@
     "max_dd_pct": 17.9,
     "avg_sl_pct": 0.81,
     "ci90_avg_pct": [
-     -0.389,
-     -0.049
+     -0.382,
+     -0.058
     ],
     "by_session": {
      "Asia": {
@@ -1302,8 +1302,8 @@
     "max_dd_pct": 29.6,
     "avg_sl_pct": 0.81,
     "ci90_avg_pct": [
-     -0.201,
-     -0.006
+     -0.199,
+     -0.008
     ],
     "by_session": {
      "Asia": {
@@ -1539,8 +1539,8 @@
     "max_dd_pct": 77.8,
     "avg_sl_pct": 0.81,
     "ci90_avg_pct": [
-     -0.25,
-     -0.11
+     -0.252,
+     -0.106
     ],
     "by_session": {
      "Asia": {
@@ -1776,8 +1776,8 @@
     "max_dd_pct": 7.9,
     "avg_sl_pct": 0.81,
     "ci90_avg_pct": [
-     -0.677,
-     -0.026
+     -0.675,
+     -0.025
     ],
     "by_session": {
      "Asia": {
@@ -1986,7 +1986,7 @@
     "max_dd_pct": 3.0,
     "avg_sl_pct": 0.81,
     "ci90_avg_pct": [
-     0.011,
+     0.002,
      0.374
     ],
     "by_session": {
@@ -2196,7 +2196,7 @@
     "max_dd_pct": 12.6,
     "avg_sl_pct": 0.81,
     "ci90_avg_pct": [
-     -0.191,
+     -0.183,
      0.076
     ],
     "by_session": {
@@ -2400,16 +2400,16 @@
   },
   "fixed": {
    "A_rsi_hook_only": {
-    "n": 2119,
-    "per_day": 5.42,
+    "n": 2117,
+    "per_day": 5.41,
     "win": 54.6,
-    "avg_net_pct": -0.257,
-    "total_net_pct": -545.4,
-    "max_dd_pct": 548.1,
+    "avg_net_pct": -0.258,
+    "total_net_pct": -546.8,
+    "max_dd_pct": 548.7,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
-     -0.298,
-     -0.215
+     -0.301,
+     -0.214
     ],
     "by_session": {
      "Asia": {
@@ -2433,64 +2433,64 @@
      "Late": {
       "n": 252,
       "per_day": 0.64,
-      "win": 57.1,
-      "avg_net_pct": -0.174,
-      "total_net_pct": -43.9,
-      "max_dd_pct": 52.2,
+      "win": 57.5,
+      "avg_net_pct": -0.173,
+      "total_net_pct": -43.7,
+      "max_dd_pct": 52.0,
       "avg_sl_pct": 1.5
      },
      "US": {
-      "n": 841,
+      "n": 839,
       "per_day": 2.15,
-      "win": 52.1,
-      "avg_net_pct": -0.293,
-      "total_net_pct": -246.6,
-      "max_dd_pct": 251.9,
+      "win": 52.0,
+      "avg_net_pct": -0.296,
+      "total_net_pct": -248.2,
+      "max_dd_pct": 252.7,
       "avg_sl_pct": 1.5
      }
     },
     "by_coin": {
      "BTC": {
-      "n": 588,
+      "n": 587,
       "per_day": 1.5,
-      "win": 52.6,
-      "avg_net_pct": -0.231,
-      "total_net_pct": -136.0,
+      "win": 52.5,
+      "avg_net_pct": -0.233,
+      "total_net_pct": -136.8,
       "max_dd_pct": 137.9,
       "avg_sl_pct": 1.5
      },
      "ETH": {
       "n": 738,
       "per_day": 1.89,
-      "win": 56.2,
+      "win": 56.4,
       "avg_net_pct": -0.224,
-      "total_net_pct": -165.2,
+      "total_net_pct": -165.0,
       "max_dd_pct": 169.0,
       "avg_sl_pct": 1.5
      },
      "SOL": {
-      "n": 793,
+      "n": 792,
       "per_day": 2.03,
-      "win": 54.6,
-      "avg_net_pct": -0.308,
-      "total_net_pct": -244.1,
-      "max_dd_pct": 246.5,
+      "win": 54.5,
+      "avg_net_pct": -0.309,
+      "total_net_pct": -244.9,
+      "max_dd_pct": 246.2,
       "avg_sl_pct": 1.5
      }
     },
     "portfolio": {
      "days": 391,
-     "trades": 1055,
-     "usd_total": -5353.0,
-     "usd_per_day": -13.8,
+     "trades": 1046,
+     "usd_total": -5605.0,
+     "usd_per_day": -14.5,
      "goal_per_day": 50,
      "days_goal_met": 11.1,
-     "red_days": 56.8,
+     "red_days": 57.0,
      "worst_day": -85.0,
-     "max_dd_usd": 5393.0
+     "max_dd_usd": 5600.0
     },
     "halves_avg_pct": [
-     -0.266,
+     -0.268,
      -0.247
     ]
    },
@@ -2503,8 +2503,8 @@
     "max_dd_pct": 216.0,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
-     -0.303,
-     -0.173
+     -0.305,
+     -0.174
     ],
     "by_session": {
      "Asia": {
@@ -2598,8 +2598,8 @@
     "max_dd_pct": 84.4,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
-     -0.308,
-     -0.11
+     -0.306,
+     -0.114
     ],
     "by_session": {
      "Asia": {
@@ -2693,8 +2693,8 @@
     "max_dd_pct": 18.5,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
-     -0.236,
-     0.092
+     -0.239,
+     0.093
     ],
     "by_session": {
      "Asia": {
@@ -2761,8 +2761,8 @@
     "max_dd_pct": 24.6,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
-     -0.561,
-     -0.105
+     -0.563,
+     -0.11
     ],
     "by_session": {
      "Asia": {
@@ -2856,8 +2856,8 @@
     "max_dd_pct": 41.3,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
-     -0.294,
-     -0.031
+     -0.291,
+     -0.03
     ],
     "by_session": {
      "Asia": {
@@ -2951,8 +2951,8 @@
     "max_dd_pct": 83.2,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
-     -0.303,
-     -0.106
+     -0.305,
+     -0.105
     ],
     "by_session": {
      "Asia": {
@@ -3046,8 +3046,8 @@
     "max_dd_pct": 8.7,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
-     -0.83,
-     0.037
+     -0.803,
+     0.025
     ],
     "by_session": {
      "Asia": {
@@ -3114,8 +3114,8 @@
     "max_dd_pct": 4.6,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
-     -0.109,
-     0.391
+     -0.084,
+     0.381
     ],
     "by_session": {
      "Asia": {
@@ -3182,7 +3182,7 @@
     "max_dd_pct": 18.5,
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
-     -0.233,
+     -0.234,
      0.105
     ],
     "by_session": {
@@ -3247,49 +3247,49 @@
   "all": {
    "n": 9000,
    "per_day": 23.02,
-   "win": 52.7,
-   "avg_net_pct": -0.251,
-   "total_net_pct": -2259.2,
-   "max_dd_pct": 2258.3,
+   "win": 53.8,
+   "avg_net_pct": -0.227,
+   "total_net_pct": -2045.6,
+   "max_dd_pct": 2057.6,
    "avg_sl_pct": 1.5
   },
   "Asia": {
-   "n": 2983,
-   "per_day": 7.63,
-   "win": 51.7,
-   "avg_net_pct": -0.293,
-   "total_net_pct": -873.3,
-   "max_dd_pct": 871.6,
+   "n": 3014,
+   "per_day": 7.71,
+   "win": 53.5,
+   "avg_net_pct": -0.246,
+   "total_net_pct": -742.4,
+   "max_dd_pct": 749.9,
    "avg_sl_pct": 1.5
   },
   "Europe": {
-   "n": 1897,
-   "per_day": 4.85,
-   "win": 50.9,
-   "avg_net_pct": -0.299,
-   "total_net_pct": -566.4,
-   "max_dd_pct": 571.8,
+   "n": 1830,
+   "per_day": 4.68,
+   "win": 52.2,
+   "avg_net_pct": -0.265,
+   "total_net_pct": -485.4,
+   "max_dd_pct": 491.5,
    "avg_sl_pct": 1.5
   },
   "US": {
-   "n": 3040,
-   "per_day": 7.77,
-   "win": 54.2,
-   "avg_net_pct": -0.202,
-   "total_net_pct": -614.6,
-   "max_dd_pct": 617.9,
+   "n": 3018,
+   "per_day": 7.72,
+   "win": 54.6,
+   "avg_net_pct": -0.194,
+   "total_net_pct": -586.8,
+   "max_dd_pct": 600.4,
    "avg_sl_pct": 1.5
   },
   "Late": {
-   "n": 1080,
-   "per_day": 2.76,
-   "win": 54.7,
-   "avg_net_pct": -0.19,
-   "total_net_pct": -204.9,
-   "max_dd_pct": 208.9,
+   "n": 1138,
+   "per_day": 2.91,
+   "win": 55.2,
+   "avg_net_pct": -0.203,
+   "total_net_pct": -231.0,
+   "max_dd_pct": 236.7,
    "avg_sl_pct": 1.5
   }
  },
  "pick": "I_C+asia+capitulation",
- "gate": "I_C+asia+capitulation: 55 trades in 391 days, 65.5% hit +1%, +0.20% per trade after fees (random -0.25%)"
+ "gate": "I_C+asia+capitulation: 55 trades in 391 days, 65.5% hit +1%, +0.20% per trade after fees (random -0.23%)"
 }
