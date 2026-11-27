@@ -1,12 +1,12 @@
 {
  "last_week_checked": "2026-11-21",
  "odds": {
-  "55000": 45.7,
-  "50000": 28.2
+  "55000": 45.0,
+  "50000": 27.9
  },
  "last_digest": "2026-11-22",
- "last_close": 60382.11,
- "last_date": "2026-11-25",
+ "last_close": 60492.37,
+ "last_date": "2026-11-26",
  "health": {
   "btc": "WATCH",
   "eth": "WATCH",
