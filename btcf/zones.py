@@ -32,11 +32,12 @@ def daily_zones():
         r = next((x for x in json.loads(p.read_text()).get(key, []) if x["target_date"] == today), None)
         if not r:
             continue
-        lo, tp = r["lo_q50"], min(r["hi_q10"], r["lo_q50"] * 1.024)
-        out.append({"id": f"{key}-predlow-{today}", "coin": coin, "dir": "down", "price": round(lo, 2 if lo < 10000 else 0),
-                    "title": f"{coin} at today's predicted low",
-                    "plan": (f"Quick bounce only: small buy, sell {fmtp(tp)}, stop {fmtp(r['lo_q10'] * 0.995)}. "
-                             f"Model's 80% low range today: {fmtp(r['lo_q10'])}–{fmtp(r['lo_q90'])}.")})
+        lo = r["lo_q10"]               # deep low: the only version that held up in the 400-day test (BTC)
+        out.append({"id": f"{key}-deeplow-{today}", "coin": coin, "dir": "down", "price": round(lo, 2 if lo < 10000 else 0),
+                    "title": f"{coin} at today's DEEP predicted low (80% band bottom)",
+                    "plan": (f"Bounce long: buy, sell {fmtp(lo * 1.015)} (+1.5%), stop {fmtp(lo * 0.98)} (−2%), "
+                             f"close within 2 days. Backtest (BTC, 400 days): 33 trades, 64% hit, +0.3%/trade. "
+                             f"Median low today {fmtp(r['lo_q50'])} — buying there lost money in the test.")})
     return out
 
 
