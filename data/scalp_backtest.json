@@ -1,15 +1,15 @@
 {
- "made": "2026-11-27T10:08:06.736819+00:00",
+ "made": "2026-11-28T00:33:25.098996+00:00",
  "15m": {
   "BTC": {
    "period": [
     "2026-09-30 11:00",
-    "2026-11-27 10:00"
+    "2026-11-28 00:30"
    ],
-   "days": 57,
+   "days": 58,
    "1_rsi_hook": {
     "n": 75,
-    "per_day": 1.32,
+    "per_day": 1.29,
     "win": 42.7,
     "avg_net_pct": -0.349,
     "total_net_pct": -26.16,
@@ -18,7 +18,7 @@
    },
    "2_hook+room": {
     "n": 58,
-    "per_day": 1.02,
+    "per_day": 1.0,
     "win": 41.4,
     "avg_net_pct": -0.364,
     "total_net_pct": -21.09,
@@ -27,7 +27,7 @@
    },
    "3_hook+room+support": {
     "n": 24,
-    "per_day": 0.42,
+    "per_day": 0.41,
     "win": 33.3,
     "avg_net_pct": -0.512,
     "total_net_pct": -12.29,
@@ -38,19 +38,19 @@
     "n": 0
    },
    "random": {
-    "win": 40.0,
-    "avg_net_pct": -0.377
+    "win": 40.7,
+    "avg_net_pct": -0.364
    }
   },
   "ETH": {
    "period": [
     "2026-09-30 11:00",
-    "2026-11-27 10:00"
+    "2026-11-28 00:30"
    ],
-   "days": 57,
+   "days": 58,
    "1_rsi_hook": {
     "n": 96,
-    "per_day": 1.68,
+    "per_day": 1.66,
     "win": 44.8,
     "avg_net_pct": -0.295,
     "total_net_pct": -28.32,
@@ -59,7 +59,7 @@
    },
    "2_hook+room": {
     "n": 76,
-    "per_day": 1.33,
+    "per_day": 1.31,
     "win": 42.1,
     "avg_net_pct": -0.346,
     "total_net_pct": -26.32,
@@ -68,7 +68,7 @@
    },
    "3_hook+room+support": {
     "n": 32,
-    "per_day": 0.56,
+    "per_day": 0.55,
     "win": 40.6,
     "avg_net_pct": -0.388,
     "total_net_pct": -12.4,
@@ -79,19 +79,19 @@
     "n": 0
    },
    "random": {
-    "win": 43.5,
-    "avg_net_pct": -0.325
+    "win": 43.3,
+    "avg_net_pct": -0.328
    }
   },
   "SOL": {
    "period": [
     "2026-09-30 11:00",
-    "2026-11-27 10:00"
+    "2026-11-28 00:30"
    ],
-   "days": 57,
+   "days": 58,
    "1_rsi_hook": {
     "n": 102,
-    "per_day": 1.79,
+    "per_day": 1.76,
     "win": 41.2,
     "avg_net_pct": -0.376,
     "total_net_pct": -38.4,
@@ -100,7 +100,7 @@
    },
    "2_hook+room": {
     "n": 89,
-    "per_day": 1.56,
+    "per_day": 1.53,
     "win": 41.6,
     "avg_net_pct": -0.369,
     "total_net_pct": -32.8,
@@ -109,7 +109,7 @@
    },
    "3_hook+room+support": {
     "n": 31,
-    "per_day": 0.54,
+    "per_day": 0.53,
     "win": 45.2,
     "avg_net_pct": -0.297,
     "total_net_pct": -9.2,
@@ -126,8 +126,8 @@
     "avg_hold_bars": 9.0
    },
    "random": {
-    "win": 42.8,
-    "avg_net_pct": -0.337
+    "win": 42.2,
+    "avg_net_pct": -0.347
    }
   },
   "pooled": {
@@ -152,9 +152,9 @@
     "avg_net_pct": -1.2
    },
    "random": {
-    "n": 36630,
-    "win": 42.3,
-    "avg_net_pct": -0.343
+    "n": 36419,
+    "win": 42.2,
+    "avg_net_pct": -0.345
    }
   }
  },
@@ -162,7 +162,7 @@
   "BTC": {
    "period": [
     "2026-04-27 05:00",
-    "2026-11-27 10:00"
+    "2026-11-28 00:00"
    ],
    "days": 214,
    "1_rsi_hook": {
@@ -202,14 +202,14 @@
     "avg_hold_bars": 11.8
    },
    "random": {
-    "win": 46.7,
-    "avg_net_pct": -0.241
+    "win": 46.6,
+    "avg_net_pct": -0.245
    }
   },
   "ETH": {
    "period": [
     "2026-04-27 05:00",
-    "2026-11-27 10:00"
+    "2026-11-28 00:00"
    ],
    "days": 214,
    "1_rsi_hook": {
@@ -250,13 +250,13 @@
    },
    "random": {
     "win": 49.3,
-    "avg_net_pct": -0.21
+    "avg_net_pct": -0.208
    }
   },
   "SOL": {
    "period": [
     "2026-04-27 05:00",
-    "2026-11-27 10:00"
+    "2026-11-28 00:00"
    ],
    "days": 214,
    "1_rsi_hook": {
@@ -296,8 +296,8 @@
     "avg_hold_bars": 2.0
    },
    "random": {
-    "win": 46.1,
-    "avg_net_pct": -0.27
+    "win": 46.7,
+    "avg_net_pct": -0.258
    }
   },
   "pooled": {
@@ -322,9 +322,9 @@
     "avg_net_pct": -0.397
    },
    "random": {
-    "n": 45294,
-    "win": 47.5,
-    "avg_net_pct": -0.238
+    "n": 45286,
+    "win": 47.6,
+    "avg_net_pct": -0.235
    }
   }
  }
