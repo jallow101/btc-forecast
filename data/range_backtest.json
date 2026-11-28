@@ -1,5 +1,5 @@
 {
- "made": "2026-11-28T09:10+00:00",
+ "made": "2026-11-28T09:14+00:00",
  "period": {
   "BTC": [
    "2025-10-24",
@@ -54,20 +54,20 @@
   ]
  },
  "oversold_only": {
-  "n": 145,
-  "avg_pct": -0.2,
-  "win_pct": 46,
+  "n": 146,
+  "avg_pct": -0.22,
+  "win_pct": 45,
   "tp_pct": 44,
-  "usd_total_2500": -712,
+  "usd_total_2500": -818,
   "by_exit": {
    "TP": 64,
    "not moving": 60,
-   "stop": 20,
+   "stop": 21,
    "3 days": 1
   },
   "by_coin": {
    "BTC": -0.18,
-   "ETH": -0.44,
+   "ETH": -0.52,
    "SOL": 0.07
   }
  },
