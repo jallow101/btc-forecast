@@ -36,7 +36,8 @@ def daily_zones():
         out.append({"id": f"{key}-deeplow-{today}", "coin": coin, "dir": "down", "price": round(lo, 2 if lo < 10000 else 0),
                     "title": f"{coin} at today's DEEP predicted low (80% band bottom)",
                     "plan": (f"Bounce long: buy, sell {fmtp(lo * 1.015)} (+1.5%), stop {fmtp(lo * 0.98)} (−2%), "
-                             f"close within 2 days. Backtest (BTC, 400 days): 33 trades, 64% hit, +0.3%/trade. "
+                             f"close within 2 days. Backtest (400 days): " + ("33 trades, 64% hit, +0.3%/trade. " if coin == "BTC"
+                             else "46 trades, 59% hit, −0.1%/trade — weaker than BTC, use your judgment. ") +
                              f"Median low today {fmtp(r['lo_q50'])} — buying there lost money in the test.")})
     return out
 
