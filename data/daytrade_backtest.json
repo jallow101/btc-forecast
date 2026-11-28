@@ -1,5 +1,5 @@
 {
- "made": "2026-11-28T09:13+00:00",
+ "made": "2026-11-28T09:28+00:00",
  "rules": {
   "tp_pct": 1.0,
   "sl": "below support, 0.8-2.0%",
@@ -352,8 +352,8 @@
      {
       "coin": "BTC",
       "t": "2026-11-28 05:15",
-      "exit_t": "2026-11-28 09:00",
-      "ret_pct": -0.56,
+      "exit_t": "2026-11-28 09:15",
+      "ret_pct": -0.58,
       "why": "time"
      },
      {
@@ -2481,13 +2481,13 @@
     "portfolio": {
      "days": 391,
      "trades": 1039,
-     "usd_total": -5394.0,
+     "usd_total": -5395.0,
      "usd_per_day": -13.7,
      "goal_per_day": 50,
      "days_goal_met": 11.7,
      "red_days": 54.5,
      "worst_day": -85.0,
-     "max_dd_usd": 5414.0
+     "max_dd_usd": 5415.0
     },
     "halves_avg_pct": [
      -0.277,
@@ -2568,15 +2568,15 @@
       "per_day": 0.87,
       "win": 55.0,
       "avg_net_pct": -0.285,
-      "total_net_pct": -97.0,
-      "max_dd_pct": 95.3,
+      "total_net_pct": -96.9,
+      "max_dd_pct": 95.2,
       "avg_sl_pct": 1.5
      }
     },
     "portfolio": {
      "days": 391,
      "trades": 671,
-     "usd_total": -3931.0,
+     "usd_total": -3930.0,
      "usd_per_day": -10.0,
      "goal_per_day": 50,
      "days_goal_met": 7.4,
@@ -2671,7 +2671,7 @@
     "portfolio": {
      "days": 391,
      "trades": 368,
-     "usd_total": -2098.0,
+     "usd_total": -2097.0,
      "usd_per_day": -5.4,
      "goal_per_day": 50,
      "days_goal_met": 3.1,
@@ -2952,7 +2952,7 @@
     "avg_sl_pct": 1.5,
     "ci90_avg_pct": [
      -0.305,
-     -0.116
+     -0.115
     ],
     "by_session": {
      "Asia": {
@@ -3102,7 +3102,7 @@
     },
     "halves_avg_pct": [
      -0.797,
-     -0.087
+     -0.088
     ]
    },
    "I_C+asia+capitulation": {
@@ -3247,46 +3247,46 @@
   "all": {
    "n": 9000,
    "per_day": 23.02,
-   "win": 53.7,
-   "avg_net_pct": -0.228,
-   "total_net_pct": -2050.5,
-   "max_dd_pct": 2053.1,
+   "win": 53.6,
+   "avg_net_pct": -0.227,
+   "total_net_pct": -2042.8,
+   "max_dd_pct": 2047.4,
    "avg_sl_pct": 1.5
   },
   "Asia": {
-   "n": 3017,
-   "per_day": 7.72,
-   "win": 54.3,
-   "avg_net_pct": -0.23,
-   "total_net_pct": -693.9,
-   "max_dd_pct": 694.7,
+   "n": 3021,
+   "per_day": 7.73,
+   "win": 54.6,
+   "avg_net_pct": -0.222,
+   "total_net_pct": -670.8,
+   "max_dd_pct": 672.5,
    "avg_sl_pct": 1.5
   },
   "Europe": {
-   "n": 1848,
-   "per_day": 4.73,
-   "win": 53.3,
-   "avg_net_pct": -0.24,
-   "total_net_pct": -443.3,
-   "max_dd_pct": 456.5,
+   "n": 1853,
+   "per_day": 4.74,
+   "win": 54.0,
+   "avg_net_pct": -0.222,
+   "total_net_pct": -412.0,
+   "max_dd_pct": 421.4,
    "avg_sl_pct": 1.5
   },
   "US": {
-   "n": 2999,
-   "per_day": 7.67,
-   "win": 52.9,
-   "avg_net_pct": -0.23,
-   "total_net_pct": -689.9,
-   "max_dd_pct": 698.7,
+   "n": 2997,
+   "per_day": 7.66,
+   "win": 52.7,
+   "avg_net_pct": -0.228,
+   "total_net_pct": -681.8,
+   "max_dd_pct": 684.9,
    "avg_sl_pct": 1.5
   },
   "Late": {
-   "n": 1136,
-   "per_day": 2.91,
-   "win": 54.7,
-   "avg_net_pct": -0.197,
-   "total_net_pct": -223.4,
-   "max_dd_pct": 227.6,
+   "n": 1129,
+   "per_day": 2.89,
+   "win": 52.9,
+   "avg_net_pct": -0.246,
+   "total_net_pct": -278.1,
+   "max_dd_pct": 278.9,
    "avg_sl_pct": 1.5
   }
  },
