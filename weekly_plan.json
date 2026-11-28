@@ -1,0 +1,51 @@
+{
+ "made": "2026-11-28T03:54:51.138386+00:00",
+ "revised": true,
+ "plans": {
+  "BTC": {
+   "price": 59924.0,
+   "trend": "down",
+   "heavy": "above",
+   "case": "against",
+   "inval": 60443.57142857143,
+   "mtf_up": 65177.566545788446,
+   "mtf_dn": 57381.886171040765,
+   "mtf_up_w": 8.244644385055503,
+   "mtf_dn_w": 5.127485795717328
+  },
+  "ETH": {
+   "price": 1663.8,
+   "trend": "down",
+   "heavy": "below",
+   "case": "with",
+   "inval": 1840.0826082530223,
+   "mtf_up": 1840.0826082530223,
+   "mtf_dn": 1517.8452142345247,
+   "mtf_up_w": 6.314994909693363,
+   "mtf_dn_w": 6.227931960255484
+  },
+  "SOL": {
+   "price": 71.717,
+   "trend": "none",
+   "heavy": "below",
+   "case": "range",
+   "inval": null,
+   "mtf_up": 78.3508225,
+   "mtf_dn": 64.81302477842766,
+   "mtf_up_w": 5.894690780498277,
+   "mtf_dn_w": 9.233124388968893
+  },
+  "WLD": {
+   "price": 0.24421,
+   "trend": "none",
+   "heavy": "above",
+   "case": "range",
+   "inval": null,
+   "mtf_up": 0.27342750524609755,
+   "mtf_dn": 0.221638725,
+   "mtf_up_w": 4.62243972016193,
+   "mtf_dn_w": 0.9726549474122855
+  }
+ },
+ "text": "\ud83d\udce3 Mid-week update \u2014 week of 28 Nov 2026\nWhat changed: BTC 4h trend turned down; ETH 4h trend turned down\n\nBTC $59,924 (-2.4% 24h) \u00b7 4h downtrend \u00b7 daily RSI6 29 (oversold)\nDaily MA7 $60,444 \u00b7 MA25 $66,893\n7-day map: above $64,643 (+7.9%, 6.0) | below $57,282 (-4.4%, 6.7)\n1-month map: above $65,178 (+8.8%, 8.2) | below $57,382 (-4.2%, 5.1)\n\u2192 Liquidity heavier above; it is against the trend (weak edge)\n\u2022 A (trend): downtrend continues toward $57,282\n\u2022 B (magnet, weaker): liquidity is heavier above \u2192 squeeze toward $65,178 if price reclaims the daily MA7 $60,444\n\u2022 Invalidation: Daily close above $60,444 switches to plan B. Trend and liquidity disagree: smaller size\n\u2022 Buy-the-dip zones (liquidity below): $57,382, $57,282\n\u2022 Model, week to 2026-12-05: $55,463\u2013$65,828 (median $60,188)\n\nETH $1,664 (-3.7% 24h) \u00b7 4h downtrend \u00b7 daily RSI6 29 (oversold)\nDaily MA7 $1,688 \u00b7 MA25 $1,894\n7-day map: above $1,762 (+5.9%, 6.8) | below $1,594 (-4.2%, 12.6)\n1-month map: above $1,840 (+10.6%, 6.3) | below $1,518 (-8.8%, 6.2)\n\u2192 Liquidity heavier below; it agrees with the trend (the case with a backtest edge)\n\u2022 A (main, backtest edge): trend and liquidity both point down \u2192 sweep toward $1,594, then $1,518\n\u2022 B: relief bounce into $1,762 first, then lower\n\u2022 Invalidation: 4h close above $1,840 cancels the bearish plan\n\u2022 Buy-the-dip zones (liquidity below): $1,594, $1,518\n\u2022 Model, week to 2026-12-05: $1,501\u2013$1,843 (median $1,665)\n\nSOL $71.72 (-1.4% 24h) \u00b7 4h nonetrend \u00b7 daily RSI6 46\nDaily MA7 $71.03 \u00b7 MA25 $77.48\n7-day map: above $75.61 (+5.4%, 4.6) | below $69.87 (-2.6%, 9.4)\n1-month map: above $78.35 (+9.3%, 5.9) | below $64.81 (-9.6%, 9.2)\n\u2192 Liquidity heavier below; it gives no clear lean\n\u2022 Range: $69.87 \u2013 $75.61 (7-day clusters). Nearest one usually gets hit first\n\u2022 No 4h trend: fade the range edges, or wait for a trend before trusting a direction\n\u2022 Invalidation: Break and 4h close outside the range sets the next direction\n\u2022 Buy-the-dip zones (liquidity below): $69.87, $64.81\n\u2022 Model, week to 2026-12-05: $66.00\u2013$81.00 (median $71.00)\n\nWLD $0.2442 (-2.4% 24h) \u00b7 4h nonetrend \u00b7 daily RSI6 42\nDaily MA7 $0.2406 \u00b7 MA25 $0.2778\n7-day map: above $0.2595 (+6.2%, 11.6) | below $0.2371 (-2.9%, 2.8)\n1-month map: above $0.2734 (+12.0%, 4.6) | below $0.2216 (-9.2%, 1.0)\n\u2192 Liquidity heavier above; it gives no clear lean\n\u2022 Range: $0.2371 \u2013 $0.2595 (7-day clusters). Nearest one usually gets hit first\n\u2022 No 4h trend: fade the range edges, or wait for a trend before trusting a direction\n\u2022 Invalidation: Break and 4h close outside the range sets the next direction\n\u2022 Buy-the-dip zones (liquidity below): $0.2371, $0.2216\n\nExpected daily ranges (model, UTC days; 80% range in brackets):\n\u2022 BTC Sat: low $59,299 ($58,091\u2013$59,564) \u00b7 high $60,512 ($60,231\u2013$61,365)\n\u2022 BTC Sun: low $59,488 ($57,576\u2013$60,024) \u00b7 high $60,824 ($59,850\u2013$62,084)\n\u2022 ETH Sat: low $1,631 ($1,608\u2013$1,651) \u00b7 high $1,697 ($1,672\u2013$1,719)\n\u2022 ETH Sun: low $1,629 ($1,580\u2013$1,657) \u00b7 high $1,703 ($1,644\u2013$1,730)\n\u2022 SOL Sat: low $70.83 ($68.81\u2013$71.25) \u00b7 high $73.66 ($71.70\u2013$74.58)\n\u2022 SOL Sun: low $70.88 ($68.14\u2013$72.56) \u00b7 high $74.23 ($70.82\u2013$75.59)\n\nReal leverage (OKX perps):\n\u2022 BTC: Funding normal (+0.007%/8h): no side is badly crowded. Open interest -1.8% in 24h: leverage steady. Long/short accounts 2.96: most traders are long \u2014 the crowd is often wrong at extremes (leans bearish). Last 24h on OKX: $21.9M longs and $7.7M shorts liquidated \u2014 mostly longs got wiped.\n\u2022 ETH: Funding normal (+0.000%/8h): no side is badly crowded. Open interest -0.5% in 24h: leverage steady. Long/short accounts 3.67: most traders are long \u2014 the crowd is often wrong at extremes (leans bearish). Last 24h on OKX: $15.5M longs and $5.0M shorts liquidated \u2014 mostly longs got wiped.\n\n1% long setup: paper only, alerts off. 87 trades, 40.2% wins, -0.39% per trade after fees (random entries -0.34%)\n\nCalendar: no high-impact US data in this window\n\nHeadlines that could move it:\n\u2022 \u26a0\ufe0f UK Regulator Cites Binance Hack as It Plans Tougher DeFi Rules Than US and EU: Report (Decrypt)\n\u2022 \u26a0\ufe0f Binance Fully Lifts Withdrawal Suspension Four Weeks After $6.4B Hack (Decrypt)\n\u2022 Bitcoin ETFs are bleeding cash and the Fed is unlikely to help (CoinDesk)\n\u2022 Bitcoin Falls Further as Inflation, Trump Tariffs and AI Selloff Rattle Markets (Decrypt)\n\u2022 Binance to launch tokenized IPO program after regulatory approval: Yi He (Cointelegraph)\n\u2022 Next ECB chief favors tokenized bank deposits over stablecoins and bitcoin (CoinDesk)\n\nLiquidity = estimates from candles (backtest: useful as targets when they agree with the trend; buying a sweep alone did not work). Not financial advice.\nhttps://jallow101.github.io/btc-forecast/liquidity.html"
+}
