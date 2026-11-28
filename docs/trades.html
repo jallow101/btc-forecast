@@ -61,6 +61,14 @@ canvas { width: 100%; display: block; }
     <div class="cards" id="today"></div>
   </section>
 
+  <section class="panel" id="range">
+    <h2>Range trades — buy the predicted low only when the setup is on</h2>
+    <p class="muted">Setup = oversold (daily RSI &lt; 35 or 4h RSI &lt; 30) <b>and</b> more liquidity above price than below. Buy at today's predicted low, sell at the bottom of the predicted-high range, stop 1% under the low range, close if not +0.4% after 12h, hold max 3 days. No setup = day off.</p>
+    <div class="cards" id="r-status"></div>
+    <p id="r-bt" class="muted"></p>
+    <div class="tw"><table id="r-log"></table></div>
+  </section>
+
   <section class="panel">
     <h2>Right now — how close each coin is</h2>
     <p class="muted" id="wstamp"></p>
@@ -217,6 +225,21 @@ function drawEq(vals) {
   g.strokeStyle = cs.getPropertyValue("--accent"); g.lineWidth = 2; g.beginPath(); eq.forEach((v, i) => i ? g.lineTo(x(i), y(v)) : g.moveTo(x(i), y(v))); g.stroke();
   g.fillText(usd(eq.at(-1)), x(eq.length - 1) - 40, y(eq.at(-1)) - 6); g.fillText("$50/day pace", 44, y(goal.at(-1)) + 14);
 }
+
+Promise.all([get("range_log.json"), get("range_backtest.json").catch(() => null)]).then(([R, B]) => {
+  const st = R.status || {};
+  $("r-status").innerHTML = Object.entries(st).map(([c, x]) => `<div class="card"><h3><span>${c} ${px(x.price)}</span><span class="badge ${x.setup ? "ok" : ""}">${x.setup ? "SETUP ON" : "day off"}</span></h3>
+    <ul class="conds"><li class="${x.oversold ? "y" : "n"}">oversold — daily RSI ${x.rsi_d}, 4h RSI ${x.rsi4h}</li>
+    <li class="${x.magnet_up ? "y" : "n"}">liquidity above ${x.liq_up} vs below ${x.liq_dn}</li></ul>
+    <div class="muted">Plan if on: buy ${px(x.buy)} · TP ${px(x.tp)} · stop ${px(x.stop)}</div></div>`).join("");
+  if (B) { const s = B.setup_only, e = B.every_fill;
+    $("r-bt").innerHTML = `Backtest (${B.period.BTC[0]} → ${B.period.BTC[1]}): with the setup <b>${s.n} trades, ${s.win_pct}% winners, ${pct(s.avg_pct)} per trade</b> (≈ ${usd(s.usd_total_2500)} at $2,500 each; 90% range ${pct(s.ci90_avg_pct[0])} … ${pct(s.ci90_avg_pct[1])}). Buying every predicted low instead: ${e.n} trades, ${pct(e.avg_pct)} per trade. Small sample — the paper log below is the real test.`; }
+  const T = (R.trades || []).slice().reverse();
+  $("r-log").innerHTML = T.length ? "<tr><th>Filled (UTC)</th><th>Coin</th><th>Entry</th><th>TP / stop</th><th>Result</th><th>P&L</th></tr>" + T.map(t =>
+    `<tr><td>${t.fill_time.slice(5, 16)}</td><td>${t.coin}</td><td>${px(t.entry)}</td><td>${px(t.tp)} / ${px(t.stop)}</td>
+     <td>${t.result === "hit" ? '<span class="badge ok">✓ hit</span>' : t.result ? `<span class="badge bad">✗ ${t.status}</span>` : `<span class="badge paper">open${t.last ? " " + pct((t.last / t.entry - 1) * 100) : ""}</span>`}</td>
+     <td class="${cls(t.pnl_usd)}">${t.pnl_usd != null ? usd(t.pnl_usd) : "—"}</td></tr>`).join("") : '<tr><td class="muted">No range trades yet — they only happen on setup days.</td></tr>';
+}).catch(() => { $("range").hidden = true; });
 
 Promise.all([get("trades.json"), get("backtest.json")]).then(([l, b]) => render(l, b))
   .catch(e => { $("status").innerHTML = `<p class="muted">No data yet (${e.message}). The 15-minute scanner publishes it to the trades-data branch on its first run.</p>`; });

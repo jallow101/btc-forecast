@@ -55,6 +55,7 @@ jobs:
         run: |
           python -m btcf.hist_fetch || true
           python -m btcf.daytrade backtest || true
+          python -m btcf.rangetrade backtest || true
 
       - name: Commit price history, forecast log, backtest store and alert state
         continue-on-error: true

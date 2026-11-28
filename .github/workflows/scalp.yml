@@ -46,12 +46,13 @@ jobs:
             python -m btcf.scalp || true
             mkdir -p out/trades
             git fetch -q origin trades-data 2>/dev/null || true
-            for f in trades.json zone_state.json derivs.json; do
+            for f in trades.json zone_state.json derivs.json range_log.json; do
               git show origin/trades-data:$f > out/trades/$f 2>/dev/null || rm -f out/trades/$f
             done
             python -m btcf.derivs || true
             python -c "import json;from btcf import zones;zones.run(json.load(open('out/trades/derivs.json')))" || python -m btcf.zones || true
             python -m btcf.daytrade || true
+            python -m btcf.rangetrade || true
             if [ -n "$(ls out/trades)" ]; then
               ( cd out/trades && rm -rf .git && git init -q -b trades-data \
                 && git config user.name "github-actions[bot]" \

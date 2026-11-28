@@ -1,0 +1,353 @@
+{
+ "made": "2026-11-28T09:10+00:00",
+ "period": {
+  "BTC": [
+   "2025-10-24",
+   "2026-11-28"
+  ],
+  "ETH": [
+   "2025-10-24",
+   "2026-11-28"
+  ],
+  "SOL": [
+   "2025-10-24",
+   "2026-11-28"
+  ]
+ },
+ "every_fill": {
+  "n": 599,
+  "avg_pct": -0.3,
+  "win_pct": 44,
+  "tp_pct": 41,
+  "usd_total_2500": -4513,
+  "by_exit": {
+   "not moving": 281,
+   "TP": 248,
+   "stop": 65,
+   "3 days": 5
+  },
+  "by_coin": {
+   "BTC": -0.29,
+   "ETH": -0.44,
+   "SOL": -0.18
+  }
+ },
+ "setup_only": {
+  "n": 26,
+  "avg_pct": 0.58,
+  "win_pct": 58,
+  "tp_pct": 58,
+  "usd_total_2500": 379,
+  "by_exit": {
+   "TP": 15,
+   "not moving": 10,
+   "stop": 1
+  },
+  "by_coin": {
+   "BTC": 0.57,
+   "ETH": 0.88,
+   "SOL": 0.3
+  },
+  "ci90_avg_pct": [
+   -0.28,
+   1.43
+  ]
+ },
+ "oversold_only": {
+  "n": 145,
+  "avg_pct": -0.2,
+  "win_pct": 46,
+  "tp_pct": 44,
+  "usd_total_2500": -712,
+  "by_exit": {
+   "TP": 64,
+   "not moving": 60,
+   "stop": 20,
+   "3 days": 1
+  },
+  "by_coin": {
+   "BTC": -0.18,
+   "ETH": -0.44,
+   "SOL": 0.07
+  }
+ },
+ "magnet_only": {
+  "n": 160,
+  "avg_pct": -0.26,
+  "win_pct": 41,
+  "tp_pct": 39,
+  "usd_total_2500": -1050,
+  "by_exit": {
+   "not moving": 84,
+   "TP": 63,
+   "stop": 13
+  },
+  "by_coin": {
+   "BTC": -0.39,
+   "ETH": -0.24,
+   "SOL": -0.11
+  }
+ },
+ "setup_trades": [
+  {
+   "coin": "BTC",
+   "d": "2025-11-18",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "TP",
+   "ret": 1.12,
+   "exit_d": "2025-11-18"
+  },
+  {
+   "coin": "BTC",
+   "d": "2025-11-19",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "not moving",
+   "ret": -2.05,
+   "exit_d": "2025-11-19"
+  },
+  {
+   "coin": "BTC",
+   "d": "2025-11-22",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "TP",
+   "ret": 1.84,
+   "exit_d": "2025-11-23"
+  },
+  {
+   "coin": "BTC",
+   "d": "2025-11-24",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "TP",
+   "ret": 2.0,
+   "exit_d": "2025-11-24"
+  },
+  {
+   "coin": "BTC",
+   "d": "2025-11-25",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "TP",
+   "ret": 2.18,
+   "exit_d": "2025-11-26"
+  },
+  {
+   "coin": "BTC",
+   "d": "2026-02-03",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "not moving",
+   "ret": -0.57,
+   "exit_d": "2026-02-04"
+  },
+  {
+   "coin": "BTC",
+   "d": "2026-02-07",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "TP",
+   "ret": 2.61,
+   "exit_d": "2026-02-08"
+  },
+  {
+   "coin": "BTC",
+   "d": "2026-02-09",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "TP",
+   "ret": 2.23,
+   "exit_d": "2026-02-09"
+  },
+  {
+   "coin": "BTC",
+   "d": "2026-06-09",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "not moving",
+   "ret": -1.13,
+   "exit_d": "2026-06-10"
+  },
+  {
+   "coin": "BTC",
+   "d": "2026-11-17",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "TP",
+   "ret": 0.66,
+   "exit_d": "2026-11-17"
+  },
+  {
+   "coin": "BTC",
+   "d": "2026-11-20",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "not moving",
+   "ret": -4.22,
+   "exit_d": "2026-11-21"
+  },
+  {
+   "coin": "BTC",
+   "d": "2026-11-22",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "TP",
+   "ret": 2.2,
+   "exit_d": "2026-11-22"
+  },
+  {
+   "coin": "ETH",
+   "d": "2026-06-06",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "TP",
+   "ret": 2.97,
+   "exit_d": "2026-06-07"
+  },
+  {
+   "coin": "ETH",
+   "d": "2026-06-09",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "not moving",
+   "ret": -0.93,
+   "exit_d": "2026-06-10"
+  },
+  {
+   "coin": "ETH",
+   "d": "2026-06-14",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "TP",
+   "ret": 1.02,
+   "exit_d": "2026-06-14"
+  },
+  {
+   "coin": "ETH",
+   "d": "2026-06-25",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "not moving",
+   "ret": -2.27,
+   "exit_d": "2026-06-26"
+  },
+  {
+   "coin": "ETH",
+   "d": "2026-11-02",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "not moving",
+   "ret": -0.29,
+   "exit_d": "2026-11-03"
+  },
+  {
+   "coin": "ETH",
+   "d": "2026-11-17",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "TP",
+   "ret": 2.16,
+   "exit_d": "2026-11-17"
+  },
+  {
+   "coin": "ETH",
+   "d": "2026-11-21",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "TP",
+   "ret": 3.51,
+   "exit_d": "2026-11-21"
+  },
+  {
+   "coin": "SOL",
+   "d": "2025-11-06",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "TP",
+   "ret": 5.53,
+   "exit_d": "2025-11-07"
+  },
+  {
+   "coin": "SOL",
+   "d": "2025-11-19",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "stop",
+   "ret": -4.27,
+   "exit_d": "2025-11-19"
+  },
+  {
+   "coin": "SOL",
+   "d": "2025-11-20",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "not moving",
+   "ret": -1.09,
+   "exit_d": "2025-11-21"
+  },
+  {
+   "coin": "SOL",
+   "d": "2026-02-01",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "not moving",
+   "ret": -4.06,
+   "exit_d": "2026-02-02"
+  },
+  {
+   "coin": "SOL",
+   "d": "2026-02-09",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "TP",
+   "ret": 5.22,
+   "exit_d": "2026-02-09"
+  },
+  {
+   "coin": "SOL",
+   "d": "2026-02-10",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "not moving",
+   "ret": -1.44,
+   "exit_d": "2026-02-10"
+  },
+  {
+   "coin": "SOL",
+   "d": "2026-11-22",
+   "setup": true,
+   "oversold": true,
+   "magnet_up": true,
+   "why": "TP",
+   "ret": 2.23,
+   "exit_d": "2026-11-22"
+  }
+ ]
+}

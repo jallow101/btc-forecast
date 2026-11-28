@@ -22,6 +22,7 @@ jobs:
       - run: python -m btcf.liq_fetch
       - run: python -m btcf.hist_fetch
       - run: python -m btcf.daytrade backtest
+      - run: python -m btcf.rangetrade backtest
       - name: Commit history and report
         run: |
           git config user.name "github-actions[bot]"
