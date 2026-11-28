@@ -1,0 +1,3295 @@
+{
+ "made": "2026-11-28T09:28+00:00",
+ "rules": {
+  "tp_pct": 1.0,
+  "sl": "below support, 0.8-2.0%",
+  "fee_pct": 0.2,
+  "max_hold_h": 24.0,
+  "size": 2500,
+  "max_open": 2,
+  "max_per_day": 7,
+  "max_losses_per_day": 2
+ },
+ "labels": {
+  "hook": "15m RSI(6) was under 25 and turned up",
+  "room": "day's predicted high \u2265 1.2% above (room for the 1% target)",
+  "hold": "price still above the day's predicted low (10% band)",
+  "support": "within 0.6% above a support (1h liquidity / MA99 / MA200 / swing low / predicted low)",
+  "stopped": "selling stopped: green 15m candle closed back over EMA7",
+  "no_cascade": "no cascade: last 1h candle > \u22122.5%, 4h RSI(14) > 25",
+  "btc_ok": "BTC not dumping: BTC last hour > \u22121%",
+  "asia": "Asian session (00\u201308 UTC)",
+  "stretch": "stretched: \u22651.5% under the 1h MA25 (bigger dips revert harder)",
+  "capitulation": "a volume spike (\u22652\u00d7 average) in the last hour",
+  "magnet": "a liquidity cluster 1\u20136% above to pull price up"
+ },
+ "variants": {
+  "A_rsi_hook_only": [
+   "hook"
+  ],
+  "B_core": [
+   "hook",
+   "room",
+   "hold",
+   "support"
+  ],
+  "C_core+not_falling": [
+   "hook",
+   "room",
+   "hold",
+   "support",
+   "stopped",
+   "no_cascade",
+   "btc_ok"
+  ],
+  "D_C+asia": [
+   "hook",
+   "room",
+   "hold",
+   "support",
+   "stopped",
+   "no_cascade",
+   "btc_ok",
+   "asia"
+  ],
+  "E_C+stretch": [
+   "hook",
+   "room",
+   "hold",
+   "support",
+   "stopped",
+   "no_cascade",
+   "btc_ok",
+   "stretch"
+  ],
+  "F_C+capitulation": [
+   "hook",
+   "room",
+   "hold",
+   "support",
+   "stopped",
+   "no_cascade",
+   "btc_ok",
+   "capitulation"
+  ],
+  "G_C+magnet": [
+   "hook",
+   "room",
+   "hold",
+   "support",
+   "stopped",
+   "no_cascade",
+   "btc_ok",
+   "magnet"
+  ],
+  "H_C+asia+stretch": [
+   "hook",
+   "room",
+   "hold",
+   "support",
+   "stopped",
+   "no_cascade",
+   "btc_ok",
+   "asia",
+   "stretch"
+  ],
+  "I_C+asia+capitulation": [
+   "hook",
+   "room",
+   "hold",
+   "support",
+   "stopped",
+   "no_cascade",
+   "btc_ok",
+   "asia",
+   "capitulation"
+  ],
+  "J_C+asia+magnet": [
+   "hook",
+   "room",
+   "hold",
+   "support",
+   "stopped",
+   "no_cascade",
+   "btc_ok",
+   "asia",
+   "magnet"
+  ]
+ },
+ "period": {
+  "BTC": [
+   "2025-11-01",
+   "2026-11-28",
+   391
+  ],
+  "ETH": [
+   "2025-11-01",
+   "2026-11-28",
+   391
+  ],
+  "SOL": [
+   "2025-11-01",
+   "2026-11-28",
+   391
+  ]
+ },
+ "results": {
+  "structure": {
+   "A_rsi_hook_only": {
+    "n": 2187,
+    "per_day": 5.59,
+    "win": 52.7,
+    "avg_net_pct": -0.244,
+    "total_net_pct": -532.9,
+    "max_dd_pct": 534.3,
+    "avg_sl_pct": 1.46,
+    "ci90_avg_pct": [
+     -0.288,
+     -0.203
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 695,
+      "per_day": 1.78,
+      "win": 55.1,
+      "avg_net_pct": -0.198,
+      "total_net_pct": -137.8,
+      "max_dd_pct": 136.0,
+      "avg_sl_pct": 1.43
+     },
+     "Europe": {
+      "n": 368,
+      "per_day": 0.94,
+      "win": 46.7,
+      "avg_net_pct": -0.381,
+      "total_net_pct": -140.3,
+      "max_dd_pct": 141.9,
+      "avg_sl_pct": 1.45
+     },
+     "Late": {
+      "n": 257,
+      "per_day": 0.66,
+      "win": 58.4,
+      "avg_net_pct": -0.109,
+      "total_net_pct": -28.0,
+      "max_dd_pct": 39.2,
+      "avg_sl_pct": 1.49
+     },
+     "US": {
+      "n": 867,
+      "per_day": 2.22,
+      "win": 51.7,
+      "avg_net_pct": -0.262,
+      "total_net_pct": -226.8,
+      "max_dd_pct": 237.5,
+      "avg_sl_pct": 1.48
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 607,
+      "per_day": 1.55,
+      "win": 51.1,
+      "avg_net_pct": -0.193,
+      "total_net_pct": -117.4,
+      "max_dd_pct": 118.4,
+      "avg_sl_pct": 1.43
+     },
+     "ETH": {
+      "n": 762,
+      "per_day": 1.95,
+      "win": 53.9,
+      "avg_net_pct": -0.233,
+      "total_net_pct": -177.5,
+      "max_dd_pct": 178.4,
+      "avg_sl_pct": 1.47
+     },
+     "SOL": {
+      "n": 818,
+      "per_day": 2.09,
+      "win": 52.8,
+      "avg_net_pct": -0.291,
+      "total_net_pct": -238.0,
+      "max_dd_pct": 237.4,
+      "avg_sl_pct": 1.48
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 1065,
+     "usd_total": -4181.0,
+     "usd_per_day": -10.6,
+     "goal_per_day": 50,
+     "days_goal_met": 12.7,
+     "red_days": 51.7,
+     "worst_day": -100.0,
+     "max_dd_usd": 4201.0
+    },
+    "halves_avg_pct": [
+     -0.252,
+     -0.234
+    ],
+    "recent": [
+     {
+      "coin": "SOL",
+      "t": "2026-11-20 13:45",
+      "exit_t": "2026-11-20 15:00",
+      "ret_pct": -2.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-20 15:45",
+      "exit_t": "2026-11-20 16:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-20 16:00",
+      "exit_t": "2026-11-20 18:45",
+      "ret_pct": -2.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-20 16:30",
+      "exit_t": "2026-11-20 19:15",
+      "ret_pct": -2.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-20 16:30",
+      "exit_t": "2026-11-20 18:45",
+      "ret_pct": -2.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-20 19:15",
+      "exit_t": "2026-11-20 19:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-20 19:15",
+      "exit_t": "2026-11-20 19:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-21 03:45",
+      "exit_t": "2026-11-21 06:15",
+      "ret_pct": -2.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-21 03:45",
+      "exit_t": "2026-11-21 04:00",
+      "ret_pct": -2.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-21 04:30",
+      "exit_t": "2026-11-21 04:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-21 04:30",
+      "exit_t": "2026-11-21 04:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-21 05:00",
+      "exit_t": "2026-11-21 06:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-21 05:00",
+      "exit_t": "2026-11-21 06:15",
+      "ret_pct": -2.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-21 06:30",
+      "exit_t": "2026-11-21 06:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-21 06:30",
+      "exit_t": "2026-11-21 06:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-21 22:15",
+      "exit_t": "2026-11-28 00:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-21 22:45",
+      "exit_t": "2026-11-28 05:45",
+      "ret_pct": -2.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-28 05:15",
+      "exit_t": "2026-11-28 09:15",
+      "ret_pct": -0.58,
+      "why": "time"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-28 05:15",
+      "exit_t": "2026-11-28 07:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-28 06:00",
+      "exit_t": "2026-11-28 07:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     }
+    ]
+   },
+   "B_core": {
+    "n": 1125,
+    "per_day": 2.88,
+    "win": 41.6,
+    "avg_net_pct": -0.241,
+    "total_net_pct": -271.4,
+    "max_dd_pct": 270.4,
+    "avg_sl_pct": 0.81,
+    "ci90_avg_pct": [
+     -0.283,
+     -0.197
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 391,
+      "per_day": 1.0,
+      "win": 42.7,
+      "avg_net_pct": -0.23,
+      "total_net_pct": -90.1,
+      "max_dd_pct": 91.7,
+      "avg_sl_pct": 0.81
+     },
+     "Europe": {
+      "n": 238,
+      "per_day": 0.61,
+      "win": 37.8,
+      "avg_net_pct": -0.316,
+      "total_net_pct": -75.2,
+      "max_dd_pct": 75.5,
+      "avg_sl_pct": 0.81
+     },
+     "Late": {
+      "n": 107,
+      "per_day": 0.27,
+      "win": 43.0,
+      "avg_net_pct": -0.203,
+      "total_net_pct": -21.7,
+      "max_dd_pct": 26.8,
+      "avg_sl_pct": 0.81
+     },
+     "US": {
+      "n": 389,
+      "per_day": 0.99,
+      "win": 42.4,
+      "avg_net_pct": -0.217,
+      "total_net_pct": -84.4,
+      "max_dd_pct": 85.2,
+      "avg_sl_pct": 0.81
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 329,
+      "per_day": 0.84,
+      "win": 40.1,
+      "avg_net_pct": -0.244,
+      "total_net_pct": -80.4,
+      "max_dd_pct": 80.2,
+      "avg_sl_pct": 0.81
+     },
+     "ETH": {
+      "n": 373,
+      "per_day": 0.95,
+      "win": 43.7,
+      "avg_net_pct": -0.208,
+      "total_net_pct": -77.4,
+      "max_dd_pct": 83.1,
+      "avg_sl_pct": 0.81
+     },
+     "SOL": {
+      "n": 423,
+      "per_day": 1.08,
+      "win": 40.9,
+      "avg_net_pct": -0.268,
+      "total_net_pct": -113.6,
+      "max_dd_pct": 113.2,
+      "avg_sl_pct": 0.81
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 691,
+     "usd_total": -3835.0,
+     "usd_per_day": -9.8,
+     "goal_per_day": 50,
+     "days_goal_met": 3.8,
+     "red_days": 50.0,
+     "worst_day": -53.0,
+     "max_dd_usd": 3830.0
+    },
+    "halves_avg_pct": [
+     -0.233,
+     -0.25
+    ],
+    "recent": [
+     {
+      "coin": "ETH",
+      "t": "2026-11-18 13:00",
+      "exit_t": "2026-11-18 14:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-18 14:45",
+      "exit_t": "2026-11-18 15:45",
+      "ret_pct": -1.02,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-18 17:15",
+      "exit_t": "2026-11-18 19:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-18 21:45",
+      "exit_t": "2026-11-18 23:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-18 23:00",
+      "exit_t": "2026-11-18 23:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-19 20:30",
+      "exit_t": "2026-11-19 21:15",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-19 20:45",
+      "exit_t": "2026-11-19 21:15",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-19 22:00",
+      "exit_t": "2026-11-19 22:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-19 22:00",
+      "exit_t": "2026-11-19 22:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-19 22:15",
+      "exit_t": "2026-11-20 01:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-20 02:00",
+      "exit_t": "2026-11-20 03:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-20 02:30",
+      "exit_t": "2026-11-20 02:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-20 02:45",
+      "exit_t": "2026-11-20 04:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-20 10:00",
+      "exit_t": "2026-11-20 12:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-20 12:15",
+      "exit_t": "2026-11-20 13:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-20 14:15",
+      "exit_t": "2026-11-20 14:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-21 06:30",
+      "exit_t": "2026-11-21 06:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-21 06:45",
+      "exit_t": "2026-11-21 07:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-28 05:15",
+      "exit_t": "2026-11-28 07:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-28 05:15",
+      "exit_t": "2026-11-28 07:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     }
+    ]
+   },
+   "C_core+not_falling": {
+    "n": 440,
+    "per_day": 1.13,
+    "win": 44.5,
+    "avg_net_pct": -0.186,
+    "total_net_pct": -81.9,
+    "max_dd_pct": 80.8,
+    "avg_sl_pct": 0.81,
+    "ci90_avg_pct": [
+     -0.254,
+     -0.117
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 129,
+      "per_day": 0.33,
+      "win": 52.7,
+      "avg_net_pct": -0.045,
+      "total_net_pct": -5.8,
+      "max_dd_pct": 12.4,
+      "avg_sl_pct": 0.81
+     },
+     "Europe": {
+      "n": 93,
+      "per_day": 0.24,
+      "win": 34.4,
+      "avg_net_pct": -0.369,
+      "total_net_pct": -34.3,
+      "max_dd_pct": 33.3,
+      "avg_sl_pct": 0.81
+     },
+     "Late": {
+      "n": 43,
+      "per_day": 0.11,
+      "win": 34.9,
+      "avg_net_pct": -0.381,
+      "total_net_pct": -16.4,
+      "max_dd_pct": 16.0,
+      "avg_sl_pct": 0.82
+     },
+     "US": {
+      "n": 175,
+      "per_day": 0.45,
+      "win": 46.3,
+      "avg_net_pct": -0.145,
+      "total_net_pct": -25.4,
+      "max_dd_pct": 29.6,
+      "avg_sl_pct": 0.81
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 142,
+      "per_day": 0.36,
+      "win": 38.7,
+      "avg_net_pct": -0.274,
+      "total_net_pct": -38.9,
+      "max_dd_pct": 37.8,
+      "avg_sl_pct": 0.81
+     },
+     "ETH": {
+      "n": 135,
+      "per_day": 0.35,
+      "win": 49.6,
+      "avg_net_pct": -0.098,
+      "total_net_pct": -13.3,
+      "max_dd_pct": 14.6,
+      "avg_sl_pct": 0.81
+     },
+     "SOL": {
+      "n": 163,
+      "per_day": 0.42,
+      "win": 45.4,
+      "avg_net_pct": -0.182,
+      "total_net_pct": -29.7,
+      "max_dd_pct": 31.8,
+      "avg_sl_pct": 0.81
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 379,
+     "usd_total": -1640.0,
+     "usd_per_day": -4.2,
+     "goal_per_day": 50,
+     "days_goal_met": 1.8,
+     "red_days": 33.2,
+     "worst_day": -53.0,
+     "max_dd_usd": 1622.0
+    },
+    "halves_avg_pct": [
+     -0.138,
+     -0.232
+    ],
+    "recent": [
+     {
+      "coin": "ETH",
+      "t": "2026-11-02 19:45",
+      "exit_t": "2026-11-03 12:15",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-04 03:45",
+      "exit_t": "2026-11-04 04:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-04 03:45",
+      "exit_t": "2026-11-04 04:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-08 23:00",
+      "exit_t": "2026-11-08 23:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-10 04:15",
+      "exit_t": "2026-11-10 08:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-10 11:00",
+      "exit_t": "2026-11-10 13:30",
+      "ret_pct": -1.08,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-10 14:30",
+      "exit_t": "2026-11-10 15:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-13 22:30",
+      "exit_t": "2026-11-13 23:15",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-16 12:30",
+      "exit_t": "2026-11-16 14:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-17 11:30",
+      "exit_t": "2026-11-17 15:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-18 13:00",
+      "exit_t": "2026-11-18 14:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-18 17:15",
+      "exit_t": "2026-11-18 19:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-18 22:15",
+      "exit_t": "2026-11-18 23:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-18 23:00",
+      "exit_t": "2026-11-18 23:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-19 22:15",
+      "exit_t": "2026-11-20 01:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-19 22:30",
+      "exit_t": "2026-11-20 01:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-20 02:45",
+      "exit_t": "2026-11-20 04:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-20 14:15",
+      "exit_t": "2026-11-20 14:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-28 06:15",
+      "exit_t": "2026-11-28 07:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-28 06:15",
+      "exit_t": "2026-11-28 07:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     }
+    ]
+   },
+   "D_C+asia": {
+    "n": 135,
+    "per_day": 0.35,
+    "win": 51.1,
+    "avg_net_pct": -0.074,
+    "total_net_pct": -10.0,
+    "max_dd_pct": 12.6,
+    "avg_sl_pct": 0.81,
+    "ci90_avg_pct": [
+     -0.208,
+     0.05
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 135,
+      "per_day": 0.35,
+      "win": 51.1,
+      "avg_net_pct": -0.074,
+      "total_net_pct": -10.0,
+      "max_dd_pct": 12.6,
+      "avg_sl_pct": 0.81
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 43,
+      "per_day": 0.11,
+      "win": 41.9,
+      "avg_net_pct": -0.218,
+      "total_net_pct": -9.4,
+      "max_dd_pct": 9.0,
+      "avg_sl_pct": 0.8
+     },
+     "ETH": {
+      "n": 38,
+      "per_day": 0.1,
+      "win": 55.3,
+      "avg_net_pct": -0.006,
+      "total_net_pct": -0.2,
+      "max_dd_pct": 5.0,
+      "avg_sl_pct": 0.8
+     },
+     "SOL": {
+      "n": 54,
+      "per_day": 0.14,
+      "win": 55.6,
+      "avg_net_pct": -0.006,
+      "total_net_pct": -0.3,
+      "max_dd_pct": 7.5,
+      "avg_sl_pct": 0.81
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 125,
+     "usd_total": -314.0,
+     "usd_per_day": -0.8,
+     "goal_per_day": 50,
+     "days_goal_met": 0.0,
+     "red_days": 12.7,
+     "worst_day": -51.0,
+     "max_dd_usd": 304.0
+    },
+    "halves_avg_pct": [
+     -0.098,
+     -0.055
+    ],
+    "recent": [
+     {
+      "coin": "BTC",
+      "t": "2026-10-08 05:00",
+      "exit_t": "2026-10-08 12:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-08 05:00",
+      "exit_t": "2026-10-08 10:15",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-11 04:30",
+      "exit_t": "2026-10-11 15:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-20 01:30",
+      "exit_t": "2026-10-20 08:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-10-20 01:30",
+      "exit_t": "2026-10-20 09:45",
+      "ret_pct": -1.01,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-22 04:45",
+      "exit_t": "2026-10-22 05:45",
+      "ret_pct": -1.01,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-10-22 04:45",
+      "exit_t": "2026-10-22 07:15",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-24 01:00",
+      "exit_t": "2026-10-24 09:00",
+      "ret_pct": -1.04,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-10-27 07:15",
+      "exit_t": "2026-10-27 12:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-27 07:45",
+      "exit_t": "2026-10-27 10:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-10-28 01:15",
+      "exit_t": "2026-10-28 08:15",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-10-30 02:15",
+      "exit_t": "2026-10-30 03:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-10-30 02:15",
+      "exit_t": "2026-10-30 03:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-01 00:15",
+      "exit_t": "2026-11-01 12:15",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-04 03:45",
+      "exit_t": "2026-11-04 04:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-04 03:45",
+      "exit_t": "2026-11-04 04:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-10 04:15",
+      "exit_t": "2026-11-10 08:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-20 02:45",
+      "exit_t": "2026-11-20 04:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-28 06:15",
+      "exit_t": "2026-11-28 07:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-28 06:15",
+      "exit_t": "2026-11-28 07:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     }
+    ]
+   },
+   "E_C+stretch": {
+    "n": 80,
+    "per_day": 0.2,
+    "win": 42.5,
+    "avg_net_pct": -0.23,
+    "total_net_pct": -18.4,
+    "max_dd_pct": 18.9,
+    "avg_sl_pct": 0.81,
+    "ci90_avg_pct": [
+     -0.397,
+     -0.07
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 23,
+      "per_day": 0.06,
+      "win": 34.8,
+      "avg_net_pct": -0.38,
+      "total_net_pct": -8.7,
+      "max_dd_pct": 8.9,
+      "avg_sl_pct": 0.81
+     },
+     "Europe": {
+      "n": 17,
+      "per_day": 0.04,
+      "win": 41.2,
+      "avg_net_pct": -0.267,
+      "total_net_pct": -4.5,
+      "max_dd_pct": 4.3,
+      "avg_sl_pct": 0.81
+     },
+     "Late": {
+      "n": 5,
+      "per_day": 0.01,
+      "win": 40.0,
+      "avg_net_pct": -0.28,
+      "total_net_pct": -1.4,
+      "max_dd_pct": 3.0,
+      "avg_sl_pct": 0.8
+     },
+     "US": {
+      "n": 35,
+      "per_day": 0.09,
+      "win": 48.6,
+      "avg_net_pct": -0.105,
+      "total_net_pct": -3.7,
+      "max_dd_pct": 6.5,
+      "avg_sl_pct": 0.81
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 16,
+      "per_day": 0.04,
+      "win": 37.5,
+      "avg_net_pct": -0.335,
+      "total_net_pct": -5.4,
+      "max_dd_pct": 5.3,
+      "avg_sl_pct": 0.81
+     },
+     "ETH": {
+      "n": 29,
+      "per_day": 0.07,
+      "win": 41.4,
+      "avg_net_pct": -0.229,
+      "total_net_pct": -6.6,
+      "max_dd_pct": 7.4,
+      "avg_sl_pct": 0.81
+     },
+     "SOL": {
+      "n": 35,
+      "per_day": 0.09,
+      "win": 45.7,
+      "avg_net_pct": -0.182,
+      "total_net_pct": -6.4,
+      "max_dd_pct": 6.5,
+      "avg_sl_pct": 0.81
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 75,
+     "usd_total": -468.0,
+     "usd_per_day": -1.2,
+     "goal_per_day": 50,
+     "days_goal_met": 0.0,
+     "red_days": 9.0,
+     "worst_day": -52.0,
+     "max_dd_usd": 437.0
+    },
+    "halves_avg_pct": [
+     -0.304,
+     -0.13
+    ],
+    "recent": [
+     {
+      "coin": "ETH",
+      "t": "2026-07-17 13:45",
+      "exit_t": "2026-07-17 17:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-07-23 15:45",
+      "exit_t": "2026-07-23 17:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-07-28 03:00",
+      "exit_t": "2026-07-28 13:45",
+      "ret_pct": -1.02,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-07-28 03:15",
+      "exit_t": "2026-07-28 13:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-07-28 11:45",
+      "exit_t": "2026-07-28 13:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-07-28 14:15",
+      "exit_t": "2026-07-28 15:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-09-02 12:00",
+      "exit_t": "2026-09-02 13:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-09-04 15:15",
+      "exit_t": "2026-09-05 15:15",
+      "ret_pct": -0.08,
+      "why": "time"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-09-04 15:15",
+      "exit_t": "2026-09-05 07:15",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-09-23 15:00",
+      "exit_t": "2026-09-23 15:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-10-07 11:00",
+      "exit_t": "2026-10-07 13:30",
+      "ret_pct": -1.07,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-10-14 21:15",
+      "exit_t": "2026-10-15 02:15",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-22 10:00",
+      "exit_t": "2026-10-22 16:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-24 01:00",
+      "exit_t": "2026-10-24 09:00",
+      "ret_pct": -1.04,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-10-30 02:15",
+      "exit_t": "2026-10-30 03:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-10-30 02:15",
+      "exit_t": "2026-10-30 03:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-18 22:15",
+      "exit_t": "2026-11-18 23:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-19 22:15",
+      "exit_t": "2026-11-20 01:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-20 14:15",
+      "exit_t": "2026-11-20 14:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-28 06:15",
+      "exit_t": "2026-11-28 07:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     }
+    ]
+   },
+   "F_C+capitulation": {
+    "n": 238,
+    "per_day": 0.61,
+    "win": 48.7,
+    "avg_net_pct": -0.109,
+    "total_net_pct": -26.1,
+    "max_dd_pct": 30.4,
+    "avg_sl_pct": 0.81,
+    "ci90_avg_pct": [
+     -0.201,
+     -0.016
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 53,
+      "per_day": 0.14,
+      "win": 67.9,
+      "avg_net_pct": 0.244,
+      "total_net_pct": 12.9,
+      "max_dd_pct": 3.0,
+      "avg_sl_pct": 0.81
+     },
+     "Europe": {
+      "n": 46,
+      "per_day": 0.12,
+      "win": 34.8,
+      "avg_net_pct": -0.365,
+      "total_net_pct": -16.8,
+      "max_dd_pct": 18.5,
+      "avg_sl_pct": 0.81
+     },
+     "Late": {
+      "n": 18,
+      "per_day": 0.05,
+      "win": 27.8,
+      "avg_net_pct": -0.509,
+      "total_net_pct": -9.2,
+      "max_dd_pct": 9.8,
+      "avg_sl_pct": 0.81
+     },
+     "US": {
+      "n": 121,
+      "per_day": 0.31,
+      "win": 48.8,
+      "avg_net_pct": -0.108,
+      "total_net_pct": -13.1,
+      "max_dd_pct": 15.3,
+      "avg_sl_pct": 0.81
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 80,
+      "per_day": 0.2,
+      "win": 41.2,
+      "avg_net_pct": -0.22,
+      "total_net_pct": -17.6,
+      "max_dd_pct": 17.4,
+      "avg_sl_pct": 0.81
+     },
+     "ETH": {
+      "n": 73,
+      "per_day": 0.19,
+      "win": 54.8,
+      "avg_net_pct": -0.007,
+      "total_net_pct": -0.5,
+      "max_dd_pct": 6.2,
+      "avg_sl_pct": 0.81
+     },
+     "SOL": {
+      "n": 85,
+      "per_day": 0.22,
+      "win": 50.6,
+      "avg_net_pct": -0.093,
+      "total_net_pct": -7.9,
+      "max_dd_pct": 12.6,
+      "avg_sl_pct": 0.81
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 218,
+     "usd_total": -644.0,
+     "usd_per_day": -1.7,
+     "goal_per_day": 50,
+     "days_goal_met": 0.5,
+     "red_days": 21.4,
+     "worst_day": -52.0,
+     "max_dd_usd": 658.0
+    },
+    "halves_avg_pct": [
+     -0.111,
+     -0.108
+    ],
+    "recent": [
+     {
+      "coin": "BTC",
+      "t": "2026-10-23 23:45",
+      "exit_t": "2026-10-24 09:15",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-10-23 23:45",
+      "exit_t": "2026-10-24 08:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-10-25 10:00",
+      "exit_t": "2026-10-26 01:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-10-28 15:15",
+      "exit_t": "2026-10-28 18:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-10-30 02:15",
+      "exit_t": "2026-10-30 03:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-10-30 20:00",
+      "exit_t": "2026-10-31 17:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-01 00:15",
+      "exit_t": "2026-11-01 12:15",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-01 23:00",
+      "exit_t": "2026-11-02 01:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-02 19:45",
+      "exit_t": "2026-11-03 12:15",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-04 03:45",
+      "exit_t": "2026-11-04 04:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-04 03:45",
+      "exit_t": "2026-11-04 04:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-08 23:00",
+      "exit_t": "2026-11-08 23:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-10 11:00",
+      "exit_t": "2026-11-10 13:30",
+      "ret_pct": -1.08,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-10 14:30",
+      "exit_t": "2026-11-10 15:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-16 12:30",
+      "exit_t": "2026-11-16 14:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-17 11:30",
+      "exit_t": "2026-11-17 15:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-18 13:00",
+      "exit_t": "2026-11-18 14:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-18 17:15",
+      "exit_t": "2026-11-18 19:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-18 23:00",
+      "exit_t": "2026-11-18 23:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-20 14:15",
+      "exit_t": "2026-11-20 14:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     }
+    ]
+   },
+   "G_C+magnet": {
+    "n": 438,
+    "per_day": 1.12,
+    "win": 44.5,
+    "avg_net_pct": -0.186,
+    "total_net_pct": -81.7,
+    "max_dd_pct": 80.6,
+    "avg_sl_pct": 0.81,
+    "ci90_avg_pct": [
+     -0.257,
+     -0.114
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 129,
+      "per_day": 0.33,
+      "win": 52.7,
+      "avg_net_pct": -0.045,
+      "total_net_pct": -5.8,
+      "max_dd_pct": 12.4,
+      "avg_sl_pct": 0.81
+     },
+     "Europe": {
+      "n": 93,
+      "per_day": 0.24,
+      "win": 34.4,
+      "avg_net_pct": -0.369,
+      "total_net_pct": -34.3,
+      "max_dd_pct": 33.3,
+      "avg_sl_pct": 0.81
+     },
+     "Late": {
+      "n": 42,
+      "per_day": 0.11,
+      "win": 35.7,
+      "avg_net_pct": -0.367,
+      "total_net_pct": -15.4,
+      "max_dd_pct": 15.0,
+      "avg_sl_pct": 0.82
+     },
+     "US": {
+      "n": 174,
+      "per_day": 0.45,
+      "win": 46.0,
+      "avg_net_pct": -0.15,
+      "total_net_pct": -26.2,
+      "max_dd_pct": 30.4,
+      "avg_sl_pct": 0.81
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 141,
+      "per_day": 0.36,
+      "win": 39.0,
+      "avg_net_pct": -0.269,
+      "total_net_pct": -37.9,
+      "max_dd_pct": 36.8,
+      "avg_sl_pct": 0.81
+     },
+     "ETH": {
+      "n": 134,
+      "per_day": 0.34,
+      "win": 49.3,
+      "avg_net_pct": -0.105,
+      "total_net_pct": -14.1,
+      "max_dd_pct": 14.6,
+      "avg_sl_pct": 0.81
+     },
+     "SOL": {
+      "n": 163,
+      "per_day": 0.42,
+      "win": 45.4,
+      "avg_net_pct": -0.182,
+      "total_net_pct": -29.7,
+      "max_dd_pct": 31.8,
+      "avg_sl_pct": 0.81
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 377,
+     "usd_total": -1635.0,
+     "usd_per_day": -4.2,
+     "goal_per_day": 50,
+     "days_goal_met": 1.8,
+     "red_days": 33.2,
+     "worst_day": -53.0,
+     "max_dd_usd": 1609.0
+    },
+    "halves_avg_pct": [
+     -0.139,
+     -0.232
+    ],
+    "recent": [
+     {
+      "coin": "ETH",
+      "t": "2026-11-02 19:45",
+      "exit_t": "2026-11-03 12:15",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-04 03:45",
+      "exit_t": "2026-11-04 04:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-04 03:45",
+      "exit_t": "2026-11-04 04:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-08 23:00",
+      "exit_t": "2026-11-08 23:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-10 04:15",
+      "exit_t": "2026-11-10 08:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-10 11:00",
+      "exit_t": "2026-11-10 13:30",
+      "ret_pct": -1.08,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-10 14:30",
+      "exit_t": "2026-11-10 15:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-13 22:30",
+      "exit_t": "2026-11-13 23:15",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-16 12:30",
+      "exit_t": "2026-11-16 14:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-17 11:30",
+      "exit_t": "2026-11-17 15:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-18 13:00",
+      "exit_t": "2026-11-18 14:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-18 17:15",
+      "exit_t": "2026-11-18 19:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-18 22:15",
+      "exit_t": "2026-11-18 23:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-18 23:00",
+      "exit_t": "2026-11-18 23:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-19 22:15",
+      "exit_t": "2026-11-20 01:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-19 22:30",
+      "exit_t": "2026-11-20 01:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-20 02:45",
+      "exit_t": "2026-11-20 04:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-20 14:15",
+      "exit_t": "2026-11-20 14:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-28 06:15",
+      "exit_t": "2026-11-28 07:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-28 06:15",
+      "exit_t": "2026-11-28 07:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     }
+    ]
+   },
+   "H_C+asia+stretch": {
+    "n": 23,
+    "per_day": 0.06,
+    "win": 34.8,
+    "avg_net_pct": -0.38,
+    "total_net_pct": -8.7,
+    "max_dd_pct": 8.9,
+    "avg_sl_pct": 0.81,
+    "ci90_avg_pct": [
+     -0.622,
+     -0.066
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 23,
+      "per_day": 0.06,
+      "win": 34.8,
+      "avg_net_pct": -0.38,
+      "total_net_pct": -8.7,
+      "max_dd_pct": 8.9,
+      "avg_sl_pct": 0.81
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 5,
+      "per_day": 0.01,
+      "win": 20.0,
+      "avg_net_pct": -0.643,
+      "total_net_pct": -3.2,
+      "max_dd_pct": 3.0,
+      "avg_sl_pct": 0.8
+     },
+     "ETH": {
+      "n": 9,
+      "per_day": 0.02,
+      "win": 22.2,
+      "avg_net_pct": -0.604,
+      "total_net_pct": -5.4,
+      "max_dd_pct": 4.4,
+      "avg_sl_pct": 0.8
+     },
+     "SOL": {
+      "n": 9,
+      "per_day": 0.02,
+      "win": 55.6,
+      "avg_net_pct": -0.011,
+      "total_net_pct": -0.1,
+      "max_dd_pct": 2.1,
+      "avg_sl_pct": 0.83
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 23,
+     "usd_total": -219.0,
+     "usd_per_day": -0.6,
+     "goal_per_day": 50,
+     "days_goal_met": 0.0,
+     "red_days": 3.5,
+     "worst_day": -50.0,
+     "max_dd_usd": 209.0
+    },
+    "halves_avg_pct": [
+     -0.649,
+     -0.173
+    ],
+    "recent": [
+     {
+      "coin": "SOL",
+      "t": "2025-12-24 06:30",
+      "exit_t": "2025-12-24 15:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-01-29 04:45",
+      "exit_t": "2026-01-29 11:00",
+      "ret_pct": -1.03,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-02-05 04:30",
+      "exit_t": "2026-02-05 04:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-02-16 04:00",
+      "exit_t": "2026-02-16 05:30",
+      "ret_pct": -1.06,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-03-26 07:45",
+      "exit_t": "2026-03-26 09:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-04-12 05:15",
+      "exit_t": "2026-04-12 13:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-05-14 04:30",
+      "exit_t": "2026-05-14 05:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-05-26 03:30",
+      "exit_t": "2026-05-26 10:15",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-06-02 02:45",
+      "exit_t": "2026-06-02 05:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-06-04 02:30",
+      "exit_t": "2026-06-04 03:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-06-18 05:45",
+      "exit_t": "2026-06-18 08:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-07-08 03:00",
+      "exit_t": "2026-07-08 03:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-07-12 06:45",
+      "exit_t": "2026-07-12 11:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-07-17 03:00",
+      "exit_t": "2026-07-17 05:15",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-07-28 03:00",
+      "exit_t": "2026-07-28 13:45",
+      "ret_pct": -1.02,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-07-28 03:15",
+      "exit_t": "2026-07-28 13:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-24 01:00",
+      "exit_t": "2026-10-24 09:00",
+      "ret_pct": -1.04,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-10-30 02:15",
+      "exit_t": "2026-10-30 03:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-10-30 02:15",
+      "exit_t": "2026-10-30 03:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-28 06:15",
+      "exit_t": "2026-11-28 07:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     }
+    ]
+   },
+   "I_C+asia+capitulation": {
+    "n": 55,
+    "per_day": 0.14,
+    "win": 65.5,
+    "avg_net_pct": 0.199,
+    "total_net_pct": 10.9,
+    "max_dd_pct": 3.0,
+    "avg_sl_pct": 0.81,
+    "ci90_avg_pct": [
+     0.012,
+     0.384
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 55,
+      "per_day": 0.14,
+      "win": 65.5,
+      "avg_net_pct": 0.199,
+      "total_net_pct": 10.9,
+      "max_dd_pct": 3.0,
+      "avg_sl_pct": 0.81
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 19,
+      "per_day": 0.05,
+      "win": 52.6,
+      "avg_net_pct": 0.012,
+      "total_net_pct": 0.2,
+      "max_dd_pct": 3.0,
+      "avg_sl_pct": 0.8
+     },
+     "ETH": {
+      "n": 15,
+      "per_day": 0.04,
+      "win": 73.3,
+      "avg_net_pct": 0.319,
+      "total_net_pct": 4.8,
+      "max_dd_pct": 2.0,
+      "avg_sl_pct": 0.81
+     },
+     "SOL": {
+      "n": 21,
+      "per_day": 0.05,
+      "win": 71.4,
+      "avg_net_pct": 0.281,
+      "total_net_pct": 5.9,
+      "max_dd_pct": 2.0,
+      "avg_sl_pct": 0.81
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 51,
+     "usd_total": 193.0,
+     "usd_per_day": 0.5,
+     "goal_per_day": 50,
+     "days_goal_met": 0.0,
+     "red_days": 4.5,
+     "worst_day": -50.0,
+     "max_dd_usd": 76.0
+    },
+    "halves_avg_pct": [
+     0.249,
+     0.159
+    ],
+    "recent": [
+     {
+      "coin": "SOL",
+      "t": "2026-08-03 02:30",
+      "exit_t": "2026-08-03 07:15",
+      "ret_pct": -1.02,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-08-18 03:30",
+      "exit_t": "2026-08-18 11:15",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-09-08 05:15",
+      "exit_t": "2026-09-08 07:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-09-08 07:00",
+      "exit_t": "2026-09-08 10:15",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-09-14 00:30",
+      "exit_t": "2026-09-14 02:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-09-28 04:00",
+      "exit_t": "2026-09-28 12:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-09-30 07:15",
+      "exit_t": "2026-09-30 09:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-10-05 05:30",
+      "exit_t": "2026-10-05 08:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-10-05 05:30",
+      "exit_t": "2026-10-05 14:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-05 06:00",
+      "exit_t": "2026-10-05 08:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-06 06:30",
+      "exit_t": "2026-10-06 13:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-10-06 06:45",
+      "exit_t": "2026-10-07 01:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-10-08 05:00",
+      "exit_t": "2026-10-08 12:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-08 05:00",
+      "exit_t": "2026-10-08 10:15",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-11 04:30",
+      "exit_t": "2026-10-11 15:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-10-20 01:30",
+      "exit_t": "2026-10-20 09:45",
+      "ret_pct": -1.01,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-10-30 02:15",
+      "exit_t": "2026-10-30 03:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-01 00:15",
+      "exit_t": "2026-11-01 12:15",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-04 03:45",
+      "exit_t": "2026-11-04 04:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-04 03:45",
+      "exit_t": "2026-11-04 04:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     }
+    ]
+   },
+   "J_C+asia+magnet": {
+    "n": 135,
+    "per_day": 0.35,
+    "win": 51.1,
+    "avg_net_pct": -0.074,
+    "total_net_pct": -10.0,
+    "max_dd_pct": 12.6,
+    "avg_sl_pct": 0.81,
+    "ci90_avg_pct": [
+     -0.202,
+     0.051
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 135,
+      "per_day": 0.35,
+      "win": 51.1,
+      "avg_net_pct": -0.074,
+      "total_net_pct": -10.0,
+      "max_dd_pct": 12.6,
+      "avg_sl_pct": 0.81
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 43,
+      "per_day": 0.11,
+      "win": 41.9,
+      "avg_net_pct": -0.218,
+      "total_net_pct": -9.4,
+      "max_dd_pct": 9.0,
+      "avg_sl_pct": 0.8
+     },
+     "ETH": {
+      "n": 38,
+      "per_day": 0.1,
+      "win": 55.3,
+      "avg_net_pct": -0.006,
+      "total_net_pct": -0.2,
+      "max_dd_pct": 5.0,
+      "avg_sl_pct": 0.8
+     },
+     "SOL": {
+      "n": 54,
+      "per_day": 0.14,
+      "win": 55.6,
+      "avg_net_pct": -0.006,
+      "total_net_pct": -0.3,
+      "max_dd_pct": 7.5,
+      "avg_sl_pct": 0.81
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 125,
+     "usd_total": -314.0,
+     "usd_per_day": -0.8,
+     "goal_per_day": 50,
+     "days_goal_met": 0.0,
+     "red_days": 12.7,
+     "worst_day": -51.0,
+     "max_dd_usd": 304.0
+    },
+    "halves_avg_pct": [
+     -0.098,
+     -0.055
+    ],
+    "recent": [
+     {
+      "coin": "BTC",
+      "t": "2026-10-08 05:00",
+      "exit_t": "2026-10-08 12:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-08 05:00",
+      "exit_t": "2026-10-08 10:15",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-11 04:30",
+      "exit_t": "2026-10-11 15:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-20 01:30",
+      "exit_t": "2026-10-20 08:45",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-10-20 01:30",
+      "exit_t": "2026-10-20 09:45",
+      "ret_pct": -1.01,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-22 04:45",
+      "exit_t": "2026-10-22 05:45",
+      "ret_pct": -1.01,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-10-22 04:45",
+      "exit_t": "2026-10-22 07:15",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-24 01:00",
+      "exit_t": "2026-10-24 09:00",
+      "ret_pct": -1.04,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-10-27 07:15",
+      "exit_t": "2026-10-27 12:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-10-27 07:45",
+      "exit_t": "2026-10-27 10:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-10-28 01:15",
+      "exit_t": "2026-10-28 08:15",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-10-30 02:15",
+      "exit_t": "2026-10-30 03:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-10-30 02:15",
+      "exit_t": "2026-10-30 03:30",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-01 00:15",
+      "exit_t": "2026-11-01 12:15",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-04 03:45",
+      "exit_t": "2026-11-04 04:00",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-04 03:45",
+      "exit_t": "2026-11-04 04:45",
+      "ret_pct": 0.8,
+      "why": "TP"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-10 04:15",
+      "exit_t": "2026-11-10 08:30",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "BTC",
+      "t": "2026-11-20 02:45",
+      "exit_t": "2026-11-20 04:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "ETH",
+      "t": "2026-11-28 06:15",
+      "exit_t": "2026-11-28 07:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     },
+     {
+      "coin": "SOL",
+      "t": "2026-11-28 06:15",
+      "exit_t": "2026-11-28 07:00",
+      "ret_pct": -1.0,
+      "why": "SL"
+     }
+    ]
+   }
+  },
+  "fixed": {
+   "A_rsi_hook_only": {
+    "n": 2118,
+    "per_day": 5.42,
+    "win": 54.5,
+    "avg_net_pct": -0.26,
+    "total_net_pct": -551.2,
+    "max_dd_pct": 552.7,
+    "avg_sl_pct": 1.5,
+    "ci90_avg_pct": [
+     -0.302,
+     -0.217
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 669,
+      "per_day": 1.71,
+      "win": 57.4,
+      "avg_net_pct": -0.216,
+      "total_net_pct": -144.8,
+      "max_dd_pct": 143.1,
+      "avg_sl_pct": 1.5
+     },
+     "Europe": {
+      "n": 358,
+      "per_day": 0.92,
+      "win": 53.4,
+      "avg_net_pct": -0.313,
+      "total_net_pct": -112.0,
+      "max_dd_pct": 111.9,
+      "avg_sl_pct": 1.5
+     },
+     "Late": {
+      "n": 253,
+      "per_day": 0.65,
+      "win": 57.3,
+      "avg_net_pct": -0.18,
+      "total_net_pct": -45.4,
+      "max_dd_pct": 54.5,
+      "avg_sl_pct": 1.5
+     },
+     "US": {
+      "n": 838,
+      "per_day": 2.14,
+      "win": 51.9,
+      "avg_net_pct": -0.297,
+      "total_net_pct": -249.0,
+      "max_dd_pct": 253.5,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 588,
+      "per_day": 1.5,
+      "win": 52.6,
+      "avg_net_pct": -0.233,
+      "total_net_pct": -136.9,
+      "max_dd_pct": 137.9,
+      "avg_sl_pct": 1.5
+     },
+     "ETH": {
+      "n": 738,
+      "per_day": 1.89,
+      "win": 56.1,
+      "avg_net_pct": -0.229,
+      "total_net_pct": -169.0,
+      "max_dd_pct": 169.8,
+      "avg_sl_pct": 1.5
+     },
+     "SOL": {
+      "n": 792,
+      "per_day": 2.03,
+      "win": 54.5,
+      "avg_net_pct": -0.31,
+      "total_net_pct": -245.3,
+      "max_dd_pct": 246.2,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 1039,
+     "usd_total": -5395.0,
+     "usd_per_day": -13.7,
+     "goal_per_day": 50,
+     "days_goal_met": 11.7,
+     "red_days": 54.5,
+     "worst_day": -85.0,
+     "max_dd_usd": 5415.0
+    },
+    "halves_avg_pct": [
+     -0.277,
+     -0.24
+    ]
+   },
+   "B_core": {
+    "n": 912,
+    "per_day": 2.33,
+    "win": 55.7,
+    "avg_net_pct": -0.24,
+    "total_net_pct": -219.2,
+    "max_dd_pct": 217.5,
+    "avg_sl_pct": 1.5,
+    "ci90_avg_pct": [
+     -0.308,
+     -0.175
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 329,
+      "per_day": 0.84,
+      "win": 56.8,
+      "avg_net_pct": -0.222,
+      "total_net_pct": -73.0,
+      "max_dd_pct": 75.4,
+      "avg_sl_pct": 1.5
+     },
+     "Europe": {
+      "n": 182,
+      "per_day": 0.47,
+      "win": 55.5,
+      "avg_net_pct": -0.256,
+      "total_net_pct": -46.5,
+      "max_dd_pct": 51.6,
+      "avg_sl_pct": 1.5
+     },
+     "Late": {
+      "n": 86,
+      "per_day": 0.22,
+      "win": 57.0,
+      "avg_net_pct": -0.214,
+      "total_net_pct": -18.4,
+      "max_dd_pct": 23.9,
+      "avg_sl_pct": 1.5
+     },
+     "US": {
+      "n": 315,
+      "per_day": 0.81,
+      "win": 54.3,
+      "avg_net_pct": -0.258,
+      "total_net_pct": -81.3,
+      "max_dd_pct": 82.1,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 266,
+      "per_day": 0.68,
+      "win": 53.4,
+      "avg_net_pct": -0.236,
+      "total_net_pct": -62.7,
+      "max_dd_pct": 61.8,
+      "avg_sl_pct": 1.5
+     },
+     "ETH": {
+      "n": 306,
+      "per_day": 0.78,
+      "win": 58.5,
+      "avg_net_pct": -0.195,
+      "total_net_pct": -59.5,
+      "max_dd_pct": 72.5,
+      "avg_sl_pct": 1.5
+     },
+     "SOL": {
+      "n": 340,
+      "per_day": 0.87,
+      "win": 55.0,
+      "avg_net_pct": -0.285,
+      "total_net_pct": -96.9,
+      "max_dd_pct": 95.2,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 671,
+     "usd_total": -3930.0,
+     "usd_per_day": -10.0,
+     "goal_per_day": 50,
+     "days_goal_met": 7.4,
+     "red_days": 43.6,
+     "worst_day": -85.0,
+     "max_dd_usd": 3909.0
+    },
+    "halves_avg_pct": [
+     -0.236,
+     -0.245
+    ]
+   },
+   "C_core+not_falling": {
+    "n": 412,
+    "per_day": 1.05,
+    "win": 56.3,
+    "avg_net_pct": -0.215,
+    "total_net_pct": -88.6,
+    "max_dd_pct": 86.9,
+    "avg_sl_pct": 1.5,
+    "ci90_avg_pct": [
+     -0.313,
+     -0.117
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 122,
+      "per_day": 0.31,
+      "win": 63.9,
+      "avg_net_pct": -0.044,
+      "total_net_pct": -5.4,
+      "max_dd_pct": 17.6,
+      "avg_sl_pct": 1.5
+     },
+     "Europe": {
+      "n": 87,
+      "per_day": 0.22,
+      "win": 46.0,
+      "avg_net_pct": -0.425,
+      "total_net_pct": -37.0,
+      "max_dd_pct": 37.3,
+      "avg_sl_pct": 1.5
+     },
+     "Late": {
+      "n": 42,
+      "per_day": 0.11,
+      "win": 47.6,
+      "avg_net_pct": -0.47,
+      "total_net_pct": -19.7,
+      "max_dd_pct": 20.5,
+      "avg_sl_pct": 1.5
+     },
+     "US": {
+      "n": 161,
+      "per_day": 0.41,
+      "win": 58.4,
+      "avg_net_pct": -0.164,
+      "total_net_pct": -26.5,
+      "max_dd_pct": 28.9,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 129,
+      "per_day": 0.33,
+      "win": 51.9,
+      "avg_net_pct": -0.26,
+      "total_net_pct": -33.6,
+      "max_dd_pct": 31.9,
+      "avg_sl_pct": 1.5
+     },
+     "ETH": {
+      "n": 128,
+      "per_day": 0.33,
+      "win": 60.2,
+      "avg_net_pct": -0.149,
+      "total_net_pct": -19.0,
+      "max_dd_pct": 20.6,
+      "avg_sl_pct": 1.5
+     },
+     "SOL": {
+      "n": 155,
+      "per_day": 0.4,
+      "win": 56.8,
+      "avg_net_pct": -0.232,
+      "total_net_pct": -36.0,
+      "max_dd_pct": 34.3,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 368,
+     "usd_total": -2097.0,
+     "usd_per_day": -5.4,
+     "goal_per_day": 50,
+     "days_goal_met": 3.1,
+     "red_days": 28.6,
+     "worst_day": -85.0,
+     "max_dd_usd": 2055.0
+    },
+    "halves_avg_pct": [
+     -0.191,
+     -0.239
+    ]
+   },
+   "D_C+asia": {
+    "n": 131,
+    "per_day": 0.34,
+    "win": 62.6,
+    "avg_net_pct": -0.081,
+    "total_net_pct": -10.7,
+    "max_dd_pct": 18.5,
+    "avg_sl_pct": 1.5,
+    "ci90_avg_pct": [
+     -0.251,
+     0.081
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 131,
+      "per_day": 0.34,
+      "win": 62.6,
+      "avg_net_pct": -0.081,
+      "total_net_pct": -10.7,
+      "max_dd_pct": 18.5,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 41,
+      "per_day": 0.1,
+      "win": 58.5,
+      "avg_net_pct": -0.154,
+      "total_net_pct": -6.3,
+      "max_dd_pct": 8.2,
+      "avg_sl_pct": 1.5
+     },
+     "ETH": {
+      "n": 38,
+      "per_day": 0.1,
+      "win": 60.5,
+      "avg_net_pct": -0.13,
+      "total_net_pct": -5.0,
+      "max_dd_pct": 11.1,
+      "avg_sl_pct": 1.5
+     },
+     "SOL": {
+      "n": 52,
+      "per_day": 0.13,
+      "win": 67.3,
+      "avg_net_pct": 0.012,
+      "total_net_pct": 0.6,
+      "max_dd_pct": 7.0,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 123,
+     "usd_total": -317.0,
+     "usd_per_day": -0.8,
+     "goal_per_day": 50,
+     "days_goal_met": 0.0,
+     "red_days": 9.8,
+     "worst_day": -85.0,
+     "max_dd_usd": 313.0
+    },
+    "halves_avg_pct": [
+     -0.1,
+     -0.066
+    ]
+   },
+   "E_C+stretch": {
+    "n": 78,
+    "per_day": 0.2,
+    "win": 51.3,
+    "avg_net_pct": -0.341,
+    "total_net_pct": -26.6,
+    "max_dd_pct": 25.3,
+    "avg_sl_pct": 1.5,
+    "ci90_avg_pct": [
+     -0.565,
+     -0.12
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 23,
+      "per_day": 0.06,
+      "win": 47.8,
+      "avg_net_pct": -0.396,
+      "total_net_pct": -9.1,
+      "max_dd_pct": 8.7,
+      "avg_sl_pct": 1.5
+     },
+     "Europe": {
+      "n": 17,
+      "per_day": 0.04,
+      "win": 58.8,
+      "avg_net_pct": -0.146,
+      "total_net_pct": -2.5,
+      "max_dd_pct": 6.0,
+      "avg_sl_pct": 1.5
+     },
+     "Late": {
+      "n": 5,
+      "per_day": 0.01,
+      "win": 60.0,
+      "avg_net_pct": -0.2,
+      "total_net_pct": -1.0,
+      "max_dd_pct": 3.4,
+      "avg_sl_pct": 1.5
+     },
+     "US": {
+      "n": 33,
+      "per_day": 0.08,
+      "win": 48.5,
+      "avg_net_pct": -0.425,
+      "total_net_pct": -14.0,
+      "max_dd_pct": 16.0,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 15,
+      "per_day": 0.04,
+      "win": 53.3,
+      "avg_net_pct": -0.28,
+      "total_net_pct": -4.2,
+      "max_dd_pct": 2.6,
+      "avg_sl_pct": 1.5
+     },
+     "ETH": {
+      "n": 29,
+      "per_day": 0.07,
+      "win": 48.3,
+      "avg_net_pct": -0.404,
+      "total_net_pct": -11.7,
+      "max_dd_pct": 12.6,
+      "avg_sl_pct": 1.5
+     },
+     "SOL": {
+      "n": 34,
+      "per_day": 0.09,
+      "win": 52.9,
+      "avg_net_pct": -0.314,
+      "total_net_pct": -10.7,
+      "max_dd_pct": 9.4,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 76,
+     "usd_total": -642.0,
+     "usd_per_day": -1.6,
+     "goal_per_day": 50,
+     "days_goal_met": 0.0,
+     "red_days": 7.7,
+     "worst_day": -85.0,
+     "max_dd_usd": 577.0
+    },
+    "halves_avg_pct": [
+     -0.461,
+     -0.169
+    ]
+   },
+   "F_C+capitulation": {
+    "n": 230,
+    "per_day": 0.59,
+    "win": 58.7,
+    "avg_net_pct": -0.163,
+    "total_net_pct": -37.5,
+    "max_dd_pct": 42.1,
+    "avg_sl_pct": 1.5,
+    "ci90_avg_pct": [
+     -0.294,
+     -0.029
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 53,
+      "per_day": 0.14,
+      "win": 75.5,
+      "avg_net_pct": 0.223,
+      "total_net_pct": 11.8,
+      "max_dd_pct": 3.5,
+      "avg_sl_pct": 1.5
+     },
+     "Europe": {
+      "n": 44,
+      "per_day": 0.11,
+      "win": 43.2,
+      "avg_net_pct": -0.519,
+      "total_net_pct": -22.8,
+      "max_dd_pct": 24.3,
+      "avg_sl_pct": 1.5
+     },
+     "Late": {
+      "n": 18,
+      "per_day": 0.05,
+      "win": 44.4,
+      "avg_net_pct": -0.496,
+      "total_net_pct": -8.9,
+      "max_dd_pct": 11.3,
+      "avg_sl_pct": 1.5
+     },
+     "US": {
+      "n": 115,
+      "per_day": 0.29,
+      "win": 59.1,
+      "avg_net_pct": -0.153,
+      "total_net_pct": -17.5,
+      "max_dd_pct": 20.1,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 74,
+      "per_day": 0.19,
+      "win": 50.0,
+      "avg_net_pct": -0.304,
+      "total_net_pct": -22.5,
+      "max_dd_pct": 21.6,
+      "avg_sl_pct": 1.5
+     },
+     "ETH": {
+      "n": 72,
+      "per_day": 0.18,
+      "win": 66.7,
+      "avg_net_pct": -0.001,
+      "total_net_pct": -0.1,
+      "max_dd_pct": 9.1,
+      "avg_sl_pct": 1.5
+     },
+     "SOL": {
+      "n": 84,
+      "per_day": 0.21,
+      "win": 59.5,
+      "avg_net_pct": -0.177,
+      "total_net_pct": -14.9,
+      "max_dd_pct": 18.6,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 218,
+     "usd_total": -989.0,
+     "usd_per_day": -2.6,
+     "goal_per_day": 50,
+     "days_goal_met": 0.5,
+     "red_days": 18.0,
+     "worst_day": -85.0,
+     "max_dd_usd": 946.0
+    },
+    "halves_avg_pct": [
+     -0.175,
+     -0.15
+    ]
+   },
+   "G_C+magnet": {
+    "n": 410,
+    "per_day": 1.05,
+    "win": 56.3,
+    "avg_net_pct": -0.213,
+    "total_net_pct": -87.4,
+    "max_dd_pct": 85.7,
+    "avg_sl_pct": 1.5,
+    "ci90_avg_pct": [
+     -0.305,
+     -0.115
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 122,
+      "per_day": 0.31,
+      "win": 63.9,
+      "avg_net_pct": -0.044,
+      "total_net_pct": -5.4,
+      "max_dd_pct": 17.6,
+      "avg_sl_pct": 1.5
+     },
+     "Europe": {
+      "n": 87,
+      "per_day": 0.22,
+      "win": 46.0,
+      "avg_net_pct": -0.422,
+      "total_net_pct": -36.7,
+      "max_dd_pct": 37.0,
+      "avg_sl_pct": 1.5
+     },
+     "Late": {
+      "n": 41,
+      "per_day": 0.1,
+      "win": 48.8,
+      "avg_net_pct": -0.44,
+      "total_net_pct": -18.0,
+      "max_dd_pct": 19.5,
+      "avg_sl_pct": 1.5
+     },
+     "US": {
+      "n": 160,
+      "per_day": 0.41,
+      "win": 58.1,
+      "avg_net_pct": -0.17,
+      "total_net_pct": -27.3,
+      "max_dd_pct": 29.7,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 128,
+      "per_day": 0.33,
+      "win": 52.3,
+      "avg_net_pct": -0.247,
+      "total_net_pct": -31.6,
+      "max_dd_pct": 29.9,
+      "avg_sl_pct": 1.5
+     },
+     "ETH": {
+      "n": 127,
+      "per_day": 0.32,
+      "win": 59.8,
+      "avg_net_pct": -0.156,
+      "total_net_pct": -19.8,
+      "max_dd_pct": 20.6,
+      "avg_sl_pct": 1.5
+     },
+     "SOL": {
+      "n": 155,
+      "per_day": 0.4,
+      "win": 56.8,
+      "avg_net_pct": -0.232,
+      "total_net_pct": -36.0,
+      "max_dd_pct": 34.3,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 366,
+     "usd_total": -2067.0,
+     "usd_per_day": -5.3,
+     "goal_per_day": 50,
+     "days_goal_met": 3.1,
+     "red_days": 28.3,
+     "worst_day": -85.0,
+     "max_dd_usd": 2025.0
+    },
+    "halves_avg_pct": [
+     -0.187,
+     -0.239
+    ]
+   },
+   "H_C+asia+stretch": {
+    "n": 23,
+    "per_day": 0.06,
+    "win": 47.8,
+    "avg_net_pct": -0.396,
+    "total_net_pct": -9.1,
+    "max_dd_pct": 8.7,
+    "avg_sl_pct": 1.5,
+    "ci90_avg_pct": [
+     -0.801,
+     0.008
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 23,
+      "per_day": 0.06,
+      "win": 47.8,
+      "avg_net_pct": -0.396,
+      "total_net_pct": -9.1,
+      "max_dd_pct": 8.7,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 5,
+      "per_day": 0.01,
+      "win": 40.0,
+      "avg_net_pct": -0.536,
+      "total_net_pct": -2.7,
+      "max_dd_pct": 2.6,
+      "avg_sl_pct": 1.5
+     },
+     "ETH": {
+      "n": 9,
+      "per_day": 0.02,
+      "win": 33.3,
+      "avg_net_pct": -0.76,
+      "total_net_pct": -6.8,
+      "max_dd_pct": 6.0,
+      "avg_sl_pct": 1.5
+     },
+     "SOL": {
+      "n": 9,
+      "per_day": 0.02,
+      "win": 66.7,
+      "avg_net_pct": 0.046,
+      "total_net_pct": 0.4,
+      "max_dd_pct": 2.6,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 23,
+     "usd_total": -228.0,
+     "usd_per_day": -0.6,
+     "goal_per_day": 50,
+     "days_goal_met": 0.0,
+     "red_days": 2.9,
+     "worst_day": -64.0,
+     "max_dd_usd": 207.0
+    },
+    "halves_avg_pct": [
+     -0.797,
+     -0.088
+    ]
+   },
+   "I_C+asia+capitulation": {
+    "n": 55,
+    "per_day": 0.14,
+    "win": 72.7,
+    "avg_net_pct": 0.153,
+    "total_net_pct": 8.4,
+    "max_dd_pct": 4.6,
+    "avg_sl_pct": 1.5,
+    "ci90_avg_pct": [
+     -0.109,
+     0.391
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 55,
+      "per_day": 0.14,
+      "win": 72.7,
+      "avg_net_pct": 0.153,
+      "total_net_pct": 8.4,
+      "max_dd_pct": 4.6,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 19,
+      "per_day": 0.05,
+      "win": 63.2,
+      "avg_net_pct": -0.019,
+      "total_net_pct": -0.4,
+      "max_dd_pct": 4.4,
+      "avg_sl_pct": 1.5
+     },
+     "ETH": {
+      "n": 15,
+      "per_day": 0.04,
+      "win": 80.0,
+      "avg_net_pct": 0.3,
+      "total_net_pct": 4.5,
+      "max_dd_pct": 1.8,
+      "avg_sl_pct": 1.5
+     },
+     "SOL": {
+      "n": 21,
+      "per_day": 0.05,
+      "win": 76.2,
+      "avg_net_pct": 0.205,
+      "total_net_pct": 4.3,
+      "max_dd_pct": 3.5,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 51,
+     "usd_total": 131.0,
+     "usd_per_day": 0.4,
+     "goal_per_day": 50,
+     "days_goal_met": 0.0,
+     "red_days": 3.7,
+     "worst_day": -85.0,
+     "max_dd_usd": 137.0
+    },
+    "halves_avg_pct": [
+     0.256,
+     0.074
+    ]
+   },
+   "J_C+asia+magnet": {
+    "n": 131,
+    "per_day": 0.34,
+    "win": 62.6,
+    "avg_net_pct": -0.081,
+    "total_net_pct": -10.7,
+    "max_dd_pct": 18.5,
+    "avg_sl_pct": 1.5,
+    "ci90_avg_pct": [
+     -0.251,
+     0.083
+    ],
+    "by_session": {
+     "Asia": {
+      "n": 131,
+      "per_day": 0.34,
+      "win": 62.6,
+      "avg_net_pct": -0.081,
+      "total_net_pct": -10.7,
+      "max_dd_pct": 18.5,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "by_coin": {
+     "BTC": {
+      "n": 41,
+      "per_day": 0.1,
+      "win": 58.5,
+      "avg_net_pct": -0.154,
+      "total_net_pct": -6.3,
+      "max_dd_pct": 8.2,
+      "avg_sl_pct": 1.5
+     },
+     "ETH": {
+      "n": 38,
+      "per_day": 0.1,
+      "win": 60.5,
+      "avg_net_pct": -0.13,
+      "total_net_pct": -5.0,
+      "max_dd_pct": 11.1,
+      "avg_sl_pct": 1.5
+     },
+     "SOL": {
+      "n": 52,
+      "per_day": 0.13,
+      "win": 67.3,
+      "avg_net_pct": 0.012,
+      "total_net_pct": 0.6,
+      "max_dd_pct": 7.0,
+      "avg_sl_pct": 1.5
+     }
+    },
+    "portfolio": {
+     "days": 391,
+     "trades": 123,
+     "usd_total": -317.0,
+     "usd_per_day": -0.8,
+     "goal_per_day": 50,
+     "days_goal_met": 0.0,
+     "red_days": 9.8,
+     "worst_day": -85.0,
+     "max_dd_usd": 313.0
+    },
+    "halves_avg_pct": [
+     -0.1,
+     -0.066
+    ]
+   }
+  }
+ },
+ "random": {
+  "all": {
+   "n": 9000,
+   "per_day": 23.02,
+   "win": 53.6,
+   "avg_net_pct": -0.227,
+   "total_net_pct": -2042.8,
+   "max_dd_pct": 2047.4,
+   "avg_sl_pct": 1.5
+  },
+  "Asia": {
+   "n": 3021,
+   "per_day": 7.73,
+   "win": 54.6,
+   "avg_net_pct": -0.222,
+   "total_net_pct": -670.8,
+   "max_dd_pct": 672.5,
+   "avg_sl_pct": 1.5
+  },
+  "Europe": {
+   "n": 1853,
+   "per_day": 4.74,
+   "win": 54.0,
+   "avg_net_pct": -0.222,
+   "total_net_pct": -412.0,
+   "max_dd_pct": 421.4,
+   "avg_sl_pct": 1.5
+  },
+  "US": {
+   "n": 2997,
+   "per_day": 7.66,
+   "win": 52.7,
+   "avg_net_pct": -0.228,
+   "total_net_pct": -681.8,
+   "max_dd_pct": 684.9,
+   "avg_sl_pct": 1.5
+  },
+  "Late": {
+   "n": 1129,
+   "per_day": 2.89,
+   "win": 52.9,
+   "avg_net_pct": -0.246,
+   "total_net_pct": -278.1,
+   "max_dd_pct": 278.9,
+   "avg_sl_pct": 1.5
+  }
+ },
+ "pick": "I_C+asia+capitulation",
+ "gate": "I_C+asia+capitulation: 55 trades in 391 days, 65.5% hit +1%, +0.20% per trade after fees (random -0.23%)"
+}

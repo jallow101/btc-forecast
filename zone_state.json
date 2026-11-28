@@ -1,0 +1,102 @@
+{
+ "btc-59500": {
+  "armed": false,
+  "last_ts": 1795588200,
+  "fired_at": 1795536000,
+  "fired_px": 59512.0
+ },
+ "btc-56800": {
+  "armed": true,
+  "last_ts": 1795881600
+ },
+ "btc-55100": {
+  "armed": true,
+  "last_ts": 1795881600
+ },
+ "btc-53500": {
+  "armed": true,
+  "last_ts": 1795881600
+ },
+ "btc-48000": {
+  "armed": true,
+  "last_ts": 1795881600
+ },
+ "btc-64600": {
+  "armed": true,
+  "last_ts": 1795881600
+ },
+ "eth-1660": {
+  "armed": false,
+  "last_ts": 1795588200,
+  "fired_at": 1795570200,
+  "fired_px": 1661.0
+ },
+ "eth-1618": {
+  "armed": true,
+  "last_ts": 1795881600,
+  "fired_at": 1795617000,
+  "fired_px": 1610.0
+ },
+ "eth-1540": {
+  "armed": true,
+  "last_ts": 1795881600
+ },
+ "eth-1350": {
+  "armed": true,
+  "last_ts": 1795881600
+ },
+ "eth-1845": {
+  "armed": true,
+  "last_ts": 1795881600
+ },
+ "btc-predlow-2026-11-25": {
+  "armed": true,
+  "last_ts": 1795644900,
+  "fired_at": 1795606200,
+  "fired_px": 58571.0
+ },
+ "eth-predlow-2026-11-25": {
+  "armed": true,
+  "last_ts": 1795644900,
+  "fired_at": 1795591800,
+  "fired_px": 1640.3
+ },
+ "btc-predlow-2026-11-26": {
+  "armed": true,
+  "last_ts": 1795735800
+ },
+ "eth-predlow-2026-11-26": {
+  "armed": true,
+  "last_ts": 1795735800
+ },
+ "btc-predlow-2026-11-27": {
+  "armed": false,
+  "last_ts": 1795822200,
+  "fired_at": 1795790700,
+  "fired_px": 59182.0
+ },
+ "eth-predlow-2026-11-27": {
+  "armed": false,
+  "last_ts": 1795822200,
+  "fired_at": 1795790700,
+  "fired_px": 1653.8
+ },
+ "btc-predlow-2026-11-28": {
+  "armed": false,
+  "last_ts": 1795854600,
+  "fired_at": 1795849200,
+  "fired_px": 59677.0
+ },
+ "eth-predlow-2026-11-28": {
+  "armed": true,
+  "last_ts": 1795854600
+ },
+ "btc-deeplow-2026-11-28": {
+  "armed": true,
+  "last_ts": 1795881600
+ },
+ "eth-deeplow-2026-11-28": {
+  "armed": true,
+  "last_ts": 1795881600
+ }
+}

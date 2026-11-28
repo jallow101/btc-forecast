@@ -1,0 +1,67 @@
+{
+ "trades": [
+  {
+   "coin": "SOL",
+   "day": "2026-11-28",
+   "fill_time": "2026-11-28 07:00:00+00:00",
+   "entry": 70.8278,
+   "plan": {
+    "hi_q10": 71.6988,
+    "hi_q50": 73.6567,
+    "lo_q10": 68.8065,
+    "lo_q50": 70.8278
+   },
+   "tp": 71.6988,
+   "stop": 68.118435,
+   "status": "open",
+   "size": 2500,
+   "last": 70.606
+  }
+ ],
+ "armed": {},
+ "status": {
+  "BTC": {
+   "price": 59476.0,
+   "rsi_d": 26.6,
+   "rsi4h": 42.4,
+   "liq_up": 9.38,
+   "liq_dn": 20.91,
+   "oversold": true,
+   "magnet_up": false,
+   "setup": false,
+   "buy": 59053.6675,
+   "tp": 60396.4067,
+   "stop": 57870.068355,
+   "time": "2026-11-28 16:00"
+  },
+  "ETH": {
+   "price": 1649.0,
+   "rsi_d": 27.9,
+   "rsi4h": 40.3,
+   "liq_up": 5.79,
+   "liq_dn": 22.96,
+   "oversold": true,
+   "magnet_up": false,
+   "setup": false,
+   "buy": 1634.0207,
+   "tp": 1679.5125,
+   "stop": 1593.549045,
+   "time": "2026-11-28 16:00"
+  },
+  "SOL": {
+   "price": 70.606,
+   "rsi_d": 34.1,
+   "rsi4h": 46.2,
+   "liq_up": 7.77,
+   "liq_dn": 12.49,
+   "oversold": true,
+   "magnet_up": false,
+   "setup": false,
+   "buy": 70.5832,
+   "tp": 71.6268,
+   "stop": 68.34237300000001,
+   "time": "2026-11-28 16:00"
+  }
+ },
+ "made": "2026-11-28T16:17+00:00"
+}
