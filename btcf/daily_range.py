@@ -35,6 +35,29 @@ LOG = DATA / "daily_log.csv"
 LATEST = DATA / "daily_range_latest.json"
 
 
+def raw_path(key):
+    """Uncalibrated walk-forward + live predictions: what the band-width (conformal) factors are fitted on."""
+    return DATA / f"daily_raw_{key}.csv"
+
+
+def update_raw(d, key, p):
+    """Add today's raw predictions and fill in outcomes that are now known, so calibration rolls forward daily."""
+    rp = raw_path(key)
+    raw = pd.read_csv(rp, parse_dates=["date", "target_date"]) if rp.exists() else pd.DataFrame()
+    cols = ["date", "k", "target_date", "scale", "close", "y_hi", "y_lo"] + [f"{s}_q{q}" for s in ("hi", "lo") for q in (10, 50, 90)]
+    new = p.copy()
+    new["y_hi"], new["y_lo"] = np.nan, np.nan
+    raw = pd.concat([raw, new[cols]], ignore_index=True).drop_duplicates(["date", "k"], keep="last")
+    lc = np.log(d.close)
+    miss = raw.y_hi.isna() & raw.target_date.isin(d.index)
+    if miss.any():
+        t = raw.loc[miss]
+        raw.loc[miss, "y_hi"] = (np.log(d.high.reindex(t.target_date).to_numpy()) - lc.reindex(t.date).to_numpy()) / t.scale.to_numpy()
+        raw.loc[miss, "y_lo"] = (np.log(d.low.reindex(t.target_date).to_numpy()) - lc.reindex(t.date).to_numpy()) / t.scale.to_numpy()
+    raw.sort_values(["date", "k"]).to_csv(rp, index=False)
+    return raw
+
+
 def bt_path(key):
     return DATA / f"daily_bt_{key}.csv"
 
@@ -263,6 +286,7 @@ def backtest_asset(asset):
     cal_nl = calibrate_walk_forward(no_liq)
     base = baseline(cal, d)
     cal.to_csv(bt_path(asset.key), index=False)
+    with_liq.to_csv(raw_path(asset.key), index=False)
     rep = {"period": [str(cal.date.min().date()), str(cal.date.max().date())], "by_k": {}}
     for k in K:
         m, mn, bb = cal[cal.k == k], cal_nl[cal_nl.k == k], base[base.k == k]
@@ -303,10 +327,10 @@ def predict_live(asset):
     test = s[s.date == last].copy()
     test["target_date"] = [last + pd.Timedelta(days=int(k)) for k in test.k]
     p = pd.concat([test[["date", "k", "target_date", "scale", "close"]], fit_predict(train, test, cols)], axis=1)
-    bp = bt_path(asset.key)
-    hist = pd.read_csv(bp, parse_dates=["date", "target_date"]) if bp.exists() else None
-    if hist is not None:
-        p = apply_conf(p, conformal(hist, last + pd.Timedelta(days=1)))
+    # calibrate band widths on RAW past predictions (the stored backtest is already calibrated,
+    # so fitting on it gave ~1.0 factors and left live bands ~5-15% too narrow)
+    raw = update_raw(d, asset.key, p)
+    p = apply_conf(p, conformal(raw, last + pd.Timedelta(days=1)))
     rows = []
     for r in p.itertuples():
         row = {"asset": asset.key, "run_date": str(last.date()), "target_date": str(r.target_date.date()),
